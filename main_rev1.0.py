@@ -10,7 +10,7 @@ client = commands.Bot(command_prefix= '!', intents=intents)  # SETUP THE CLIENT 
 
 @client.event
 async def on_ready():
-    
+    global guild
     for guild in client.guilds: # CHECK FOR THE GUILD BOT IS IN.
         if guild.name == GUILD:
             break
@@ -22,6 +22,28 @@ async def on_ready():
         f'\n - Guild ID: {guild.id}'
     )
 
+def unfoldList(listName):
+    unfold = f'\n - '.join([i for i in listName])
+    return unfold
+    
+
+def guildMembers(ml, lp):  # FUNCTION TO LIST ALL GUILD MEMBERS
+   
+    ml = []
+
+    for member in guild.members:
+        if lp == "name":
+            ml = f'\n - '.join([member.name for member in guild.members])
+        elif lp == "id":
+            ml = f'\n - '.join([member.id for member in guild.members])
+    return ml
+
+
+def invalidParameter(parameters):
+    error_msg = f'Invalid Parameter, try again using:\n - {unfoldList(parameters)}'
+    return error_msg
+        
+
 @client.command(aliases=['p'])      # COMMAND PING
 async def ping(ctx):
     await ctx.send(f'{round(client.latency * 1000)} ms')
@@ -31,23 +53,28 @@ async def swamp(ctx):
     await ctx.send(f"GET OUT OF ME SWAMP YA OLD CHUM'")
 
 @client.command(aliases=['ml'])
-async def memberList(ctx, p):
 
-    if p == "name":
-        guild = GUILD
-        for member in guild.members:
-            id = member.id
+async def ml_parameter_missing(ctx):
+    parameter = ['name','id']
+    await ctx.reply(invalidParameter(parameter))
+
+async def memberList(ctx, lp):
+
+    if lp != "name" and lp != "id":
         await ctx.send(
-            f'\nParamater is "{p}".'
-            f'\nHere is the list of all the members of "{guild.name}"'
-            f'\n{id}'
-        )
+            f'Parameter "{lp}" is unvalid!"'
+            f'\nPlease use either "name" or "id" as parameter.'
+            )
+    
     else:
-        await ctx.send(f'Lack of paramater.')
-
+        await ctx.send(
+            f'Here the {lp} of the members of the server: '
+            f'\n\n - {guildMembers("member list", lp)}'
+            )
 
 @client.command(aliases=['sw@'])
-async def swampAt(ctx, user):
+async def swampAt(ctx):
     pass
+
 
 client.run(TOKEN)
