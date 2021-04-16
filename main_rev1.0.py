@@ -74,16 +74,13 @@ async def memberList(ctx, lp):
             )
 
 @client.command(aliases=['@'])      # SWAMP AT COMMAND --  USERNAME AS PARAMETER
-async def swampAt(ctx, name):
-    memberNames = []
-    for member in guild.members:
-        memberNames.append(member.name)
-        if name == member.name:
-            await ctx.send(f"{member.mention} YOU BETTER GET OUT OF ME SWAMP BEFORE I SLAP YOUR STUPID ASS")
-            break
-    if name not in memberNames:
-        await ctx.send(f'{name} is not a valid username!')
+async def swampAt(ctx, target : discord.Member):
+    await ctx.send(f"OI {target.mention}, GET THE FUCK OFF ME SWAMP YA OLD CHUM'")
 
+@swampAt.error
+async def error(ctx, error):
+    if isinstance(error, commands.BadArgument):
+        await ctx.send(f'Username is not valid!')
 
 @client.command(aliases=['fa'])
 async def swampFact(ctx):
@@ -100,6 +97,6 @@ async def swampFact(ctx):
         print('break; no answer expected')
     else:
         answer = await client.wait_for('message', check=check, timeout=15)
-        await answer.reply(f'Success! :joy::ok_hand:') 
+        await answer.reply(f'Success! :joy::ok_hand:')
 
 client.run(TOKEN)
