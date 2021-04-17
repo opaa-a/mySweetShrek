@@ -9,7 +9,7 @@ class SwampCommand(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        print(f"\n- SwampCommand from base_commands is loaded.")
+        print(f"\n- SwampCommand from b_com is loaded.")
     
                 # !swamp@ OR !swampAt -- MENTION A SPECIFIED MEMBER AND SEND TEXT
     @commands.command(aliases=['swamp@'])
@@ -44,10 +44,12 @@ class SwampCommand(commands.Cog):
         if answer_list[fact_index] == "null":
             print('\n!facts ; break ; no answer needed.')
             return
+        
         else:
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
             await answer.reply(f'Success! :joy::ok_hand:')
             return
+
 
 def setup(client):
     client.add_cog(SwampCommand(client))
