@@ -11,7 +11,8 @@ fact_list = [
     "Pas touche à mes creepaaah",
     " C’est une devinette. Qu’est ce qui a trois bras, un seul chapeau, deux chemises et une veste, un foulard, un pistolet et quatre oreilles ?",
     "hé meh! Ce serait pas un carpaccio de poulpe?",
-    "YES PAPAAAAA!!"
+    "YES PAPAAAAA!!",
+    "Why does somebody do not know how to flush the toilets after they had a SHET?"
     ]
 
 answer_list = [
@@ -27,5 +28,6 @@ answer_list = [
     'deso',
     "c'est le cowboy de tchernobyl!",
     "je savais pas que ça existait en vrai...",
-    "YES PAPAAAAA!!"
+    "YES PAPAAAAA!!",
+    "DISGUSTING"
     ]

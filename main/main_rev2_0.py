@@ -39,8 +39,6 @@ async def load(ctx, extension):
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.reply(f'Oops! You need to specify a cog!\n- !load <cog>')
-    else:
-        await ctx.reply(f'This cog name is unvalid!')
 
                 # !unload -- MANUALLY UNLOAD COGS
 @client.command()
@@ -52,8 +50,6 @@ async def unload(ctx, extension):
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.reply(f'Oops! You need to specify a cog!\n- !unload <cog>')
-    else:
-        await ctx.reply(f'This cog name is unvalid!')
 
                 # !reload -- RELOAD COGS
 @client.command()
@@ -66,8 +62,6 @@ async def reload(ctx, extension):
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.reply(f'Oops! You need to specify a cog!\n- !reload <cog>')
-    else:
-        await ctx.reply(f'This cog name is unvalid!')
 
                 # !coglist OR !cl -- LIST ALL THE AVAILABLE COGS.
 @client.command(aliases=['cl'])

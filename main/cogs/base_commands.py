@@ -37,5 +37,17 @@ class SwampCommand(commands.Cog):
         
         await ctx.send(random_fact)
 
+        def check(ans):
+            if ans.content == answer_list[fact_index] and ans.channel == channel:
+                return ans.content, ans.channel
+        
+        if answer_list[fact_index] == "null":
+            print('\n!facts ; break ; no answer needed.')
+            return
+        else:
+            answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
+            await answer.reply(f'Success! :joy::ok_hand:')
+            return
+
 def setup(client):
     client.add_cog(SwampCommand(client))
