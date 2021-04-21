@@ -6,6 +6,7 @@ from decouple import config
 TOKEN = config('DISCORD_TOKEN') # DISCORD TOKEN IN ENV VAR
 GUILD = config('DISCORD_GUILD') # DISCORD GUILD IN ENV VAR
 DEF_CHAN = config('DISCORD_DEF_CHAN') # DISCORD DEFAULT CHANNEL IN ENV VAR  
+ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
 client = commands.Bot(command_prefix='!', intents=intents)
