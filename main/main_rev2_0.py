@@ -34,7 +34,7 @@ async def on_ready():
 @client.command()
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
-    await ctx.reply(f'{extension} has been successfully loaded!')
+    await ctx.reply(f':ballot_box_with_check:   {extension} has been successfully loaded!')
 
 @load.error
 async def error(ctx, error):
@@ -45,7 +45,7 @@ async def error(ctx, error):
 @client.command()
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
-    await ctx.reply(f'{extension} has been successfully unloaded!')
+    await ctx.reply(f':ballot_box_with_check:   {extension} has been successfully unloaded!')
 
 @unload.error
 async def error(ctx, error):
@@ -57,7 +57,7 @@ async def error(ctx, error):
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
-    await ctx.reply(f'{extenstion} has been successfully reloaded!')
+    await ctx.reply(f':ballot_box_with_check:   {extension} has been successfully reloaded!')
 
 @reload.error
 async def error(ctx, error):

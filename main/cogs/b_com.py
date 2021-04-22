@@ -20,10 +20,10 @@ class SwampCommand(commands.Cog):
     async def error(self, ctx, error):
 
         if isinstance(error, commands.BadArgument):
-            await ctx.reply(f'Username is not valid!')
+            await ctx.reply(f':x:   Username is not valid!')
             return
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.reply(f'Oops! You need to specify a username!\n- !swamp@ <username>')
+            await ctx.reply(f':x:   Oops! You need to specify a username!\n- !swamp@ <username>')
             return
                 
                 # !fa OR !facts -- SEND A RANDOM FACT FROM facts_dic.py AND EXPECT SOMETIMES AN ANSWER.
