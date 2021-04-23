@@ -14,6 +14,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     global currency                 # DEFINE THE NAME OF THE SERVER CURRENCY
     currency = "pipi-coins"
 
+
     def vault_profile(self, userID : discord.Member):        # FUNCTION TO LOOK IN THE VAULT FOR PROFILES
         with open('vault.json', 'r') as vault:
             vault = json.load(vault)
@@ -30,6 +31,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                     #print('\nno userID found')
                     pass
 
+
     def check_admin(self, userID : discord.Member):          # FUNCTION TO CHECK IF SPECIFIED USER IS ADMIN
         aID = int(ADMIN_ROLE_ID)
         userRoles = []
@@ -41,6 +43,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         if aID in userRoles:
             user_is_admin = True
             return user_is_admin
+
 
     def md_balance(self, userID : discord.Member, md_method : str, amount : int):      # ADD, SUBSTRACT OR RESET COINS FROM A SPECIFIED USER ACCOUNT
         # md_method are : <add> <sub> <reset>
@@ -63,6 +66,19 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                         vault[userID]["balance"] = 0
         
         edit_vault(vault)
+
+    def get_balance(self, userID):
+        with open('vault.json') as vault:
+            vault = json.load(vault)
+            userID = str(userID)
+
+            global balance
+            balance = 0
+
+            for profile in vault:
+                if profile == userID:
+                    balance = vault[userID]["balance"]
+                    return balance
 
 
     @commands.command()             # !register -- REGISTER YOUR CURRENCY ACCOUNT
@@ -94,7 +110,8 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         
         edit_vault(vault)
 
-    @commands.command(aliases=['t'])
+
+    @commands.command()
     async def add_coins(self, ctx, userID : discord.Member, amount : int):    # !add_coins <userID> <amount> -- ADD AMOUT OF COINS TO SPECIFIED USER
         self.check_admin(ctx.author)
         self.vault_profile(userID)
@@ -117,7 +134,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             print('\nERROR -- add_coins -- BAD ARGUMENT')
-            await ctx.reply(f':x:   Oops! Looks like one or many arguments given are not valid!')
+            await ctx.reply(f':x:   Oops! Looks like one or multiple arguments given are not valid!')
         elif isinstance(error, commands.MissingRequiredArgument):
             print('\nERROR -- add_coins -- MISSING ARGUMENT')
             await ctx.reply(
@@ -126,6 +143,50 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 )
 
 
+    @commands.command(aliases=['bal'])
+    async def balance(self, ctx, userID : discord.Member=None):     # !balance OR !bal -- GIVE THE BALANCE OF A USER VAULT
+        if userID == None:
+            userID = ctx.author
+        
+        self.vault_profile(userID)
+        
+        if user_has_vault == True:
+            self.get_balance(userID)
+
+            if balance <= 500:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nAbout to be homeless with that kind of money. :100::money_with_wings:'
+                    )
+            elif balance >= 500 and balance <= 5000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nBet you can\'t even buy a yatch :100::money_with_wings::money_with_wings:'
+                    )
+            elif balance >= 5000 and balance <= 10000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nWell, I guess you are not that far from the yatch... :100::money_with_wings::money_with_wings::money_with_wings:'
+                    )
+            elif balance >= 10000 and balance <= 100000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nFuckin\' hell, give me some bro :100::money_with_wings::money_with_wings::money_with_wings::moneybag::moneybag:'
+                    )
+            elif balance >= 100000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nFuck off, you can\'t have that much...'
+                    f'\n:money_with_wings::moneybag::money_with_wings::moneybag::money_with_wings::moneybag:'
+                    )
+        else:
+            await ctx.reply(f':x:   Oh Oh! Looks like {userID} is not registered in the vault yet!')
+
+    @balance.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            print('\nERROR -- balance -- BAD ARGUMENT')
+            await ctx.reply(f':x:   Oops! Looks like the user specified don\'t exist :pensive:')
 
 def setup(client):
     client.add_cog(Economy(client))
