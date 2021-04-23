@@ -1,9 +1,5 @@
 import discord
-import random
 from discord.ext import commands
-from facts_dic import *
-
-
 
 class SwampCommand(commands.Cog):
 
@@ -25,30 +21,7 @@ class SwampCommand(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.reply(f':x:   Oops! You need to specify a username!\n- !swamp@ <username>')
             return
-                
-                # !fa OR !facts -- SEND A RANDOM FACT FROM facts_dic.py AND EXPECT SOMETIMES AN ANSWER.
-    @commands.command(aliases=['fa'])
-    async def facts(self, ctx):
 
-        client = discord.Client
-        channel = ctx.channel
-        random_fact = random.choice(fact_list)
-        fact_index = fact_list.index(random_fact)
-        
-        await ctx.send(random_fact)
-
-        def check(ans):
-            if ans.content == answer_list[fact_index] and ans.channel == channel:
-                return ans.content, ans.channel
-        
-        if answer_list[fact_index] == "null":
-            print('\n!facts ; break ; no answer needed.')
-            return
-        
-        else:
-            answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
-            await answer.reply(f'Success! :joy::ok_hand:')
-            return
 
 
 def setup(client):

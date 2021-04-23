@@ -1,7 +1,9 @@
 import discord
 import json
+import random
 from decouple import config
 from discord.ext import commands
+from facts_dic import *
 
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
@@ -187,6 +189,42 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         if isinstance(error, commands.BadArgument):
             print('\nERROR -- balance -- BAD ARGUMENT')
             await ctx.reply(f':x:   Oops! Looks like the user specified don\'t exist :pensive:')
+
+
+    @commands.command(aliases=['fa'])
+    async def facts(self, ctx):
+
+        client = discord.Client
+        channel = ctx.channel
+        random_fact = random.choice(fact_list)
+        fact_index = fact_list.index(random_fact)
+        prize = random.randint(1,15)
+
+        await ctx.send(random_fact)
+
+        def check(ans):
+            if ans.content == answer_list[fact_index] and ans.channel == channel:
+                return ans.content, ans.channel
+        
+        if answer_list[fact_index] is not "null":
+            answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
+            self.vault_profile(answer.author)            
+            
+            if  user_has_vault == True:
+                self.md_balance(answer.author, "add", prize)
+                await answer.reply(
+                    f'Got it! :joy::ok_hand:'
+                    f'\n*You earned {prize} {currency}!*'
+                    )
+            else:
+                await answer.reply(
+                    f'Got it! :joy::ok_hand:'
+                    f'\n*You won nothing cuz you ain\'t registered, you fucking nerd.*'
+                )
+        
+        else:
+            print('\n!facts ; break ; no answer needed.')
+
 
 def setup(client):
     client.add_cog(Economy(client))
