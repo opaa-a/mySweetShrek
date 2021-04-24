@@ -226,5 +226,23 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
             print('\n!facts ; break ; no answer needed.')
 
 
+    @commands.command(aliases=['baltop'])
+    async def balancetop(self, ctx):
+        
+        def get_bal(d, profile):
+            return d.get(profile)
+        
+        with open('vault.json') as vault:
+            vault = json.load(vault)
+            d = {}
+
+            for profile in vault:
+                pb = vault[profile]["balance"]
+                d[profile] = int(pb)
+
+
+
+
+
 def setup(client):
     client.add_cog(Economy(client))
