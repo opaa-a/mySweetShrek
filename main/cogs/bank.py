@@ -4,6 +4,7 @@ import random
 from decouple import config
 from discord.ext import commands
 from facts_dic import *
+from operator import itemgetter
 
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
@@ -206,7 +207,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
             if ans.content == answer_list[fact_index] and ans.channel == channel:
                 return ans.content, ans.channel
         
-        if answer_list[fact_index] is not "null":
+        if answer_list[fact_index] != "null":
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
             self.vault_profile(answer.author)            
             
@@ -229,20 +230,23 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     @commands.command(aliases=['baltop'])
     async def balancetop(self, ctx):
         
-        def get_bal(d, profile):
-            return d.get(profile)
-        
         with open('vault.json') as vault:
             vault = json.load(vault)
-            d = {}
+            
+            vault_profile = []
+            z = []
+            i = 0
 
             for profile in vault:
-                pb = vault[profile]["balance"]
-                d[profile] = int(pb)
+                vault_profile.append(profile)
+                bal = vault[profile]["balance"]
+                vault_profile[i] = {vault_profile[i]:bal}
+                z.append(vault_profile[i])
 
-
-
-
-
+                i += 1
+            
+            w = sorted(z, key=itemgetter(str(profile)))
+            print(w)
+            
 def setup(client):
     client.add_cog(Economy(client))
