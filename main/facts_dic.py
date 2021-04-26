@@ -9,7 +9,7 @@ fact_list = [
     "Swamp Fact: You're a madlad",
     "Oi mate, are y'a goin' to the pub?",
     "Pas touche à mes creepaaah",
-    " C’est une devinette. Qu’est ce qui a trois bras, un seul chapeau, deux chemises et une veste, un foulard, un pistolet et quatre oreilles ?",
+    "C’est une devinette. Qu’est ce qui a trois bras, un seul chapeau, deux chemises et une veste, un foulard, un pistolet et quatre oreilles ?",
     "hé meh! Ce serait pas un carpaccio de poulpe?",
     "YES PAPAAAAA!!",
     "Why does somebody do not know how to flush the toilets after they had a SHET?"

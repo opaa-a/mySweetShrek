@@ -188,7 +188,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             print('\nERROR -- balance -- BAD ARGUMENT')
-            await ctx.reply(f':x:   Oops! Looks like the user specified don\'t exist :pensive:')
+            await ctx.reply(f':x:   Oops! Looks like the user specified doesn\'t exist :pensive:')
 
 
     @commands.command(aliases=['fa'])
@@ -212,21 +212,23 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
             
             if  user_has_vault == True:
                 self.md_balance(answer.author, "add", prize)
+
                 await answer.reply(
                     f'Got it! :joy::ok_hand:'
-                    f'\n*You earned {prize} {currency}!*'
+                    f'*You earned {prize} {currency}!*'
                     )
+            
             else:
                 await answer.reply(
                     f'Got it! :joy::ok_hand:'
                     f'\n*You won nothing cuz you ain\'t registered, you fucking nerd.*'
-                )
+                    )
         
         else:
             print('\n!facts ; break ; no answer needed.')
 
 
-    @commands.command(aliases=['baltop'])
+    @commands.command(aliases=['baltop'])               # !balancetop OR !baltop -- LIST ALL THE USERS ORDERED FROM THE RICHEST TO THE POOREST
     async def balancetop(self, ctx):
         
         with open('vault.json') as vault:
@@ -259,7 +261,6 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 f'First is the richest, last is the poorest. Loser.'
                 f'\n\n{formated_baltop}'
                 )
-
 
 def setup(client):
     client.add_cog(Economy(client))
