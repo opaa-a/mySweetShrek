@@ -4,7 +4,6 @@ import random
 from decouple import config
 from discord.ext import commands
 from facts_dic import *
-from operator import itemgetter
 
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
@@ -125,7 +124,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
             
             await ctx.send(
                 f'YES PAPAAAA!   :zany_face::zany_face:' 
-                f'\n{amount} {currency} have been added to {userID}\'s vault.'
+                f'\n**{amount}** {currency} have been added to {userID}\'s vault.'
                 f'\n:money_with_wings::money_with_wings::money_with_wings:'
                 )
         elif user_has_vault is not True:
@@ -233,20 +232,34 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         with open('vault.json') as vault:
             vault = json.load(vault)
             
-            vault_profile = []
-            z = []
-            i = 0
+            profiles = {}
+            pre_format_baltop = []
+            index = 0
 
             for profile in vault:
-                vault_profile.append(profile)
                 bal = vault[profile]["balance"]
-                vault_profile[i] = {vault_profile[i]:bal}
-                z.append(vault_profile[i])
+                profiles[profile] = bal
 
-                i += 1
+                baltop = sorted(profiles.items(), key=lambda x: x[1], reverse=True)
+
+            for i in baltop:
+                if index == 0:
+                    pre_format_baltop.append(f':first_place: **{i[0]}** : **{i[1]}** {currency}')
+                elif index == 1:
+                    pre_format_baltop.append(f':second_place: **{i[0]}** : **{i[1]}** {currency}')
+                elif index == 2:
+                    pre_format_baltop.append(f':third_place: **{i[0]}** : **{i[1]}** {currency}')
+                else:
+                    pre_format_baltop.append(f':hot_face: **{i[0]}** : **{i[1]}** {currency}')
+                index += 1
             
-            w = sorted(z, key=itemgetter(str(profile)))
-            print(w)
+            formated_baltop = f'\n\n'.join([i for i in pre_format_baltop])
             
+            await ctx.send(
+                f'First is the richest, last is the poorest. Loser.'
+                f'\n\n{formated_baltop}'
+                )
+
+
 def setup(client):
     client.add_cog(Economy(client))
