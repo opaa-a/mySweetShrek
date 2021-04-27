@@ -19,7 +19,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
 
 
     def get_vault(self, userID : discord.Member):        # FUNCTION TO LOOK IN THE VAULT FOR PROFILES
-        with open('vault.json', 'r') as vault:
+        with open('./main/vault.json', 'r') as vault:
             vault = json.load(vault)
             userID = str(userID)
             global user_has_vault
@@ -47,12 +47,12 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     def md_balance(self, userID : discord.Member, md_method : str, amount : int):      # ADD, SUBSTRACT OR RESET COINS FROM A SPECIFIED USER ACCOUNT
         # md_method are : <add> <sub> <reset>
        
-        def edit_vault(data, filename='vault.json'):
+        def edit_vault(data, filename='./main/vault.json'):
             with open(filename, 'w') as f:
                 json.dump(data, f, indent=4)
                 f.close()
                 
-        with open('vault.json') as vault:
+        with open('./main/vault.json') as vault:
             vault = json.load(vault)
             userID = str(userID)
 
@@ -69,7 +69,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
 
 
     def get_balance(self, userID):                      # FUNCTION TO GET BALANCE
-        with open('vault.json') as vault:
+        with open('./main/vault.json') as vault:
             vault = json.load(vault)
             userID = str(userID)
 
@@ -99,14 +99,14 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     @commands.command()             # !register -- REGISTER YOUR CURRENCY ACCOUNT
     async def register(self, ctx):
        
-        def edit_vault(data, filename='vault.json'):
+        def edit_vault(data, filename='./main/vault.json'):
             with open(filename, 'w') as f:
                 json.dump(data, f, indent=4)
                 f.close()
         
         author = str(ctx.author)
 
-        with open('vault.json') as vault:
+        with open('./main/vault.json') as vault:
             vault = json.load(vault)
             registery = []
 
@@ -247,7 +247,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     @commands.command(aliases=['baltop'])               # !balancetop OR !baltop -- LIST ALL THE USERS ORDERED FROM THE RICHEST TO THE POOREST
     async def balancetop(self, ctx):
         
-        with open('vault.json') as vault:
+        with open('./main/vault.json') as vault:
             vault = json.load(vault)
             
             profiles = {}

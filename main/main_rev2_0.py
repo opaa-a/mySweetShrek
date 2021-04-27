@@ -70,18 +70,24 @@ async def error(ctx, error):
 async def coglist(ctx):
     coglist = []
     
-    for filename in os.listdir('./cogs'):
+    for filename in os.listdir('./main/cogs'):
         if filename.endswith('.py') and filename != 'facts_dic.py':
             coglist.append(filename[:-3])
     
-    coglist = f'\n - '.join([i for i in coglist])
+    coglist = f'\n- '.join([i for i in coglist])
 
     await ctx.send(f'Here is the list of the cogs:\n- {coglist}')
 
                 # LOAD AT STARTUP ALL COGS BY DEFAULT
-for filename in os.listdir('./cogs'):
+for filename in os.listdir('./main/cogs'):
     if filename.endswith(".py"):
         client.load_extension(f'cogs.{filename[:-3]}')
 
+@client.command()
+async def source(cxt):
+    await ctx.reply(
+        f'Here is the GitHub link of the bot:'
+        f'\n- https://github.com/opaa-a/mySweetShrek'
+        )
 
 client.run(TOKEN)   
