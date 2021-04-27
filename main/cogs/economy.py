@@ -1,0 +1,462 @@
+import discord
+import json
+import random
+import asyncio
+from decouple import config
+from discord.ext import commands
+from facts_dic import *
+
+
+#---------------------------------------------------------------------------------------#   DEFINING GLOBAL VARIABLES   #---------------------------------------------------------------------------------------#
+
+# ID of the admin role on the current server. (used to check if a user is an admin)
+ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
+
+# currency used on the server.
+global currency
+currency = "pipi-coins"
+
+
+#---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
+
+# get_vault will search through the vault.json file with the userID specified
+# and return user_has_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
+def get_vault(userID : discord.Member):
+    with open('./main/vault.json', 'r') as vault:
+        vault = json.load(vault)
+        userID = str(userID)
+        
+        global user_has_vault
+        user_has_vault = False
+
+        for profile in vault:
+            if userID == profile:
+                user_has_vault = True
+                return user_has_vault
+
+
+# edit_vault is a simple updater function for the vault. when updates are made to the vault,
+# this function is called and it will dump the updated version of the vault.json
+def edit_vault(data, filename='./main/vault.json'):
+    with open(filename, 'w') as file:
+        json.dump(data, file, indent=4)
+        file.close()
+
+
+# check_admin as his name suggest, is a function to check is a specified userID is admin or not.
+# It will return user_is_admin either as TRUE if userID is admin or FALSE if userID is not.
+def check_admin(userID : discord.Member):
+    aID = int(ADMIN_ROLE_ID)
+    userRoles = []
+    
+    global user_is_admin
+    user_is_admin = False
+
+    for role in userID.roles:
+        userRoles.append(role.id)
+    
+    if aID in userRoles:
+        user_is_admin = True
+        return user_is_admin
+
+
+# md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
+# The userID will either have the amount substracted or added to his account. If reset is used, his account will be wiped.
+def md_balance(userID : discord.Member, md_method : str, amount : int):       
+    with open('./main/vault.json') as vault:
+        vault = json.load(vault)
+        userID = str(userID)
+
+        for profile in vault:
+            if profile == userID:
+                if md_method == "add":
+                    vault[userID]["balance"] += amount
+                elif md_method == "sub":
+                    vault[userID]["balance"] -= amount
+                elif md_method == "reset":
+                    vault[userID]["balance"] = 0
+
+    edit_vault(vault)
+
+
+# get_balance will return the balance of the userID specified as a int variable named balance.
+def get_balance(userID):
+    with open('./main/vault.json') as vault:
+        vault = json.load(vault)
+        userID = str(userID)
+
+        global balance
+        balance = 0
+
+        for profile in vault:
+            if profile == userID:
+                balance = vault[userID]["balance"]
+                return balance
+
+
+# check_pay take a userID and an amount. The function will check if userID has a vault, 
+# if TRUE then the function will check if the balance is greater than the amount. 
+# If TRUE, canUserpay will return as TRUE. If FALSE, userCanPay will return as FALSE.  
+def check_pay(userID, amount):
+    global canUserPay
+    canUserPay = False
+    
+    get_vault(userID)
+    get_balance(userID)
+
+    if user_has_vault == False:
+        return canUserPay
+        
+    if balance >= amount:
+        canUserPay = True
+        return canUserPay
+
+
+#---------------------------------------------------------------------------------------#      ECONOMY ESSENTIALS COMMANDS      #---------------------------------------------------------------------------------------#
+
+# Economy Essentials will regroup every essentials commands for using the economy system.
+class Economy_Essentials(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        print(f"\n- Economy Essentials from bank is loaded.")
+
+
+# !register -- Take no args. Register the author of the command to the vault.
+    @commands.command()
+    async def register(self, ctx):
+        author = str(ctx.author)
+
+        with open('./main/vault.json') as vault:
+            vault = json.load(vault)
+            registery = []
+
+            for profile in vault:
+                registery.append(profile)
+                
+            if  author in registery:
+                await ctx.reply(f':x:   Oh Oh! Looks like you are already registered!')
+
+            else:
+                vault[author] = {"balance": 0}
+                await ctx.reply(
+                    f'YES PAPAAAA!   :zany_face::zany_face:' 
+                    f'\nYour account has been created,' 
+                    f'\n:money_with_wings:   you can now earn {currency}!   :money_with_wings:'
+                    )
+
+        edit_vault(vault)
+
+
+# !add_coins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
+    @commands.command()
+    async def add_coins(self, ctx, userID : discord.Member, amount : int):
+        check_admin(ctx.author)
+        get_vault(userID)
+        amount = abs(amount)
+
+        if user_is_admin == True and user_has_vault == True:
+            
+            md_balance(userID, "add", amount)
+            
+            await ctx.send(
+                f'YES PAPAAAA!   :zany_face::zany_face:' 
+                f'\n**{amount}** {currency} have been added to {userID}\'s vault.'
+                f'\n:money_with_wings::money_with_wings::money_with_wings:'
+                )
+                
+        elif user_has_vault is not True:
+            await ctx.reply(f':x:   {userID} has not registered an account yet!')
+        
+        elif user_is_admin is not True:
+            await ctx.reply(f':x:   Oh Oh! Looks like you are not allowed to perform this command.')
+
+
+# !balance OR !bal -- Take an optionnal arg: userID. Show the balance of the userID, 
+# by default the author is the userID
+    @commands.command(aliases=['bal'])
+    async def balance(self, ctx, userID : discord.Member=None):
+        if userID == None:
+            userID = ctx.author
+
+        get_vault(userID)
+        if user_has_vault == True:
+            get_balance(userID)
+
+            if balance <= 500:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nAbout to be homeless with that kind of money. :100::money_with_wings:'
+                    )
+            elif balance >= 500 and balance <= 5000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nBet you can\'t even buy a yatch :100::money_with_wings::money_with_wings:'
+                    )
+            elif balance >= 5000 and balance <= 10000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nWell, I guess you are not that far from the yatch... :100::money_with_wings::money_with_wings::money_with_wings:'
+                    )
+            elif balance >= 10000 and balance <= 100000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nFuckin\' hell, give me some bro :100::money_with_wings::money_with_wings::money_with_wings::moneybag::moneybag:'
+                    )
+            elif balance >= 100000:
+                await ctx.send(
+                    f'{userID} has **{balance}** {currency} in the vault!'
+                    f'\n\nFuck off, you can\'t have that much...'
+                    f'\n:money_with_wings::moneybag::money_with_wings::moneybag::money_with_wings::moneybag:'
+                    )
+        else:
+            await ctx.reply(f':x:   Oh Oh! Looks like {userID} is not registered in the vault yet!')
+
+
+# !balancetop OR !baltop -- Takes no args. Display all the accounts on the vault,
+# ordered from richest to poorest (first to last).
+    @commands.command(aliases=['baltop'])
+    async def balancetop(self, ctx):
+        
+        with open('./main/vault.json') as vault:
+            vault = json.load(vault)
+            profiles = {}
+            pre_format_baltop = []
+            index = 0
+
+            for profile in vault:
+                bal = vault[profile]["balance"]
+                profiles[profile] = bal
+                baltop = sorted(profiles.items(), key=lambda x: x[1], reverse=True)
+
+            for i in baltop:
+                if index == 0:
+                    pre_format_baltop.append(f':first_place: **{i[0]}** : **{i[1]}** {currency}')
+                elif index == 1:
+                    pre_format_baltop.append(f':second_place: **{i[0]}** : **{i[1]}** {currency}')
+                elif index == 2:
+                    pre_format_baltop.append(f':third_place: **{i[0]}** : **{i[1]}** {currency}')
+                else:
+                    pre_format_baltop.append(f':hot_face: **{i[0]}** : **{i[1]}** {currency}')
+                index += 1
+            
+            formated_baltop = f'\n\n'.join([i for i in pre_format_baltop])
+            await ctx.send(
+                f'First is the richest, last is the poorest. Loser.'
+                f'\n\n{formated_baltop}'
+                )
+
+
+# !pay -- Take 2 args, userID and amount. Transfer amount from the author balance to the userID balance.
+    @commands.command()
+    async def pay(self, ctx, userID : discord.Member, amount : int):
+        author = ctx.author
+        amount = abs(amount)
+        
+        get_vault(author)
+        if user_has_vault == False:
+            return await ctx.reply(
+                f':x:   '
+                f'You can\'t pay shit without an account. Did you think about that? Did you think? Do you think?'
+                f'\n- !register     To register an account.'
+                )
+
+        get_vault(userID)
+        if user_has_vault == False:
+            return await ctx.reply(
+                f':x:   '
+                f'The user you\'re trying to pay is not registered.'
+                )
+
+        check_pay(author, amount)
+        if canUserPay == True:
+            md_balance(author, "sub", amount)
+            md_balance(userID, "add", amount)
+            return await ctx.reply(
+                f':ballot_box_with_check:   Payment successful.'
+                f'\nYou paid {userID} **{amount}** {currency}.'
+                )     
+        
+        return await ctx.reply(
+            f':x:   '
+            f'Looks like your broke ass don\'t have enough money.'
+            f'\n- !balance      To check your balance.'
+            )
+
+
+#---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
+
+# !add_coins error display
+    @add_coins.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            print('\nERROR -- add_coins -- BAD ARGUMENT')
+            await ctx.reply(f':x:   Oops! Looks like one or multiple arguments given are not valid!')
+        elif isinstance(error, commands.MissingRequiredArgument):
+            print('\nERROR -- add_coins -- MISSING ARGUMENT')
+            await ctx.reply(
+                f':x:   Oops! You need to provide the user and the amount!'
+                f'\n- !add_coins <user> <amount>'
+                )
+
+
+# !balance error display
+    @balance.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            print('\nERROR -- balance -- BAD ARGUMENT')
+            await ctx.reply(f':x:   Oops! Looks like the user specified doesn\'t exist :pensive:')
+
+
+# !pay error display
+    @pay.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply(
+                f':x:   '
+                f'Oops! You need to specify the user and the amount you are willing to send.'
+                f'\n- !pay <user> <amount>'
+                )
+        elif isinstance(error, commands.BadArgument):
+            await ctx.reply(
+                f':x:   '
+                f'Oops! Make sure the user you want to send money to has a vault account. Make also sure that he exist and he is not some imaginary friend, you stupid fuck.'
+                f'\nAlso, the amount is a number, not some text. :ok_hand:'
+                )
+
+
+#---------------------------------------------------------------------------------------#       ECONOMY GRIND       #---------------------------------------------------------------------------------------#
+
+# Economy Grind will regroup all the commands related to grinding of {currency}.
+class Economy_Grind(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        print(f"\n- Economy Grind from bank is loaded.")
+
+
+# !coinflip OR !cf -- Takes one arg. Amount. Expect an answer after first message.
+# Either Head or Tail, a coin is tossed, if author wins, he double his bet. If author lose,
+# he lose the double of his bet.
+    @commands.command(aliases=['cf'])
+    async def coinflip(self, ctx, amount : int):
+        bully = "Valgen#3271"
+        amount = abs(amount)
+        author = ctx.author
+        channel = ctx.channel
+        cf_prize = amount * 2
+        coin_faces = ["head","tail"]
+
+        get_vault(author)
+        if user_has_vault == False:
+            return await ctx.reply(
+                f':x:   You don\'t even have an account, how do you expect to get {currency} exactly?'
+                f'\n- !register     To register an account.'
+                )
+
+        get_balance(author)
+        if balance < amount:
+            return await ctx.reply(
+                f':x:   You don\'t have enough money you fuckin\' donkey.'
+                f'\n- !balance      To see how poor you are.'
+                )
+
+        await ctx.send(
+            f':coin:  **{author}** is in a playful mood, {amount} {currency} have been bet! **head** or **tail**.'
+            f'\n*you got to write it, like with your keyboard and stuff...*'
+            )
+        
+        def check(ans):
+            return ans.channel == ctx.channel and ans.author == ctx.author
+
+        answer = await self.client.wait_for('message', check=check)
+
+        if answer.content != 'tail' and answer.content != 'head':
+            return await ctx.reply(
+            f'You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
+            f'\n- !cf <amout>    To try again.'                
+            )
+
+        guess = answer.content
+        cf_result = random.choice(coin_faces)
+        
+        if str(author) == bully:
+            while guess == cf_result:
+                cf_result = random.choice(coin_faces)
+
+        await ctx.send(
+            f'And the result is...'
+            )
+        await asyncio.sleep(1)
+        await ctx.send(
+            f'**{cf_result}**! :coin:'
+            )
+        await asyncio.sleep(1)
+
+        if cf_result != guess:
+            md_balance(author, "sub", cf_prize)
+            return await ctx.send(
+                f'Congratulations **{author}**, you fucking lost **{cf_prize}** {currency} :joy::ok_hand:'
+                )
+        
+        md_balance(author, "add", cf_prize)
+        return await ctx.send(
+            f'Okay okay, the luck was with you on this one {author}, you won **{cf_prize}** {currency} :confetti_ball:'
+            )
+
+
+# !facts OR !fa -- Takes no arg, but expect an answer. Send a fact to the context channel. 
+# First person to get the right answer to the fact will earn between 1 and 15 {currency}.
+    @commands.command(aliases=['fa'])
+    async def facts(self, ctx):
+
+        client = discord.Client
+        channel = ctx.channel
+        random_fact = random.choice(fact_list)
+        fact_index = fact_list.index(random_fact)
+        prize = random.randint(1,15)
+
+        await ctx.send(random_fact)
+
+        def check(ans):
+            return ans.content == answer_list[fact_index] and ans.channel == channel
+        
+        if answer_list[fact_index] != "null":
+            answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
+            get_vault(answer.author)            
+            
+            if  user_has_vault == True:
+                md_balance(answer.author, "add", prize)
+                await answer.reply(
+                    f'Got it! :joy::ok_hand:'
+                    f'*You earned {prize} {currency}!*'
+                    )
+            else:
+                await answer.reply(
+                    f'Got it! :joy::ok_hand:'
+                    f'\n*You won nothing cuz you ain\'t registered, you fucking nerd.*'
+                    )
+        else:
+            print('\n!facts ; break ; no answer needed.')
+
+
+#---------------------------------------------------------------------------------------#   ECONOMY GRIND ERRORS   #---------------------------------------------------------------------------------------#
+
+# !coinflip error display
+    @coinflip.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply(
+                f':x:   Ohoh! Looks like you forgot to specify the amount!'
+                f'\n- !cf <amount>'
+                )
+        elif isinstance(error, commands.BadArgument):
+            await ctx.reply(
+                f':x:   Ohoh! Looks like you don\'t know what a fucking number is!'
+                f'\n- !cf <amount> (amount being a number...)'
+                )
+
+
+#---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
+
+def setup(client):
+    client.add_cog(Economy_Essentials(client))
+    client.add_cog(Economy_Grind(client))

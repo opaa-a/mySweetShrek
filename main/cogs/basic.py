@@ -1,11 +1,11 @@
 import discord
 from discord.ext import commands
 
-class SwampCommand(commands.Cog):
+class Basic_Commands(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        print(f"\n- SwampCommand from b_com is loaded.")
+        print(f"\n- Basic Commands from basic is loaded.")
     
                 # !swamp@ OR !swampAt -- MENTION A SPECIFIED MEMBER AND SEND TEXT
     @commands.command(aliases=['swamp@'])
@@ -25,4 +25,4 @@ class SwampCommand(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(SwampCommand(client))
+    client.add_cog(Basic_Commands(client))

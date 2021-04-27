@@ -23,10 +23,12 @@ async def on_ready():
             break
 
     print(
-        f'\n - Bot ID: {client.user}'
-        f'\n - Guild Name: {guild.name}'
-        f'\n - Guild ID: {guild.id}'
-        f'\n - Default Channel: {default_chan.name}'
+        f'\n##########    BOT INFORMATION     ##########'
+        f'\n#         Bot ID: {client.user}'
+        f'\n#         Guild Name: {guild.name}'
+        f'\n#         Guild ID: {guild.id}'
+        f'\n#         Default Channel: {default_chan.name}'
+        f'\n############################################'
     )
 
     await default_chan.send(f"I'm up and running my dude :sunglasses:")
