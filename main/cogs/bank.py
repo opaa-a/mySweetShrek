@@ -1,6 +1,7 @@
 import discord
 import json
 import random
+import asyncio
 from decouple import config
 from discord.ext import commands
 from facts_dic import *
@@ -17,7 +18,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     currency = "pipi-coins"
 
 
-    def vault_profile(self, userID : discord.Member):        # FUNCTION TO LOOK IN THE VAULT FOR PROFILES
+    def get_vault(self, userID : discord.Member):        # FUNCTION TO LOOK IN THE VAULT FOR PROFILES
         with open('vault.json', 'r') as vault:
             vault = json.load(vault)
             userID = str(userID)
@@ -48,7 +49,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
        
         def edit_vault(data, filename='vault.json'):
             with open(filename, 'w') as f:
-                json.dump(data, f)
+                json.dump(data, f, indent=4)
                 f.close()
                 
         with open('vault.json') as vault:
@@ -81,10 +82,10 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                     return balance
 
 
-    def canUserPay(self, userID, amount):               # FUNCTION TO CHECK IF USER CAN AFFORD TO PAY THINGS
+    def check_pay(self, userID, amount):               # FUNCTION TO CHECK IF USER CAN AFFORD TO PAY THINGS
         global canUserPay
         canUserPay = False
-        self.vault_profile(userID)
+        self.get_vault(userID)
         self.get_balance(userID)
 
         if user_has_vault == False:
@@ -130,7 +131,8 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
     @commands.command()
     async def add_coins(self, ctx, userID : discord.Member, amount : int):    # !add_coins <userID> <amount> -- ADD AMOUT OF COINS TO SPECIFIED USER
         self.check_admin(ctx.author)
-        self.vault_profile(userID)
+        self.get_vault(userID)
+        amount = abs(amount)
 
         if user_is_admin == True and user_has_vault == True:
             
@@ -164,7 +166,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         if userID == None:
             userID = ctx.author
         
-        self.vault_profile(userID)
+        self.get_vault(userID)
         
         if user_has_vault == True:
             self.get_balance(userID)
@@ -222,7 +224,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         
         if answer_list[fact_index] != "null":
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
-            self.vault_profile(answer.author)            
+            self.get_vault(answer.author)            
             
             if  user_has_vault == True:
                 self.md_balance(answer.author, "add", prize)
@@ -278,10 +280,11 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
 
 
     @commands.command()
-    async def pay(self, ctx, userID : discord.Member, amount : int):
+    async def pay(self, ctx, userID : discord.Member, amount : int):                #!pay <user> <amount> -- PAY SPECIFIED USER BY SPECIFIED AMOUNT
         author = ctx.author
+        amount = abs(amount)
         
-        self.vault_profile(author)
+        self.get_vault(author)
         if user_has_vault == False:
             return await ctx.send(
                 f':x:   '
@@ -289,7 +292,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 f'\n- !register     To register an account.'
                 )
         
-        self.canUserPay(author, amount)
+        self.check_pay(author, amount)
         if canUserPay == True:
             self.md_balance(author, "sub", amount)
             self.md_balance(userID, "add", amount)
@@ -320,6 +323,85 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 f'\nAlso, the amount is a number, not some text. :ok_hand:'
                 )
 
+
+    @commands.command(aliases=['cf'])
+    async def coinflip(self, ctx, amount : int):
+        bully = "Valgen#3271"
+        amount = abs(amount)
+        author = ctx.author
+        channel = ctx.channel
+        cf_prize = amount * 2
+        coin_faces = ["head","tail"]
+
+        self.get_balance(author)
+        self.get_vault(author)
+        if user_has_vault == False:
+            return await ctx.reply(
+                f':x:   You don\'t even have an account, how do you expect to get {currency} exactly?'
+                f'\n- !register     To register an account.'
+                )
+
+        if balance < amount:
+            return await ctx.reply(
+                f':x:   You don\'t have enough money you fuckin\' donkey.'
+                f'\n- !balance      To see how poor you are.'
+                )
+
+        await ctx.send(
+            f':coin:  **{author}** is in a playful mood, {amount} {currency} have been bet! **head** or **tail**.'
+            f'\n*you got to write it, like with your keyboard and stuff...*'
+            )
+        
+        def check(ans):
+            return ans.channel == ctx.channel and ans.author == ctx.author
+
+        answer = await self.client.wait_for('message', check=check)
+
+        if answer.content != 'tail' and answer.content != 'head':
+            return await ctx.reply(
+            f'You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
+            f'\n- !cf <amout>    To try again.'                
+            )
+
+        guess = answer.content
+        cf_result = random.choice(coin_faces)
+        
+        if str(author) == bully:
+            while guess == cf_result:
+                cf_result = random.choice(coin_faces)
+
+        await ctx.send(
+            f'And the result is...'
+            )
+        await asyncio.sleep(1)
+        await ctx.send(
+            f'**{cf_result}**! :coin:'
+            )
+        await asyncio.sleep(1)
+
+        if cf_result != guess:
+            self.md_balance(author, "sub", cf_prize)
+            return await ctx.send(
+                f'Congratulations **{author}**, you fucking lost **{cf_prize}** {currency} :joy::ok_hand:'
+                )
+        
+        self.md_balance(author, "add", cf_prize)
+        return await ctx.send(
+            f'Okay okay, the luck was with you on this one {author}, you won **{cf_prize}** {currency} :confetti_ball:'
+            )
+
+    @coinflip.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply(
+                f':x:   Ohoh! Looks like you forgot to specify the amount!'
+                f'\n- !cf <amount>'
+                )
+        elif isinstance(error, commands.BadArgument):
+            await ctx.reply(
+                f':x:   Ohoh! Looks like you don\'t know what a fucking number is!'
+                f'\n- !cf <amount> (amount being a number...)'
+                )
 
 def setup(client):
     client.add_cog(Economy(client))
