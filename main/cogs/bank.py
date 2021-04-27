@@ -26,12 +26,8 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
 
             for profile in vault:
                 if userID == profile:
-                    #print('\nuserID found')
                     user_has_vault = True
                     return user_has_vault
-                else:
-                    #print('\nno userID found')
-                    pass
 
 
     def check_admin(self, userID : discord.Member):          # FUNCTION TO CHECK IF SPECIFIED USER IS ADMIN
@@ -52,7 +48,8 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
        
         def edit_vault(data, filename='vault.json'):
             with open(filename, 'w') as f:
-                json.dump(data, f, indent=4)
+                json.dump(data, f)
+                f.close()
                 
         with open('vault.json') as vault:
             vault = json.load(vault)
@@ -69,7 +66,8 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
         
         edit_vault(vault)
 
-    def get_balance(self, userID):
+
+    def get_balance(self, userID):                      # FUNCTION TO GET BALANCE
         with open('vault.json') as vault:
             vault = json.load(vault)
             userID = str(userID)
@@ -83,12 +81,27 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                     return balance
 
 
+    def canUserPay(self, userID, amount):               # FUNCTION TO CHECK IF USER CAN AFFORD TO PAY THINGS
+        global canUserPay
+        canUserPay = False
+        self.vault_profile(userID)
+        self.get_balance(userID)
+
+        if user_has_vault == False:
+            return canUserPay
+        
+        if balance >= amount:
+            canUserPay = True
+            return canUserPay
+
+
     @commands.command()             # !register -- REGISTER YOUR CURRENCY ACCOUNT
     async def register(self, ctx):
        
         def edit_vault(data, filename='vault.json'):
             with open(filename, 'w') as f:
                 json.dump(data, f, indent=4)
+                f.close()
         
         author = str(ctx.author)
 
@@ -110,6 +123,7 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                     f'\n:money_with_wings:   you can now earn {currency}!   :money_with_wings:'
                     )
         
+        vault.close()
         edit_vault(vault)
 
 
@@ -261,6 +275,51 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 f'First is the richest, last is the poorest. Loser.'
                 f'\n\n{formated_baltop}'
                 )
+
+
+    @commands.command()
+    async def pay(self, ctx, userID : discord.Member, amount : int):
+        author = ctx.author
+        
+        self.vault_profile(author)
+        if user_has_vault == False:
+            return await ctx.send(
+                f':x:   '
+                f'You can\'t pay shit without an account. Did you think about that? Did you think? Do you think?'
+                f'\n- !register     To register an account.'
+                )
+        
+        self.canUserPay(author, amount)
+        if canUserPay == True:
+            self.md_balance(author, "sub", amount)
+            self.md_balance(userID, "add", amount)
+            return await ctx.reply(
+                f':ballot_box_with_check:   Payment successful.'
+                f'\nYou paid {userID} **{amount}** {currency}.'
+                )        
+        
+        return await ctx.reply(
+            f':x:   '
+            f'Looks like your broke ass don\'t have enough money.'
+            f'\n- !balance      To check your balance.'
+            )
+
+    
+    @pay.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply(
+                f':x:   '
+                f'Oops! You need to specify the user and the amount you are willing to send.'
+                f'\n- !pay <user> <amount>'
+                )
+        elif isinstance(error, commands.BadArgument):
+            await ctx.reply(
+                f':x:   '
+                f'Oops! Make sure the user you want to send money to has a vault account. Make also sure that he exist and he is not some imaginary friend, you stupid fuck.'
+                f'\nAlso, the amount is a number, not some text. :ok_hand:'
+                )
+
 
 def setup(client):
     client.add_cog(Economy(client))
