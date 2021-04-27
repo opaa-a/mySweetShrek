@@ -403,5 +403,6 @@ class Economy(commands.Cog):        # REGROUPS EVERY COMMANDS THAT ARE RELATED T
                 f'\n- !cf <amount> (amount being a number...)'
                 )
 
+
 def setup(client):
     client.add_cog(Economy(client))

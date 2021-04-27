@@ -2,3 +2,5 @@
 test.py
 assets/
 vault.json
+__pycache__/
+cogs/__pycache__/

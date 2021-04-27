@@ -84,10 +84,10 @@ for filename in os.listdir('./main/cogs'):
         client.load_extension(f'cogs.{filename[:-3]}')
 
 @client.command()
-async def source(cxt):
+async def source(ctx):
     await ctx.reply(
         f'Here is the GitHub link of the bot:'
-        f'\n- https://github.com/opaa-a/mySweetShrek'
+        f'https://github.com/opaa-a/mySweetShrek'
         )
 
 client.run(TOKEN)   
