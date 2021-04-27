@@ -2,5 +2,5 @@
 test.py
 assets/
 vault.json
-__pycache__/
-cogs/__pycache__/
+facts_dic.py
+*.pyc

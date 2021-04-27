@@ -87,7 +87,7 @@ for filename in os.listdir('./main/cogs'):
 async def source(ctx):
     await ctx.reply(
         f'Here is the GitHub link of the bot:'
-        f'https://github.com/opaa-a/mySweetShrek'
+        f'\nhttps://github.com/opaa-a/mySweetShrek'
         )
 
 client.run(TOKEN)   
