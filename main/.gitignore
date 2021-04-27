@@ -1,6 +1,7 @@
 .env
+facts_dic.py
 test.py
 assets/
 vault.json
-facts_dic.py
-*.pyc
+cogs/__pycache__/
+__pycache__/
