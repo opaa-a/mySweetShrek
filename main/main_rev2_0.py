@@ -1,6 +1,7 @@
 import os
 import discord
 import json
+from dialogue import *
 from discord.ext import commands
 from decouple import config
 
@@ -21,13 +22,15 @@ async def on_ready():
     for guild in client.guilds:                         # DEFINE THE VAR GUILD TO BE EQUAL TO THE CURRENT GUILD
         if guild.name == GUILD:
             break
-
+    
     print(
         f'\n##########    BOT INFORMATION     ##########'
-        f'\n#         Bot ID: {client.user}'
-        f'\n#         Guild Name: {guild.name}'
-        f'\n#         Guild ID: {guild.id}'
-        f'\n#         Default Channel: {default_chan.name}'
+        f'\n'
+        f'\n1.         Bot ID: {client.user}'
+        f'\n2.         Guild Name: {guild.name}'
+        f'\n3.         Guild ID: {guild.id}'
+        f'\n4.         Default Channel: {default_chan.name}'
+        f'\n'
         f'\n############################################'
     )
 
@@ -42,7 +45,7 @@ async def load(ctx, extension):
 @load.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.reply(f'Oops! You need to specify a cog!\n- !load <cog>')
+        await ctx.reply(f'Oops! You need to specify a cog!\n- `!load <cog>`')
 
                 # !unload -- MANUALLY UNLOAD COGS
 @client.command()
@@ -53,7 +56,7 @@ async def unload(ctx, extension):
 @unload.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.reply(f'Oops! You need to specify a cog!\n- !unload <cog>')
+        await ctx.reply(f'Oops! You need to specify a cog!\n- `!unload <cog>`')
 
                 # !reload -- RELOAD COGS
 @client.command()
@@ -65,7 +68,7 @@ async def reload(ctx, extension):
 @reload.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.reply(f'Oops! You need to specify a cog!\n- !reload <cog>')
+        await ctx.reply(f'Oops! You need to specify a cog!\n- `!reload <cog>`')
 
                 # !coglist OR !cl -- LIST ALL THE AVAILABLE COGS.
 @client.command(aliases=['cl'])

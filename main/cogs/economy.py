@@ -2,12 +2,14 @@ import discord
 import json
 import random
 import asyncio
+import datetime
+from dialogue import *
 from decouple import config
 from discord.ext import commands
 from facts_dic import *
 
 
-#---------------------------------------------------------------------------------------#   DEFINING GLOBAL VARIABLES   #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
 # ID of the admin role on the current server. (used to check if a user is an admin)
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
@@ -15,6 +17,34 @@ ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
 # currency used on the server.
 global currency
 currency = "pipi-coins"
+# feedback depending on the reward chose to be claimed.
+global claim_feedback
+
+
+#---------------------------------------------------------------------------------------#       GLOBAL ERRORS       #---------------------------------------------------------------------------------------#
+
+# error message when user is not registered to the vault.
+def error_user_has_no_vault(userID : discord.Member = None):
+    if userID == None:
+        return (
+            f'\n:x:   Ohoh! Looks like you are not register into the vault!'
+            f'\n\n:arrow_right:   Use ` !register ` to register to the vault.'
+            )
+    return (
+        f':x:   Ohoh! Looks like {userID} is not registered into the vault.')
+
+# error message when user does not have admin privileges
+def error_user_is_not_admin(userID : discord.Member = None):
+    if userID == None:
+        return (
+            f'\n:x:   Oh no no no... You don\'t have access to this command mate. :face_with_monocle:'
+            )
+    return (
+        f':x:   {userID} does not have admin privileges... too bad. :hugging:'
+        )
+
+#
+
 
 
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
@@ -137,7 +167,7 @@ class Economy_Essentials(commands.Cog):
                 await ctx.reply(f':x:   Oh Oh! Looks like you are already registered!')
 
             else:
-                vault[author] = {"balance": 0}
+                vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}}
                 await ctx.reply(
                     f'YES PAPAAAA!   :zany_face::zany_face:' 
                     f'\nYour account has been created,' 
@@ -257,7 +287,7 @@ class Economy_Essentials(commands.Cog):
             return await ctx.reply(
                 f':x:   '
                 f'You can\'t pay shit without an account. Did you think about that? Did you think? Do you think?'
-                f'\n- !register     To register an account.'
+                f'\n`- !register `     To register an account.'
                 )
 
         get_vault(userID)
@@ -279,7 +309,7 @@ class Economy_Essentials(commands.Cog):
         return await ctx.reply(
             f':x:   '
             f'Looks like your broke ass don\'t have enough money.'
-            f'\n- !balance      To check your balance.'
+            f'\n`- !balance `      To check your balance.'
             )
 
 
@@ -295,7 +325,7 @@ class Economy_Essentials(commands.Cog):
             print('\nERROR -- add_coins -- MISSING ARGUMENT')
             await ctx.reply(
                 f':x:   Oops! You need to provide the user and the amount!'
-                f'\n- !add_coins <user> <amount>'
+                f'\n`- !add_coins <user> <amount> `'
                 )
 
 
@@ -314,7 +344,7 @@ class Economy_Essentials(commands.Cog):
             await ctx.reply(
                 f':x:   '
                 f'Oops! You need to specify the user and the amount you are willing to send.'
-                f'\n- !pay <user> <amount>'
+                f'\n`- !pay <user> <amount> `'
                 )
         elif isinstance(error, commands.BadArgument):
             await ctx.reply(
@@ -349,14 +379,14 @@ class Economy_Grind(commands.Cog):
         if user_has_vault == False:
             return await ctx.reply(
                 f':x:   You don\'t even have an account, how do you expect to get {currency} exactly?'
-                f'\n- !register     To register an account.'
+                f'\n`- !register `     To register an account.'
                 )
 
         get_balance(author)
         if balance < amount:
             return await ctx.reply(
                 f':x:   You don\'t have enough money you fuckin\' donkey.'
-                f'\n- !balance      To see how poor you are.'
+                f'\n`- !balance `      To see how poor you are.'
                 )
 
         await ctx.send(
@@ -372,7 +402,7 @@ class Economy_Grind(commands.Cog):
         if answer.content != 'tail' and answer.content != 'head':
             return await ctx.reply(
             f'You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
-            f'\n- !cf <amout>    To try again.'                
+            f'\n`- !cf <amout> `    To try again.'                
             )
 
         guess = answer.content
@@ -446,13 +476,83 @@ class Economy_Grind(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.reply(
                 f':x:   Ohoh! Looks like you forgot to specify the amount!'
-                f'\n- !cf <amount>'
+                f'\n`- !cf <amount> `'
                 )
         elif isinstance(error, commands.BadArgument):
             await ctx.reply(
                 f':x:   Ohoh! Looks like you don\'t know what a fucking number is!'
-                f'\n- !cf <amount> (amount being a number...)'
+                f'\n`- !cf <amount> ` (amount being a number...)'
                 )
+
+
+#---------------------------------------------------------------------------------------#       ECONOMY REWARDS       #---------------------------------------------------------------------------------------#
+
+class Economy_Reward(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        print(f"\n- Economy Rewards from bank is loaded.")
+
+#---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
+
+    def daily_reward(ctx, userID : discord.Member):
+        with open('./main/vault.json') as vault:
+            vault = json.load(vault)
+            
+            claim_feedback = (
+                f':x:   Looks like you already claimed that reward. Wait until tomorrow.'
+                )
+            date_now = str(datetime.date.today())
+            reward = 1000
+            
+            userID = str(userID)
+            dlr_claim = vault[userID]["reward"]["daily_reward_claim_date"]
+
+            if dlr_claim == False:
+                vault[userID]["reward"]["daily_reward_claim_date"] = date_now
+                vault[userID]["balance"] += reward
+                claim_feedback = (
+                    f':partying_face:   | **{userID} is claiming his very first daily reward!**'
+                    f'\n:coin:   | *{userID} got 1000 {currency} from his daily reward!*'
+                    f'\n`- !claim daily `     *to get your own daily reward*'
+                    )
+
+                edit_vault(vault)
+                return claim_feedback
+
+            if dlr_claim < date_now:
+                vault[userID]["reward"]["daily_reward_claim_date"] = date_now
+                vault[userID]["balance"] += reward
+                claim_feedback = (
+                    f':calendar:   | {userID} Has claim his daily reward.'
+                    f'\n:coin:   | {reward} {currency} Have been added to {userID}\'s account!'
+                    f'\n`- !claim daily`    *To claim your own daily reward!*'
+                    )
+
+                edit_vault(vault)
+                return claim_feedback
+
+            return claim_feedback
+
+
+#---------------------------------------------------------------------------------------#       ECONOMY REWARDS COMMANDS      #---------------------------------------------------------------------------------------#
+
+    @commands.command()
+    async def claim(self, ctx, reward_type : str = None):
+        
+        get_vault(ctx.author)
+        if user_has_vault == False:
+            return await ctx.reply(error_user_has_no_vault())
+        
+        if reward_type == None:
+            return await ctx.reply(
+                f'Here is the list of the your rewards waiting to be claimed:'
+                f'\n- '
+                )
+
+        if reward_type == "daily":
+            return await ctx.reply(self.daily_reward(ctx.author))
+#---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#
+
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
@@ -460,3 +560,4 @@ class Economy_Grind(commands.Cog):
 def setup(client):
     client.add_cog(Economy_Essentials(client))
     client.add_cog(Economy_Grind(client))
+    client.add_cog(Economy_Reward(client))

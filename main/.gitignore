@@ -1,6 +1,7 @@
 .env
 facts_dic.py
 test.py
+bot_test.py
 assets/
 vault.json
 cogs/__pycache__/
