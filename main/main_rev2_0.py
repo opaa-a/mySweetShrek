@@ -1,7 +1,6 @@
 import os
 import discord
 import json
-from dialogue import *
 from discord.ext import commands
 from decouple import config
 
@@ -22,7 +21,7 @@ async def on_ready():
     for guild in client.guilds:                         # DEFINE THE VAR GUILD TO BE EQUAL TO THE CURRENT GUILD
         if guild.name == GUILD:
             break
-    
+
     print(
         f'\n##########    BOT INFORMATION     ##########'
         f'\n'

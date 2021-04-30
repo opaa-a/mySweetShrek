@@ -3,7 +3,8 @@ import json
 import random
 import asyncio
 import datetime
-from dialogue import *
+from dialogue.dialogue import *
+from dialogue.errors import *
 from decouple import config
 from discord.ext import commands
 from facts_dic import *
@@ -13,38 +14,6 @@ from facts_dic import *
 
 # ID of the admin role on the current server. (used to check if a user is an admin)
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
-
-# currency used on the server.
-global currency
-currency = "pipi-coins"
-# feedback depending on the reward chose to be claimed.
-global claim_feedback
-
-
-#---------------------------------------------------------------------------------------#       GLOBAL ERRORS       #---------------------------------------------------------------------------------------#
-
-# error message when user is not registered to the vault.
-def error_user_has_no_vault(userID : discord.Member = None):
-    if userID == None:
-        return (
-            f'\n:x:   Ohoh! Looks like you are not register into the vault!'
-            f'\n\n:arrow_right:   Use ` !register ` to register to the vault.'
-            )
-    return (
-        f':x:   Ohoh! Looks like {userID} is not registered into the vault.')
-
-# error message when user does not have admin privileges
-def error_user_is_not_admin(userID : discord.Member = None):
-    if userID == None:
-        return (
-            f'\n:x:   Oh no no no... You don\'t have access to this command mate. :face_with_monocle:'
-            )
-    return (
-        f':x:   {userID} does not have admin privileges... too bad. :hugging:'
-        )
-
-#
-
 
 
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
@@ -164,82 +133,57 @@ class Economy_Essentials(commands.Cog):
                 registery.append(profile)
                 
             if  author in registery:
-                await ctx.reply(f':x:   Oh Oh! Looks like you are already registered!')
+                await ctx.reply(error_user_is_already_registered())
 
             else:
                 vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}}
-                await ctx.reply(
-                    f'YES PAPAAAA!   :zany_face::zany_face:' 
-                    f'\nYour account has been created,' 
-                    f'\n:money_with_wings:   you can now earn {currency}!   :money_with_wings:'
-                    )
+                await ctx.reply(register_success())
 
         edit_vault(vault)
 
 
 # !add_coins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
     @commands.command()
-    async def add_coins(self, ctx, userID : discord.Member, amount : int):
-        check_admin(ctx.author)
-        get_vault(userID)
+    async def add_coins(self, ctx, amount : int, userID : discord.Member = None):
         amount = abs(amount)
+        if userID == None:
+            userID = ctx.author
 
-        if user_is_admin == True and user_has_vault == True:
-            
-            md_balance(userID, "add", amount)
-            
-            await ctx.send(
-                f'YES PAPAAAA!   :zany_face::zany_face:' 
-                f'\n**{amount}** {currency} have been added to {userID}\'s vault.'
-                f'\n:money_with_wings::money_with_wings::money_with_wings:'
-                )
-                
-        elif user_has_vault is not True:
-            await ctx.reply(f':x:   {userID} has not registered an account yet!')
+        check_admin(ctx.author)
+        if user_is_admin != True:
+            return await ctx.reply(error_user_is_not_admin())
         
-        elif user_is_admin is not True:
-            await ctx.reply(f':x:   Oh Oh! Looks like you are not allowed to perform this command.')
+        get_vault(userID)
+        if user_has_vault != True and userID == ctx.author:
+            return await ctx.reply(error_user_has_no_vault())
+        elif user_has_vault != True:
+            return await ctx.reply(error_user_has_no_vault(userID))
+
+        md_balance(userID, "add", amount)
+        if userID == ctx.author:
+            return await ctx.send(add_coins_success(amount))
+        return await ctx.send(add_coins_success(amount, userID))                
 
 
 # !balance OR !bal -- Take an optionnal arg: userID. Show the balance of the userID, 
 # by default the author is the userID
     @commands.command(aliases=['bal'])
-    async def balance(self, ctx, userID : discord.Member=None):
+    async def balance(self, ctx, userID : discord.Member = None):
+        author = False
         if userID == None:
-            userID = ctx.author
+            userID = str(ctx.author)
+            author = True
 
         get_vault(userID)
-        if user_has_vault == True:
-            get_balance(userID)
-
-            if balance <= 500:
-                await ctx.send(
-                    f'{userID} has **{balance}** {currency} in the vault!'
-                    f'\n\nAbout to be homeless with that kind of money. :100::money_with_wings:'
-                    )
-            elif balance >= 500 and balance <= 5000:
-                await ctx.send(
-                    f'{userID} has **{balance}** {currency} in the vault!'
-                    f'\n\nBet you can\'t even buy a yatch :100::money_with_wings::money_with_wings:'
-                    )
-            elif balance >= 5000 and balance <= 10000:
-                await ctx.send(
-                    f'{userID} has **{balance}** {currency} in the vault!'
-                    f'\n\nWell, I guess you are not that far from the yatch... :100::money_with_wings::money_with_wings::money_with_wings:'
-                    )
-            elif balance >= 10000 and balance <= 100000:
-                await ctx.send(
-                    f'{userID} has **{balance}** {currency} in the vault!'
-                    f'\n\nFuckin\' hell, give me some bro :100::money_with_wings::money_with_wings::money_with_wings::moneybag::moneybag:'
-                    )
-            elif balance >= 100000:
-                await ctx.send(
-                    f'{userID} has **{balance}** {currency} in the vault!'
-                    f'\n\nFuck off, you can\'t have that much...'
-                    f'\n:money_with_wings::moneybag::money_with_wings::moneybag::money_with_wings::moneybag:'
-                    )
-        else:
-            await ctx.reply(f':x:   Oh Oh! Looks like {userID} is not registered in the vault yet!')
+        if user_has_vault != True and author:
+            return await ctx.reply(error_user_has_no_vault())
+        elif user_has_vault != True:
+            return await ctx.reply(error_user_has_no_vault(userID))
+        
+        get_balance(userID)
+        if author:
+            return await ctx.send(balance_success(balance))
+        return await ctx.send(balance_success(balance, userID))
 
 
 # !balancetop OR !baltop -- Takes no args. Display all the accounts on the vault,
@@ -258,22 +202,7 @@ class Economy_Essentials(commands.Cog):
                 profiles[profile] = bal
                 baltop = sorted(profiles.items(), key=lambda x: x[1], reverse=True)
 
-            for i in baltop:
-                if index == 0:
-                    pre_format_baltop.append(f':first_place: **{i[0]}** : **{i[1]}** {currency}')
-                elif index == 1:
-                    pre_format_baltop.append(f':second_place: **{i[0]}** : **{i[1]}** {currency}')
-                elif index == 2:
-                    pre_format_baltop.append(f':third_place: **{i[0]}** : **{i[1]}** {currency}')
-                else:
-                    pre_format_baltop.append(f':hot_face: **{i[0]}** : **{i[1]}** {currency}')
-                index += 1
-            
-            formated_baltop = f'\n\n'.join([i for i in pre_format_baltop])
-            await ctx.send(
-                f'First is the richest, last is the poorest. Loser.'
-                f'\n\n{formated_baltop}'
-                )
+            await ctx.send(balancetop_success(baltop))
 
 
 # !pay -- Take 2 args, userID and amount. Transfer amount from the author balance to the userID balance.
