@@ -240,14 +240,15 @@ class Economy_Essentials(commands.Cog):
             return print(log_error_bad_arg("addcoins")), await ctx.reply(error_addcoins("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
             return print(log_error_missing_arg("addcoins")), await ctx.reply(error_addcoins("missing_arg"))
+        return await ctx.reply(unknown_error())
 
-        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
 # !balance error display
     @balance.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             return print(log_error_missing_arg("balance")), await ctx.reply(error_balance("bad_arg"))
-        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
+        return await ctx.reply(unknown_error())
+
 # !pay error display
     @pay.error
     async def error(self, ctx, error):
@@ -255,7 +256,7 @@ class Economy_Essentials(commands.Cog):
             return print(log_error_bad_arg(pay)), await ctx.reply(error_pay("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
             return print(log_error_missing_arg(pay)), await ctx.reply(error_pay("missing_arg"))
-        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
+        return await ctx.reply(unknown_error())
 
 #---------------------------------------------------------------------------------------#       ECONOMY GRIND       #---------------------------------------------------------------------------------------#
 
@@ -279,23 +280,14 @@ class Economy_Grind(commands.Cog):
         coin_faces = ["head","tail"]
 
         get_vault(author)
-        if user_has_vault == False:
-            return await ctx.reply(
-                f':x:   You don\'t even have an account, how do you expect to get {currency} exactly?'
-                f'\n`- !register `     To register an account.'
-                )
+        if user_has_vault != True:
+            return await ctx.reply(error_user_has_no_vault())
 
         get_balance(author)
         if balance < amount:
-            return await ctx.reply(
-                f':x:   You don\'t have enough money you fuckin\' donkey.'
-                f'\n`- !balance `      To see how poor you are.'
-                )
+            return await ctx.reply(error_user_cant_pay())
 
-        await ctx.send(
-            f':coin:  **{author}** is in a playful mood, {amount} {currency} have been bet! **head** or **tail**.'
-            f'\n*you got to write it, like with your keyboard and stuff...*'
-            )
+        await ctx.send(coinflip_success(amount, author, "cf_init"))
         
         def check(ans):
             return ans.channel == ctx.channel and ans.author == ctx.author
@@ -303,10 +295,7 @@ class Economy_Grind(commands.Cog):
         answer = await self.client.wait_for('message', check=check)
 
         if answer.content != 'tail' and answer.content != 'head':
-            return await ctx.reply(
-            f'You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
-            f'\n`- !cf <amout> `    To try again.'                
-            )
+            return await ctx.reply(error_coinflip("fail_answer"))
 
         guess = answer.content
         cf_result = random.choice(coin_faces)
@@ -326,14 +315,10 @@ class Economy_Grind(commands.Cog):
 
         if cf_result != guess:
             md_balance(author, "sub", cf_prize)
-            return await ctx.send(
-                f'Congratulations **{author}**, you fucking lost **{cf_prize}** {currency} :joy::ok_hand:'
-                )
+            return await ctx.send(coinflip_success(cf_prize, author, "cf_lose"))
         
         md_balance(author, "add", cf_prize)
-        return await ctx.send(
-            f'Okay okay, the luck was with you on this one {author}, you won **{cf_prize}** {currency} :confetti_ball:'
-            )
+        return await ctx.send(coinflip_success(cf_prize, author, "cf_win"))
 
 
 # !facts OR !fa -- Takes no arg, but expect an answer. Send a fact to the context channel. 
@@ -350,44 +335,27 @@ class Economy_Grind(commands.Cog):
         await ctx.send(random_fact)
 
         def check(ans):
-            return ans.content == answer_list[fact_index] and ans.channel == channel
+            return ans.content == answer_list[fact_index] and ans.channel == channel and ans.author != discord.Member.bot
         
         if answer_list[fact_index] != "null":
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
-            get_vault(answer.author)            
             
-            if  user_has_vault == True:
-                md_balance(answer.author, "add", prize)
-                await answer.reply(
-                    f'Got it! :joy::ok_hand:'
-                    f'*You earned {prize} {currency}!*'
-                    )
-            else:
-                await answer.reply(
-                    f'Got it! :joy::ok_hand:'
-                    f'\n*You won nothing cuz you ain\'t registered, you fucking nerd.*'
-                    )
-        else:
-            print('\n!facts ; break ; no answer needed.')
-
+        get_vault(answer.author) 
+        if  user_has_vault != True:
+            return await answer.reply(facts_success("success_without_vault", prize))
+            
+        md_balance(answer.author, "add", prize)
+        return await answer.reply(facts_success("success_with_vault", prize))
 
 #---------------------------------------------------------------------------------------#   ECONOMY GRIND ERRORS   #---------------------------------------------------------------------------------------#
 
 # !coinflip error display
     @coinflip.error
     async def error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.reply(
-                f':x:   Ohoh! Looks like you forgot to specify the amount!'
-                f'\n`- !cf <amount> `'
-                )
-        elif isinstance(error, commands.BadArgument):
-            await ctx.reply(
-                f':x:   Ohoh! Looks like you don\'t know what a fucking number is!'
-                f'\n`- !cf <amount> ` (amount being a number...)'
-                )
-
-
+        if isinstance(error, commands.BadArgument):
+            await ctx.reply(error_coinflip("bad_arg"))
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.reply(error_coinflip("missing_arg"))
 #---------------------------------------------------------------------------------------#       ECONOMY REWARDS       #---------------------------------------------------------------------------------------#
 
 class Economy_Reward(commands.Cog):
@@ -400,10 +368,6 @@ class Economy_Reward(commands.Cog):
     def daily_reward(ctx, userID : discord.Member):
         with open('./main/vault.json') as vault:
             vault = json.load(vault)
-            
-            claim_feedback = (
-                f':x:   Looks like you already claimed that reward. Wait until tomorrow.'
-                )
             date_now = str(datetime.date.today())
             reward = 1000
             
@@ -413,28 +377,16 @@ class Economy_Reward(commands.Cog):
             if dlr_claim == False:
                 vault[userID]["reward"]["daily_reward_claim_date"] = date_now
                 vault[userID]["balance"] += reward
-                claim_feedback = (
-                    f':partying_face:   | **{userID} is claiming his very first daily reward!**'
-                    f'\n:coin:   | *{userID} got 1000 {currency} from his daily reward!*'
-                    f'\n`- !claim daily `     *to get your own daily reward*'
-                    )
-
                 edit_vault(vault)
-                return claim_feedback
+                return daily_reward_success(userID, reward, "first_claim")
 
             if dlr_claim < date_now:
                 vault[userID]["reward"]["daily_reward_claim_date"] = date_now
                 vault[userID]["balance"] += reward
-                claim_feedback = (
-                    f':calendar:   | {userID} Has claim his daily reward.'
-                    f'\n:coin:   | {reward} {currency} Have been added to {userID}\'s account!'
-                    f'\n`- !claim daily`    *To claim your own daily reward!*'
-                    )
-
                 edit_vault(vault)
-                return claim_feedback
+                return daily_reward_success(userID, reward, "claim_success")
 
-            return claim_feedback
+            return daily_reward_success(userID, reward)
 
 
 #---------------------------------------------------------------------------------------#       ECONOMY REWARDS COMMANDS      #---------------------------------------------------------------------------------------#
@@ -447,10 +399,7 @@ class Economy_Reward(commands.Cog):
             return await ctx.reply(error_user_has_no_vault())
         
         if reward_type == None:
-            return await ctx.reply(
-                f'Here is the list of the your rewards waiting to be claimed:'
-                f'\n- '
-                )
+            return await ctx.reply(claim_success())
 
         if reward_type == "daily":
             return await ctx.reply(self.daily_reward(ctx.author))

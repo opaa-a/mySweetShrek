@@ -142,3 +142,62 @@ def pay_success(amount : int, userID : discord.Member):
     return (
         f':money_with_wings:   You successfully sent {amount} {currency} to {userID}   :money_with_wings:'
         )
+
+# message display when !coinflip is successful
+def coinflip_success(amount: int, author, dialogue_ref: str):
+    if dialogue_ref == "cf_init":
+        return (
+        f':coin: **{author}** is in a playful mood, {amount} {currency} have been bet!'
+        f'\n:arrow_right:Pick **HEAD** or **TAIL**'
+        f'\n> *You got to write it down, like with your keyboard...*'
+        )
+    elif dialogue_ref == "cf_win":
+        return (
+            f':+1:   Well played to **{author}** who won **{amount}** {currency}   :confetti_ball:'
+            f'\n> ` !cf <amount> ` to play again!'
+            )
+    elif dialogue_ref == "cf_lose":
+        return (
+            f':-1:   Congratulations! **{author}** lost **{amount}** {currency}   :joy::ok_hand:'
+            f'\n> ` !cf <amount> ` to play again!'
+            )
+
+# message display when !facts is successful
+def facts_success(dialogue_ref: str, amount: int):
+    if dialogue_ref == "success_with_vault":
+        return (
+            f':scroll:   Got it!   :joy::ok_hand:'
+            f'\n\n:coin:   **You earned {amount} {currency}.**'
+            )
+    elif dialogue_ref == "success_without_vault":
+        return (
+            f':scroll:   Got it!   :joy::ok_hand:'
+            f'\n\n:hot_face:   **You won nothing though. You are not registered.**'
+            f'\n:arrow_right:   ` !register ` to register'
+            )
+
+# message display when the daily reward is successful
+def daily_reward_success(author, amount, dialogue_ref: str = None):    
+    if dialogue_ref == "first_claim":
+        return (
+            f':partying_face:   **{author} is claiming his daily reward for the very first time!**'
+            f'\n:coin:   *{author} got {amount} {currency} from his daily reward!*'
+            f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
+            )
+    elif dialogue_ref == "claim_success":
+        return (
+            f':calendar:   {author} has claim his daily reward!'
+            f'\n:coin:   *{author} got {amount} {currency} from his daily reward!*'
+            f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
+            )
+    return (
+        f':x:   Looks like you already claimed that reward today!'
+        f'\n:calendar:   Come back tomorrow!'
+        )
+
+# message display when !claim is successful
+def claim_success():
+    return (
+        f':gift:   Here is the list of the rewards waiting to be claimed:'
+        f'\n> -'
+        )

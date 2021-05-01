@@ -16,6 +16,10 @@ def log_error_missing_arg(target: str):
         f'# ERROR -- {target} -- Missing Required Argument(s)!'
     )
 
+def unknown_error():
+    return (
+        f'**:exclamation: Unknown error, please contact the administrator.**'
+        )
 
 #---------------------------------------------------------------------------------------#       GLOBAL FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#
 
@@ -112,4 +116,21 @@ def error_pay(error_type: str):
             )
     return print("# UNKNOWN ERROR -- !pay FAILED TO SPECIFY ERROR TYPE")
 
-#
+# error message when !coinflip fails to execute
+def error_coinflip(error_type: str):
+    if error_type == "fail_answer":
+        return (
+            f':x:   You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
+            f'\n:arrow_right: ` !cf <amount> ` to try again.'
+            )
+    elif error_type == "bad_arg":
+        return (
+            f':x:   Ohoh! Looks like you don\'t know what a fucking number is!'
+            f'\n> ` !cf <amount> ` (amount being a number...)'
+            )
+    elif error_type == "missing_arg":
+        return (
+            f':x:   Ohoh! Looks like you forgot to specify the amount!'
+            f'\n> ` !cf <amount> `'
+            )
+    return print("# UNKNOWN ERROR -- !coinflip FAILED TO SPECIFY ERROR TYPE")
