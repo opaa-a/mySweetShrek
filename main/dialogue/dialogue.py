@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from .errors import *
+from cogs.economy import *
+from cogs.basic import *
+
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -26,18 +29,16 @@ def register_success(userID : discord.Member = None):
         f'\n> {userID} Has been successfully registered!'
     )
 
-# message display when !add_coins is successful
-def add_coins_success(amount, userID : discord.Member = None):
+# message display when !addcoins is successful
+def addcoins_success(amount, userID : discord.Member = None):
     if userID == None:
         return (
-            f':ballot_box_with_check:   MONEY MONEY MONEY   :money_with_wings::money_with_wings:'
+            f':money_with_wings:   MONEY MONEY MONEY   :money_with_wings:'
             f'\n> **{amount}** {currency} have been added to your vault!'
-            f'\n:money_with_wings::money_with_wings::money_with_wings:'
             )
     return (
-        f':ballot_box_with_check:   MONEY MONEY MONEY   :money_with_wings::money_with_wings:'
-        f'\n> **{amount}** {currency} have been added to {userID}\'s vault!'
-        f'\n:money_with_wings::money_with_wings::money_with_wings:'
+        f':money_with_wings:   MONEY MONEY MONEY   :money_with_wings:'
+        f'\n> **{amount}** {currency} have been added to {userID.mention}\'s vault!'
         )
 
 # message display when !balance is successful
@@ -49,12 +50,12 @@ def balance_success(balance, userID : discord.Member = None):
     if balance >= 100000 and author:
         return (
             f':gem::gem::gem:   You got exactly **{balance}** {currency} on your vault account...'
-            f'\n:rainbow:   Capitalistic cunt.'
+            f'\n:rainbow::rainbow::rainbow:   Capitalistic cunt.'
             )
     if balance >= 100000:
         return (
             f':gem::gem::gem:   {userID} got exactly **{balance}** {currency} on his vault account...'
-            f'\n:rainbow:   Capitalistic cunt.'
+            f'\n:rainbow::rainbow::rainbow:   Capitalistic cunt.'
             )
     
     if balance >= 50000 and author:
@@ -113,7 +114,7 @@ def balance_success(balance, userID : discord.Member = None):
             )
 
 
-# message display when !balancetop is successfull
+# message display when !balancetop is successful
 def balancetop_success(baltop):
     pre_format_baltop = []
     index = 0
@@ -133,4 +134,11 @@ def balancetop_success(baltop):
     return (
         f':gem:   **Remember that y\'all are poor if I want to.**   :gem:'
         f'\n\n> {formated_baltop}'
+        )
+
+
+# message display when !pay is successful
+def pay_success(amount : int, userID : discord.Member):
+    return (
+        f':money_with_wings:   You successfully sent {amount} {currency} to {userID}   :money_with_wings:'
         )

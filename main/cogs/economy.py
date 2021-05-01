@@ -142,9 +142,9 @@ class Economy_Essentials(commands.Cog):
         edit_vault(vault)
 
 
-# !add_coins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
+# !addcoins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
     @commands.command()
-    async def add_coins(self, ctx, amount : int, userID : discord.Member = None):
+    async def addcoins(self, ctx, amount : int, userID : discord.Member = None):
         amount = abs(amount)
         if userID == None:
             userID = ctx.author
@@ -161,8 +161,8 @@ class Economy_Essentials(commands.Cog):
 
         md_balance(userID, "add", amount)
         if userID == ctx.author:
-            return await ctx.send(add_coins_success(amount))
-        return await ctx.send(add_coins_success(amount, userID))                
+            return await ctx.reply(addcoins_success(amount))
+        return await ctx.send(addcoins_success(amount, userID))                
 
 
 # !balance OR !bal -- Take an optionnal arg: userID. Show the balance of the userID, 
@@ -211,77 +211,51 @@ class Economy_Essentials(commands.Cog):
         author = ctx.author
         amount = abs(amount)
         
+        if userID == author:
+            return await ctx.reply(error_user_cant_pay_himself())
+
         get_vault(author)
-        if user_has_vault == False:
-            return await ctx.reply(
-                f':x:   '
-                f'You can\'t pay shit without an account. Did you think about that? Did you think? Do you think?'
-                f'\n`- !register `     To register an account.'
-                )
+        if user_has_vault != True:
+            return await ctx.reply(error_user_has_no_vault())
 
         get_vault(userID)
-        if user_has_vault == False:
-            return await ctx.reply(
-                f':x:   '
-                f'The user you\'re trying to pay is not registered.'
-                )
+        if user_has_vault != True:
+            return await ctx.reply(error_user_has_no_vault(userID))
 
         check_pay(author, amount)
         if canUserPay == True:
             md_balance(author, "sub", amount)
             md_balance(userID, "add", amount)
-            return await ctx.reply(
-                f':ballot_box_with_check:   Payment successful.'
-                f'\nYou paid {userID} **{amount}** {currency}.'
-                )     
-        
-        return await ctx.reply(
-            f':x:   '
-            f'Looks like your broke ass don\'t have enough money.'
-            f'\n`- !balance `      To check your balance.'
-            )
+            return await ctx.reply(pay_success(amount, userID))
+
+        return await ctx.reply(error_user_cant_pay())
 
 
 #---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
 
-# !add_coins error display
-    @add_coins.error
+# !addcoins error display
+    @addcoins.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            print('\nERROR -- add_coins -- BAD ARGUMENT')
-            await ctx.reply(f':x:   Oops! Looks like one or multiple arguments given are not valid!')
+            return print(log_error_bad_arg("addcoins")), await ctx.reply(error_addcoins("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
-            print('\nERROR -- add_coins -- MISSING ARGUMENT')
-            await ctx.reply(
-                f':x:   Oops! You need to provide the user and the amount!'
-                f'\n`- !add_coins <user> <amount> `'
-                )
+            return print(log_error_missing_arg("addcoins")), await ctx.reply(error_addcoins("missing_arg"))
 
-
+        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
 # !balance error display
     @balance.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            print('\nERROR -- balance -- BAD ARGUMENT')
-            await ctx.reply(f':x:   Oops! Looks like the user specified doesn\'t exist :pensive:')
-
-
+            return print(log_error_missing_arg("balance")), await ctx.reply(error_balance("bad_arg"))
+        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
 # !pay error display
     @pay.error
     async def error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.reply(
-                f':x:   '
-                f'Oops! You need to specify the user and the amount you are willing to send.'
-                f'\n`- !pay <user> <amount> `'
-                )
-        elif isinstance(error, commands.BadArgument):
-            await ctx.reply(
-                f':x:   '
-                f'Oops! Make sure the user you want to send money to has a vault account. Make also sure that he exist and he is not some imaginary friend, you stupid fuck.'
-                f'\nAlso, the amount is a number, not some text. :ok_hand:'
-                )
-
+        if isinstance(error, commands.BadArgument):
+            return print(log_error_bad_arg(pay)), await ctx.reply(error_pay("bad_arg"))
+        elif isinstance(error, commands.MissingRequiredArgument):
+            return print(log_error_missing_arg(pay)), await ctx.reply(error_pay("missing_arg"))
+        return await ctx.reply(f':exclamation: Unknown error, please contact the administrator.')
 
 #---------------------------------------------------------------------------------------#       ECONOMY GRIND       #---------------------------------------------------------------------------------------#
 

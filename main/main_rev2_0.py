@@ -29,6 +29,7 @@ async def on_ready():
         f'\n2.         Guild Name: {guild.name}'
         f'\n3.         Guild ID: {guild.id}'
         f'\n4.         Default Channel: {default_chan.name}'
+        f'\n5.         Guild Owner: {guild.owner}'
         f'\n'
         f'\n############################################'
     )
