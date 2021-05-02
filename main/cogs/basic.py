@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-
+from dialogue.dialogue import *
+from dialogue.errors import *
 
 #---------------------------------------------------------------------------------------#      BASIC COMMANDS      #---------------------------------------------------------------------------------------#
 
@@ -14,7 +15,7 @@ class Basic_Commands(commands.Cog):
 # !swamp@ OR !swampAt -- Take one arg, userID. Send the userID a spam message.
     @commands.command(aliases=['swamp@'])
     async def swampAt(self, ctx, userID : discord.Member):
-        await ctx.send(f"OI {userID.mention}, GET THE FUCK OUT OF ME SWAMP YA FUCKING TWAT!")
+        return await ctx.send(swampAt_success(userID))
 
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
@@ -24,11 +25,9 @@ class Basic_Commands(commands.Cog):
     async def error(self, ctx, error):
 
         if isinstance(error, commands.BadArgument):
-            await ctx.reply(f':x:   Username is not valid!')
-            return
+            return await ctx.reply(error_swampAt("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.reply(f':x:   Oops! You need to specify a username!\n- !swamp@ <username>')
-            return
+            return await ctx.reply(error_swampAt("missing_arg"))
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#

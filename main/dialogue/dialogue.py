@@ -13,7 +13,7 @@ global claim_feedback
 global currency
 currency = "pipi-coins"
 
-#---------------------------------------------------------------------------------------#        GLOBAL INTERACTIONS       #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#        GLOBAL ECONOMY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
 # message display when !register is successful
 def register_success(userID : discord.Member = None):
@@ -200,4 +200,13 @@ def claim_success():
     return (
         f':gift:   Here is the list of the rewards waiting to be claimed:'
         f'\n> -'
+        )
+
+
+#---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
+
+# message display when !swamp@ is successful
+def swampAt_success(userID : discord.Member):
+    return (
+        f':speaking_head:   OI! {userID.mention}, GET THE FUCK OUT OF ME SWAMP YA FUCKING TWAT!'
         )

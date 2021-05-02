@@ -21,7 +21,7 @@ def unknown_error():
         f'**:exclamation: Unknown error, please contact the administrator.**'
         )
 
-#---------------------------------------------------------------------------------------#       GLOBAL FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#       GLOBAL ECONOMY COG FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when user is not registered to the vault.
 def error_user_has_no_vault(userID : discord.Member = None):
@@ -72,7 +72,7 @@ def error_user_cant_pay_himself():
         )
 
 
-#---------------------------------------------------------------------------------------#       GLOBAL COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#       GLOBAL ECONOMY COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when !addcoins fails to execute.
 def error_addcoins(error_type : str):
@@ -134,3 +134,19 @@ def error_coinflip(error_type: str):
             f'\n> ` !cf <amount> `'
             )
     return print("# UNKNOWN ERROR -- !coinflip FAILED TO SPECIFY ERROR TYPE")
+
+
+#---------------------------------------------------------------------------------------#       GLOBAL BASIC COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
+
+# error message when !swamp@ fails to execute
+def error_swampAt(error_type: str):
+    if error_type == "bad_arg":
+        return (
+            f':x:   Oops! The username you specified does not exist.'
+            )
+    elif error_type == "missing_arg":
+        return (
+            f':x:   Oops! You need to specify an existing user!'
+            f'\n:arrow_right: ` !swamp@ <user> `'
+            )
+    return print("# UNKNOWN ERROR -- !swampAt FAILED TO SPECIFY ERROR TYPE")
