@@ -35,6 +35,7 @@ async def on_ready():
     )
 
     await default_chan.send(f"I'm up and running my dude :sunglasses:")
+    init_cog()
 
                     # !load -- MANUALLY LOAD COGS
 @client.command()
@@ -83,16 +84,17 @@ async def coglist(ctx):
 
     await ctx.send(f'Here is the list of the cogs:\n- {coglist}')
 
-                # LOAD AT STARTUP ALL COGS BY DEFAULT
-for filename in os.listdir('./main/cogs'):
-    if filename.endswith(".py"):
-        client.load_extension(f'cogs.{filename[:-3]}')
-
 @client.command()
 async def source(ctx):
     await ctx.reply(
         f'Here is the GitHub link of the bot:'
         f'\nhttps://github.com/opaa-a/mySweetShrek'
         )
+
+def init_cog():
+    for filename in os.listdir('./main/cogs'):         
+        if filename.endswith(".py"):
+            client.load_extension(f'cogs.{filename[:-3]}')
+    return
 
 client.run(TOKEN)   

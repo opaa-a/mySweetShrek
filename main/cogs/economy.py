@@ -3,10 +3,11 @@ import json
 import random
 import asyncio
 import datetime
+from discord.ext import commands
+from discord.ext import tasks
 from dialogue.dialogue import *
 from dialogue.errors import *
 from decouple import config
-from discord.ext import commands
 from facts_dic import *
 
 
@@ -365,7 +366,8 @@ class Economy_Reward(commands.Cog):
 
 #---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
 
-    def daily_reward(ctx, userID : discord.Member):
+# daily_reward is the a daily claimable reward with a default amount of 1000
+    def daily_reward(self, ctx, userID : discord.Member):
         with open('./main/vault.json') as vault:
             vault = json.load(vault)
             date_now = str(datetime.date.today())
@@ -388,9 +390,14 @@ class Economy_Reward(commands.Cog):
 
             return daily_reward_success(userID, reward)
 
+#
+    def passive_inc_reward(self, ctx):
+        return
 
 #---------------------------------------------------------------------------------------#       ECONOMY REWARDS COMMANDS      #---------------------------------------------------------------------------------------#
 
+# !claim -- Takes an optionnal arg. Without arg, display the list of available rewards.
+# With a reward name as a an arg, claim the specified reward if available.
     @commands.command()
     async def claim(self, ctx, reward_type : str = None):
         
@@ -402,7 +409,12 @@ class Economy_Reward(commands.Cog):
             return await ctx.reply(claim_success())
 
         if reward_type == "daily":
-            return await ctx.reply(self.daily_reward(ctx.author))
+            return await ctx.reply(self.daily_reward(ctx, ctx.author))
+        
+        if reward_type == "p":
+            return self.passive_inc_reward(ctx)
+
+
 #---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#
 
 
