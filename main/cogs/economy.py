@@ -254,9 +254,9 @@ class Economy_Essentials(commands.Cog):
     @pay.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_bad_arg(pay)), await ctx.reply(error_pay("bad_arg"))
+            return print(log_error_bad_arg("pay")), await ctx.reply(error_pay("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
-            return print(log_error_missing_arg(pay)), await ctx.reply(error_pay("missing_arg"))
+            return print(log_error_missing_arg("pay")), await ctx.reply(error_pay("missing_arg"))
         return await ctx.reply(unknown_error())
 
 #---------------------------------------------------------------------------------------#       ECONOMY GRIND       #---------------------------------------------------------------------------------------#
@@ -273,7 +273,7 @@ class Economy_Grind(commands.Cog):
 # he lose the double of his bet.
     @commands.command(aliases=['cf'])
     async def coinflip(self, ctx, amount : int):
-        bully = "Valgen#3271"
+        bully = ""
         amount = abs(amount)
         author = ctx.author
         channel = ctx.channel
@@ -295,7 +295,7 @@ class Economy_Grind(commands.Cog):
 
         answer = await self.client.wait_for('message', check=check)
 
-        if answer.content != 'tail' and answer.content != 'head':
+        if answer.content.lower() != 'tail' and answer.content.lower() != 'head':
             return await ctx.reply(error_coinflip("fail_answer"))
 
         guess = answer.content
@@ -420,7 +420,7 @@ class Economy_Reward(commands.Cog):
 
 #---------------------------------------------------------------------------------------#        ECONOMY STORE       #---------------------------------------------------------------------------------------#
 
-class Economy_Store(commands.cog):
+class Economy_Store(commands.Cog):
     def __init__(self, client):
         self.client = client
         print(f"\n- Economy Store from bank is loaded.")
@@ -430,8 +430,11 @@ class Economy_Store(commands.cog):
     @commands.command()
     async def store(self, ctx):
         return await ctx.send(
-            f'Welcome to the {storeName}'
-            f''
+            f':shopping_cart:   Welcome to the {storeName} !'
+            f'\n:arrow_right: Choose the action you want to reedeem by replying with the number of corresponding'
+            f'\n:pen_fountain: 1 - Kick from the channel'
+            f'\n:pen_fountain: 2 - Mute for 1 minute'
+            f'\n:pen_fountain: 3 - Send to the kennel'
             )
 
 #---------------------------------------------------------------------------------------#        ECONOMY STORE ERRORS       #---------------------------------------------------------------------------------------#
@@ -444,3 +447,4 @@ def setup(client):
     client.add_cog(Economy_Essentials(client))
     client.add_cog(Economy_Grind(client))
     client.add_cog(Economy_Reward(client))
+    client.add_cog(Economy_Store(client))
