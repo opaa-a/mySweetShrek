@@ -265,7 +265,7 @@ class Economy_Essentials(commands.Cog):
 class Economy_Grind(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Economy Grind from bank is loaded.")
+        print(f'\n- Economy Grind from bank is loaded.')
 
 
 # !coinflip OR !cf -- Takes one arg. Amount. Expect an answer after first message.
@@ -416,6 +416,25 @@ class Economy_Reward(commands.Cog):
 
 
 #---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#
+
+
+#---------------------------------------------------------------------------------------#        ECONOMY STORE       #---------------------------------------------------------------------------------------#
+
+class Economy_Store(commands.cog):
+    def __init__(self, client):
+        self.client = client
+        print(f"\n- Economy Store from bank is loaded.")
+
+#---------------------------------------------------------------------------------------#       ECONOMY STORE COMMANDS      #---------------------------------------------------------------------------------------#
+
+    @commands.command()
+    async def store(self, ctx):
+        return await ctx.send(
+            f'Welcome to the {storeName}'
+            f''
+            )
+
+#---------------------------------------------------------------------------------------#        ECONOMY STORE ERRORS       #---------------------------------------------------------------------------------------#
 
 
 

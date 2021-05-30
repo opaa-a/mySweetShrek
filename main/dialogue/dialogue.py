@@ -12,6 +12,9 @@ global claim_feedback
 # currency used on the server.
 global currency
 currency = "pipi-coins"
+# name used for the store.
+global storeName
+storeName = "Pipi-Store"
 
 #---------------------------------------------------------------------------------------#        GLOBAL ECONOMY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
@@ -110,7 +113,7 @@ def balance_success(balance, userID : discord.Member = None):
     elif balance <= 0:
         return (
             f':coin:   {userID} got exactly **{balance}** {currency} on his vault account...'
-            f':thunder_cloud_rain:   {userID} gotta sell a kidney.'
+            f'\n:thunder_cloud_rain:   {userID} gotta sell a kidney.'
             )
 
 

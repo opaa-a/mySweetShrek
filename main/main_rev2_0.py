@@ -95,6 +95,5 @@ def init_cog():
     for filename in os.listdir('./main/cogs'):         
         if filename.endswith(".py"):
             client.load_extension(f'cogs.{filename[:-3]}')
-    return
-
+            
 client.run(TOKEN)   
