@@ -208,18 +208,29 @@ def claim_success():
 
 # message display when !store is successful
 def store_success(dialogue_ref: str):
-
+    # display the Q&A section
     if dialogue_ref == 'help':
+        with open('main/assets/qa_list.json') as qa_list:
+            qa_list = json.load(qa_list)
+            question_list = list(qa_list)
+            preformat_display_question = []
+            for question in qa_list:
+                preformat_display_question.append(
+                    f'\n> ` {question_list.index(question)} `   :white_small_square:   ***{question}***'
+                    )
+            display_question = f'\n> '.join([i for i in preformat_display_question])
+
         return (
             f':bulb:    **WELCOME TO THE {storeName.upper()} Q&A!**    :bulb:'
             f'\n\n> **If any of your questions are referenced below**'
             f'\n> **please answer me with the number corresponding to the question!**'
             f'\n> **If, however, your question is not referenced, please contact an administrator.**'
             f'\n> '
-            f'\n> '
+            f'{display_question}'
             )
+        
+    # display the list of all available commands to buy
     if dialogue_ref == 'showcase':
-        print('test')
         with open('main/assets/store_inv.json') as store_inv:
             store_inv = json.load(store_inv)
             preformat_store_inv = []
@@ -229,13 +240,33 @@ def store_success(dialogue_ref: str):
                     f'\n>   *{store_inv[item]["desc"]}*'
                     ) 
             store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
-            print(store_inv_showcase)
         return (
             f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**    :shopping_bags:'
             f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
             f'\n> '
             f'{store_inv_showcase}'
             ) 
+
+def qa_querry(question_index: int):
+    with open('main/assets/qa_list.json') as qa_list:
+        qa_list = json.load(qa_list)
+        question_list = list(qa_list)
+        answer_list = list(qa_list.values())
+        print(question_index)
+        print(len(question_list))
+        if question_index > len(question_list):
+            return (
+                f'The question n°{question_index} does not exist!'
+                )
+        return (
+            f':question:    ANSWER TO THE QUESTION N°{question_index}    :question:'
+            f'\n\n> *{answer_list[question_index]}*'
+            )
+def qa_querry_exit():
+    return (
+        f'*You exited the Q&A querry.*'
+        )
+
 
 #---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 

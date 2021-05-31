@@ -22,7 +22,19 @@ class Store(commands.Cog):
     async def store(self, ctx, param : str = None):
 
         if param == None or param.lower() == 'help':
-            return await ctx.author.send(store_success('help'))
+            await ctx.author.send(store_success('help'))
+            def check(querry):
+                if isinstance(ctx.channel, discord.channel.DMChannel) and ctx.author == querry.author:
+                    return True
+
+            querry = await self.client.wait_for('message', check=check)
+            
+
+            if querry.content == None :
+                return await ctx.author.send(qa_querry_exit())
+
+            return await ctx.author.send(qa_querry(int(querry.content)))
+
         if param.lower() == 'showcase':
             return await ctx.author.send(store_success('showcase'))
 
