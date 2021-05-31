@@ -22,7 +22,7 @@ ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
 # get_vault will search through the vault.json file with the userID specified
 # and return user_has_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
 def get_vault(userID : discord.Member):
-    with open('./main/vault.json', 'r') as vault:
+    with open('./main/assets/vault.json', 'r') as vault:
         vault = json.load(vault)
         userID = str(userID)
         
@@ -37,7 +37,7 @@ def get_vault(userID : discord.Member):
 
 # edit_vault is a simple updater function for the vault. when updates are made to the vault,
 # this function is called and it will dump the updated version of the vault.json
-def edit_vault(data, filename='./main/vault.json'):
+def edit_vault(data, filename='./main/assets/vault.json'):
     with open(filename, 'w') as file:
         json.dump(data, file, indent=4)
         file.close()
@@ -63,7 +63,7 @@ def check_admin(userID : discord.Member):
 # md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
 # The userID will either have the amount substracted or added to his account. If reset is used, his account will be wiped.
 def md_balance(userID : discord.Member, md_method : str, amount : int):       
-    with open('./main/vault.json') as vault:
+    with open('./main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
 
@@ -81,7 +81,7 @@ def md_balance(userID : discord.Member, md_method : str, amount : int):
 
 # get_balance will return the balance of the userID specified as a int variable named balance.
 def get_balance(userID):
-    with open('./main/vault.json') as vault:
+    with open('./main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
 
@@ -126,7 +126,7 @@ class Economy_Essentials(commands.Cog):
     async def register(self, ctx):
         author = str(ctx.author)
 
-        with open('./main/vault.json') as vault:
+        with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             registery = []
 
@@ -192,7 +192,7 @@ class Economy_Essentials(commands.Cog):
     @commands.command(aliases=['baltop'])
     async def balancetop(self, ctx):
         
-        with open('./main/vault.json') as vault:
+        with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             profiles = {}
             pre_format_baltop = []
@@ -368,7 +368,7 @@ class Economy_Reward(commands.Cog):
 
 # daily_reward is the a daily claimable reward with a default amount of 1000
     def daily_reward(self, ctx, userID : discord.Member):
-        with open('./main/vault.json') as vault:
+        with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             date_now = str(datetime.date.today())
             reward = 1000
@@ -429,13 +429,7 @@ class Economy_Store(commands.Cog):
 
     @commands.command()
     async def store(self, ctx):
-        return await ctx.send(
-            f':shopping_cart:   Welcome to the {storeName} !'
-            f'\n:arrow_right: Choose the action you want to reedeem by replying with the number of corresponding'
-            f'\n:pen_fountain: 1 - Kick from the channel'
-            f'\n:pen_fountain: 2 - Mute for 1 minute'
-            f'\n:pen_fountain: 3 - Send to the kennel'
-            )
+        return await ctx.send(store_showcase_success())
 
 #---------------------------------------------------------------------------------------#        ECONOMY STORE ERRORS       #---------------------------------------------------------------------------------------#
 

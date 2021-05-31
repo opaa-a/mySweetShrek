@@ -3,7 +3,6 @@ facts_dic.py
 test.py
 bot_test.py
 assets/
-vault.json
 cogs/__pycache__/
 __pycache__/
 .vscode/

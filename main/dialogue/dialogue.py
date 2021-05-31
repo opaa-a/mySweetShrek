@@ -205,6 +205,15 @@ def claim_success():
         f'\n> -'
         )
 
+# message display when !store is successful
+def store_showcase_success():
+    store_inv = ["kick","ban","mute","kennel"]
+    formated_store_inv = f'\n- '.join([i for i in store_inv])
+    return (
+        f':shopping_bags:   WELCOME TO THE {storeName.upper()}!    :shopping_bags:'
+        f'\n\n> *Here is the list of all of the currently availables actions on the shop.*'
+        f'\n\n- {formated_store_inv}'
+        )
 
 #---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
