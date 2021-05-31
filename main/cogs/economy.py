@@ -137,7 +137,7 @@ class Economy_Essentials(commands.Cog):
                 await ctx.reply(error_user_is_already_registered())
 
             else:
-                vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}}
+                vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}, "inventory": {}}
                 await ctx.reply(register_success())
 
         edit_vault(vault)
