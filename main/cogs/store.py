@@ -23,6 +23,8 @@ class Store(commands.Cog):
 
         if param == None or param.lower() == 'help':
             return await ctx.author.send(store_success('help'))
+        if param.lower() == 'showcase':
+            return await ctx.author.send(store_success('showcase'))
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#

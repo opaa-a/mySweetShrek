@@ -195,8 +195,6 @@ class Economy_Essentials(commands.Cog):
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             profiles = {}
-            pre_format_baltop = []
-            index = 0
 
             for profile in vault:
                 bal = vault[profile]["balance"]

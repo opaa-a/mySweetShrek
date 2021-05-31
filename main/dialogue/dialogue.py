@@ -1,4 +1,5 @@
 import discord
+import json
 from discord.ext import commands
 from .errors import *
 from cogs.economy import *
@@ -207,6 +208,7 @@ def claim_success():
 
 # message display when !store is successful
 def store_success(dialogue_ref: str):
+
     if dialogue_ref == 'help':
         return (
             f':bulb:    **WELCOME TO THE {storeName.upper()} Q&A!**    :bulb:'
@@ -214,13 +216,26 @@ def store_success(dialogue_ref: str):
             f'\n> **please answer me with the number corresponding to the question!**'
             f'\n> **If, however, your question is not referenced, please contact an administrator.**'
             f'\n> '
-            f'\n> ` 1. test `'
-            f'\n> ` 2. test `'
-            f'\n> ` 3. test `'
-            f'\n> ` 4. test `'
-            f'\n> ` 5. test `'
-            f'\n> ` 6. test `'
+            f'\n> '
             )
+    if dialogue_ref == 'showcase':
+        print('test')
+        with open('main/assets/store_inv.json') as store_inv:
+            store_inv = json.load(store_inv)
+            preformat_store_inv = []
+            for item in store_inv:
+                preformat_store_inv.append(
+                    f'\n> ` {item} `   :   **{store_inv[item]["price"]} {currency} :coin:**'
+                    f'\n>   *{store_inv[item]["desc"]}*'
+                    ) 
+            store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
+            print(store_inv_showcase)
+        return (
+            f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**    :shopping_bags:'
+            f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
+            f'\n> '
+            f'{store_inv_showcase}'
+            ) 
 
 #---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
