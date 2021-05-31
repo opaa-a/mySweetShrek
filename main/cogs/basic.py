@@ -9,7 +9,7 @@ from dialogue.errors import *
 class Basic_Commands(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Basic Commands from basic is loaded.")
+        print(f"\n- Basic Commands from basic.py is loaded.")
 
 
 # !swamp@ OR !swampAt -- Take one arg, userID. Send the userID a spam message.

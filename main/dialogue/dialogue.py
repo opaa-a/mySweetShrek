@@ -206,14 +206,21 @@ def claim_success():
         )
 
 # message display when !store is successful
-def store_showcase_success():
-    store_inv = ["kick","ban","mute","kennel"]
-    formated_store_inv = f'\n- '.join([i for i in store_inv])
-    return (
-        f':shopping_bags:   WELCOME TO THE {storeName.upper()}!    :shopping_bags:'
-        f'\n\n> *Here is the list of all of the currently availables actions on the shop.*'
-        f'\n\n- {formated_store_inv}'
-        )
+def store_success(dialogue_ref: str):
+    if dialogue_ref == 'help':
+        return (
+            f':bulb:    **WELCOME TO THE {storeName.upper()} Q&A!**    :bulb:'
+            f'\n\n> **If any of your questions are referenced below**'
+            f'\n> **please answer me with the number corresponding to the question!**'
+            f'\n> **If, however, your question is not referenced, please contact an administrator.**'
+            f'\n> '
+            f'\n> ` 1. test `'
+            f'\n> ` 2. test `'
+            f'\n> ` 3. test `'
+            f'\n> ` 4. test `'
+            f'\n> ` 5. test `'
+            f'\n> ` 6. test `'
+            )
 
 #---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 

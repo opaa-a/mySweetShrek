@@ -5,9 +5,9 @@ import asyncio
 import datetime
 from discord.ext import commands
 from discord.ext import tasks
+from decouple import config
 from dialogue.dialogue import *
 from dialogue.errors import *
-from decouple import config
 from facts_dic import *
 
 
@@ -118,7 +118,7 @@ def check_pay(userID, amount):
 class Economy_Essentials(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Economy Essentials from bank is loaded.")
+        print(f"\n- Economy Essentials from bank.py is loaded.")
 
 
 # !register -- Take no args. Register the author of the command to the vault.
@@ -265,7 +265,7 @@ class Economy_Essentials(commands.Cog):
 class Economy_Grind(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f'\n- Economy Grind from bank is loaded.')
+        print(f'\n- Economy Grind from bank.py is loaded.')
 
 
 # !coinflip OR !cf -- Takes one arg. Amount. Expect an answer after first message.
@@ -362,7 +362,7 @@ class Economy_Grind(commands.Cog):
 class Economy_Reward(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Economy Rewards from bank is loaded.")
+        print(f"\n- Economy Rewards from bank.py is loaded.")
 
 #---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
 
@@ -418,22 +418,6 @@ class Economy_Reward(commands.Cog):
 #---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#
 
 
-#---------------------------------------------------------------------------------------#        ECONOMY STORE       #---------------------------------------------------------------------------------------#
-
-class Economy_Store(commands.Cog):
-    def __init__(self, client):
-        self.client = client
-        print(f"\n- Economy Store from bank is loaded.")
-
-#---------------------------------------------------------------------------------------#       ECONOMY STORE COMMANDS      #---------------------------------------------------------------------------------------#
-
-    @commands.command()
-    async def store(self, ctx):
-        return await ctx.send(store_showcase_success())
-
-#---------------------------------------------------------------------------------------#        ECONOMY STORE ERRORS       #---------------------------------------------------------------------------------------#
-
-
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
 
@@ -441,4 +425,3 @@ def setup(client):
     client.add_cog(Economy_Essentials(client))
     client.add_cog(Economy_Grind(client))
     client.add_cog(Economy_Reward(client))
-    client.add_cog(Economy_Store(client))
