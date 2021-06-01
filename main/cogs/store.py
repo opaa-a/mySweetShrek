@@ -18,25 +18,32 @@ class Store(commands.Cog):
         self.client = client
         print(f'\n- Store from store.py is loaded')
 
+
     @commands.command()
     async def store(self, ctx, param : str = None):
-
         if param == None or param.lower() == 'help':
-            await ctx.author.send(store_success('help'))
+            await ctx.author.send(store_help_success())
+            # check if questions are asked
             def check(querry):
                 if isinstance(ctx.channel, discord.channel.DMChannel) and ctx.author == querry.author:
                     return True
-
-            querry = await self.client.wait_for('message', check=check)
             
+            querry = await self.client.wait_for('message', check=check, timeout = 10)
+            
+            # iterate through the qa_list to fetch answers to questions.
+            with open('main/assets/qa_list.json') as qa_list:
+                qa_list = json.load(qa_list)
+                answer_list = list(qa_list.values())
+                answer_list_index = []
+                for i in answer_list:
+                    answer_list_index.append(answer_list.index(i))
 
-            if querry.content == None :
-                return await ctx.author.send(qa_querry_exit())
+            if int(querry.content) not in answer_list_index:
+                return await ctx.author.send(store_help_querry_exit())
+            
+            return await ctx.author.send(store_help_querry(int(querry.content)))
 
-            return await ctx.author.send(qa_querry(int(querry.content)))
 
-        if param.lower() == 'showcase':
-            return await ctx.author.send(store_success('showcase'))
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
