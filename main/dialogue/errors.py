@@ -150,3 +150,16 @@ def error_swampAt(error_type: str):
             f'\n:arrow_right: ` !swamp@ <user> `'
             )
     return print("# UNKNOWN ERROR -- !swampAt FAILED TO SPECIFY ERROR TYPE")
+
+
+#---------------------------------------------------------------------------------------#       GLOBAL STORE COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
+
+# error message when !store fails to execute
+def error_store(error_type: str):
+    if error_type == "bad_arg":
+        return (
+            f':x:   Oops! The parameter of store you specified doesn\'t exist.'
+            f'\n:arrow_right: ` !store help `'
+            )
+    return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
+
