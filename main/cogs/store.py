@@ -1,7 +1,6 @@
 import discord
 import json
 from discord.ext import commands
-from decouple import config
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -25,21 +24,21 @@ class Store(commands.Cog):
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
             await ctx.author.send(store_help_success())
-            # check if questions are asked
+            # check if theme is selected
             def check(querry):
-                if isinstance(ctx.channel, discord.channel.DMChannel) and ctx.author == querry.author:
-                    return True
+                return ctx.author == querry.author  
             querry = await self.client.wait_for('message', check=check, timeout = 10)
             
-            # iterate through the qa_list to fetch answers to questions.
-            with open('main/assets/qa_list.json') as qa_list:
-                qa_list = json.load(qa_list)
-                answer_list = list(qa_list.values())
-                answer_list_index = []
-                for i in answer_list:
-                    answer_list_index.append(answer_list.index(i))
+            # iterate through the help file to fetch the store theme.
+            with open('main/assets/help.json') as help_index:
+                help_store = json.load(help_index)
+                help_store = help_store["Store"]
+                help_store_exp_list = list(help_store.values())
+                help_store_exp_index_list = []
+                for i in help_store_exp_list:
+                    help_store_exp_index_list.append(help_store_exp_list.index(i))
             # return if querry invalid
-            if int(querry.content) not in answer_list_index:
+            if int(querry.content) not in help_store_exp_index_list:
                 return await ctx.author.send(store_help_querry_exit())
             # return if querry successful
             return await ctx.author.send(store_help_querry(int(querry.content)))

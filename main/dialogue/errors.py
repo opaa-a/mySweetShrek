@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from .dialogue import *
 from cogs.economy import *
-from cogs.basic import *
+from cogs.essential import *
 
 #---------------------------------------------------------------------------------------#       LOG ERRORS       #---------------------------------------------------------------------------------------#
 
@@ -136,20 +136,8 @@ def error_coinflip(error_type: str):
     return print("# UNKNOWN ERROR -- !coinflip FAILED TO SPECIFY ERROR TYPE")
 
 
-#---------------------------------------------------------------------------------------#       GLOBAL BASIC COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#       GLOBAL ESSENTIAL COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
-# error message when !swamp@ fails to execute
-def error_swampAt(error_type: str):
-    if error_type == "bad_arg":
-        return (
-            f':x:   Oops! The username you specified does not exist.'
-            )
-    elif error_type == "missing_arg":
-        return (
-            f':x:   Oops! You need to specify an existing user!'
-            f'\n:arrow_right: ` !swamp@ <user> `'
-            )
-    return print("# UNKNOWN ERROR -- !swampAt FAILED TO SPECIFY ERROR TYPE")
 
 
 #---------------------------------------------------------------------------------------#       GLOBAL STORE COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#

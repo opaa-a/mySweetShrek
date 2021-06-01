@@ -3,7 +3,7 @@ import json
 from discord.ext import commands
 from .errors import *
 from cogs.economy import *
-from cogs.basic import *
+from cogs.essential import *
 from cogs.store import *
 
 
@@ -208,62 +208,96 @@ def claim_success():
         )
 
 
-#---------------------------------------------------------------------------------------#        GLOBAL BASIC COG INTERACTIONS       #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#        GLOBAL ESSENTIAL COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
-# message display when !swamp@ is successful
-def swampAt_success(userID : discord.Member):
+# message display when !help is successful
+# display the help section
+def help_index_success():
+    with open('main/assets/help.json') as help_index:
+        help_index = json.load(help_index)
+        index_list = list(help_index)
+        preformat_index_list = []
+        for theme in index_list:
+            preformat_index_list.append(
+                f'\n> ` {index_list.index(theme)} `   :white_small_square:   **{theme}**'
+                )
+        display_help_index = f'\n> '.join([i for i in preformat_index_list])
+
     return (
-        f':speaking_head:   OI! {userID.mention}, GET THE FUCK OUT OF ME SWAMP YA FUCKING TWAT!'
+        f':globe_with_meridians:    **WELCOME TO THE HELP SECTION!**    :globe_with_meridians:'
+        f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
+        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
+        f'\n> '
+        f'{display_help_index}'
         )
 
+def help_index_querry(querry : int):
+    if querry == 0:
+        return (f'general')
+    if querry == 1:
+        return (f'economy')
+    if querry == 2:
+        return (f'grind')
+    if querry == 3:
+        return (f'store')
+    if querry == 4:
+        return (f'inv')
+
+# message display when a querry is not successful in the !help index section
+def help_index_querry_exit():
+    return (
+        f'> *This theme ID does not exist!*'
+        f'\n> *You exited the help querry*'
+        )
 
 #---------------------------------------------------------------------------------------#        GLOBAL STORE COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
 # message display when !store help or !store is successful
+# display the Q&A section
 def store_help_success():
-#display the Q&A section
-    with open('main/assets/qa_list.json') as qa_list:
-        qa_list = json.load(qa_list)
-        question_list = list(qa_list)
-        preformat_display_question = []
-        for question in qa_list:
-            preformat_display_question.append(
-                f'\n> ` {question_list.index(question)} `   :white_small_square:   ***{question}***'
+    with open('main/assets/help.json') as help_index:
+        help_store = json.load(help_index)
+        help_store = help_store["Store"]
+        help_store_list = list(help_store)
+        preformat_display_theme = []
+        for theme in help_store:
+            preformat_display_theme.append(
+                f'\n> ` {help_store_list.index(theme)} `   :white_small_square:   **{theme}**'
                 )
-        display_question = f'\n> '.join([i for i in preformat_display_question])
+        display_help_store = f'\n> '.join([i for i in preformat_display_theme])
 
     return (
-        f':bulb:    **WELCOME TO THE {storeName.upper()} Q&A!**    :bulb:'
-        f'\n\n> **If any of your questions are referenced below**'
-        f'\n> **please answer me with the number corresponding to the question!**'
-        f'\n> **If, however, your question is not referenced, please contact an administrator.**'
+        f':bulb:    **WELCOME TO THE {storeName.upper()} HELP SECTION!**    :bulb:'
+        f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
+        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
         f'\n> '
-        f'{display_question}'
+        f'{display_help_store}'
         )
 
 # message display when a querry is successful in the !store help section
 def store_help_querry(querry : int):
-    with open('main/assets/qa_list.json') as qa_list:
-        qa_list = json.load(qa_list)
-        question_list = list(qa_list)
-        answer_list = list(qa_list.values())
-        question_index = querry
+    with open('main/assets/help.json') as help_index:
+        help_store = json.load(help_index)
+        help_store = help_store["Store"]
+        help_store_list = list(help_store)
+        help_store_exp_list = list(help_store.values())
+        theme_index = querry
     return (
-        f'> :question:    {question_list[question_index]}'
+        f'> :question:    {help_store_list[theme_index]}'
         f'\n> '
-        f'\n> :speech_left:    *{answer_list[question_index]}*'
+        f'\n> :speech_left:    *{help_store_exp_list[theme_index]}*'
         )   
         
 # message display when a querry is not successful in the !store help section
 def store_help_querry_exit():
     return (
-        f'> *This question id does not exist!*'
+        f'> *This theme ID does not exist!*'
         f'\n> *You exited the help querry*'
         )
 
 # message display when !store showcase is successful
-def store_showcase_success():
 # display the list of all available commands to buy
+def store_showcase_success():
     with open('main/assets/store_inv.json') as store_inv:
         store_inv = json.load(store_inv)
         preformat_store_inv = []

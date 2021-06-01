@@ -10,7 +10,7 @@ DEF_CHAN = config('DISCORD_DEF_CHAN') # DISCORD DEFAULT CHANNEL IN ENV VAR
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
-client = commands.Bot(command_prefix='!', intents=intents)
+client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 @client.event
 async def on_ready():
