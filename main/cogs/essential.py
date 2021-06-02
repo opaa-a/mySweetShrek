@@ -3,7 +3,7 @@ import json
 from discord.ext import commands
 from dialogue.dialogue import *
 from dialogue.errors import *
-from cogs.store import *
+from cogs.store import Store
 #---------------------------------------------------------------------------------------#      BASIC COMMANDS      #---------------------------------------------------------------------------------------#
 
 # Basic Commands regroup all the the useless/basic commands of the bot.
@@ -34,7 +34,7 @@ class Essential(commands.Cog):
             return await ctx.author.send(help_index_querry_exit())
         # return if querry is successful
         #return await ctx.author.send(help_index_querry(int(querry.content)))
-        return await Store.store(Store,ctx)
+        return await Store.store(self,ctx)
 
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#

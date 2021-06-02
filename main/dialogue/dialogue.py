@@ -1,10 +1,10 @@
 import discord
 import json
 from discord.ext import commands
-from dialogue.errors import *
-from cogs.economy import *
-from cogs.essential import *
-from cogs.store import *
+# from dialogue.errors import *
+# from cogs.economy import *
+# from cogs.essential import *
+# from cogs.store import *
 
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
