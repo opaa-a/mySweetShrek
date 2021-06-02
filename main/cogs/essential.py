@@ -29,13 +29,22 @@ class Essential(commands.Cog):
             help_theme_index_list = []
             for i in help_theme_list:
                 help_theme_index_list.append(help_theme_list.index(i))
+        
         # return if querry is unvalid
         if int(querry.content) not in help_theme_index_list:
             return await ctx.author.send(help_index_querry_exit())
+        
         # return if querry is successful
-        #return await ctx.author.send(help_index_querry(int(querry.content)))
-        return await Store.store(self,ctx)
-
+        if int(querry.content) == 0:
+            return await ctx.author.send('general')
+        if int(querry.content) == 1:
+            return await ctx.author.send('economy')
+        if int(querry.content) == 2:
+            return await ctx.author.send('grind')
+        if int(querry.content) == 3:
+            return await Store.store(self, ctx)
+        if int(querry.content) == 4:
+            return await ctx.author.send('inventory')
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 

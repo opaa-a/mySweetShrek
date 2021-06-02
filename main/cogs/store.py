@@ -18,14 +18,12 @@ class Store(commands.Cog):
     def __init__(self, client):
         self.client = client
         print(f'\n- Store from store.py is loaded')
-        print(self)
 
     @commands.command()
     async def store(self, ctx, param : str = None):
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
             await ctx.author.send(help_store_success())
-            print(f'\n\n\n{self}\n\n\n')
             #check if theme is selected
             def check(querry):
                 return ctx.author == querry.author 

@@ -231,18 +231,6 @@ def help_index_success():
         f'{display_help_index}'
         )
 
-def help_index_querry(querry : int):
-    if querry == 0:
-        return (f'general')
-    if querry == 1:
-        return (f'economy')
-    if querry == 2:
-        return (f'grind')
-    if querry == 3:
-        return (f'store')
-    if querry == 4:
-        return (f'inv')
-
 # message display when a querry is not successful in the !help index section
 def help_index_querry_exit():
     return (
