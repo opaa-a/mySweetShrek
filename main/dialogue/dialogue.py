@@ -1,7 +1,7 @@
 import discord
 import json
 from discord.ext import commands
-from .errors import *
+from dialogue.errors import *
 from cogs.economy import *
 from cogs.essential import *
 from cogs.store import *
@@ -27,7 +27,7 @@ def register_success(userID : discord.Member = None):
             f':ballot_box_with_check:   YES PAPAAAA!   :zany_face::zany_face:'
             f'\n> You have been successfully registered.'
             f'\n> You can now earn {currency}!   :money_with_wings:'
-            f'\n> *You can access all the commands related to the economy with* ` !economy `'
+            f'\n> *You can access all the commands related to the economy with* ` !help economy `'
             )
     return (
         f':ballot_box_with_check:   YES PAPAAAA!   :zany_face::zany_face:'
@@ -254,7 +254,7 @@ def help_index_querry_exit():
 
 # message display when !store help or !store is successful
 # display the Q&A section
-def store_help_success():
+def help_store_success():
     with open('main/assets/help.json') as help_index:
         help_store = json.load(help_index)
         help_store = help_store["Store"]
@@ -275,7 +275,7 @@ def store_help_success():
         )
 
 # message display when a querry is successful in the !store help section
-def store_help_querry(querry : int):
+def help_store_querry(querry : int):
     with open('main/assets/help.json') as help_index:
         help_store = json.load(help_index)
         help_store = help_store["Store"]
@@ -289,7 +289,7 @@ def store_help_querry(querry : int):
         )   
         
 # message display when a querry is not successful in the !store help section
-def store_help_querry_exit():
+def help_store_querry_exit():
     return (
         f'> *This theme ID does not exist!*'
         f'\n> *You exited the help querry*'

@@ -7,7 +7,9 @@ from dialogue.errors import *
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
 
+
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
+
 
 
 #---------------------------------------------------------------------------------------#      STORE SHOWCASE COMMANDS      #---------------------------------------------------------------------------------------#
@@ -17,14 +19,12 @@ class Store(commands.Cog):
         self.client = client
         print(f'\n- Store from store.py is loaded')
 
-
     @commands.command()
     async def store(self, ctx, param : str = None):
-
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
-            await ctx.author.send(store_help_success())
-            # check if theme is selected
+            await ctx.author.send(help_store_success())
+            #check if theme is selected
             def check(querry):
                 return ctx.author == querry.author  
             querry = await self.client.wait_for('message', check=check, timeout = 10)
@@ -39,9 +39,9 @@ class Store(commands.Cog):
                     help_store_exp_index_list.append(help_store_exp_list.index(i))
             # return if querry invalid
             if int(querry.content) not in help_store_exp_index_list:
-                return await ctx.author.send(store_help_querry_exit())
+                return await ctx.author.send(help_store_querry_exit())
             # return if querry successful
-            return await ctx.author.send(store_help_querry(int(querry.content)))
+            return await ctx.author.send(help_store_querry(int(querry.content)))
         
 # message delivered if parameter is 'showcase
         if param.lower() == 'showcase':

@@ -33,7 +33,8 @@ class Essential(commands.Cog):
         if int(querry.content) not in help_theme_index_list:
             return await ctx.author.send(help_index_querry_exit())
         # return if querry is successful
-        return await ctx.author.send(help_index_querry(int(querry.content)))
+        #return await ctx.author.send(help_index_querry(int(querry.content)))
+        return await Store.store(Store,ctx)
 
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
