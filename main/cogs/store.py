@@ -37,9 +37,9 @@ class Store(commands.Cog):
                 help_store_exp_index_list = []
                 for i in help_store_exp_list:
                     help_store_exp_index_list.append(help_store_exp_list.index(i))
-            # return if querry invalid
+            # return if querry unvalid
             if int(querry.content) not in help_store_exp_index_list:
-                return await ctx.author.send(help_store_querry_exit())
+                return await ctx.author.send(help_querry_exit())
             # return if querry successful
             return await ctx.author.send(help_store_querry(int(querry.content)))
         

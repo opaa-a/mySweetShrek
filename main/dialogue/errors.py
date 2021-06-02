@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
-from dialogue.dialogue import *
-from cogs.economy import *
-from cogs.essential import *
+
 
 #---------------------------------------------------------------------------------------#       LOG ERRORS       #---------------------------------------------------------------------------------------#
 

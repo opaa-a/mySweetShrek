@@ -120,6 +120,26 @@ class Economy_Essentials(commands.Cog):
         self.client = client
         print(f"\n- Economy Essentials from bank.py is loaded.")
 
+# display the help economy section
+    async def help_economy(self,ctx):
+        await ctx.author.send(help_economy_success())
+        #check if theme is selected
+        def check(querry):
+            return ctx.author == querry.author
+        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        # iterate through the help file to fetch the store theme.
+        with open('main/assets/help.json') as help_index:
+            help_economy = json.load(help_index)
+            help_economy = help_economy["Economy"]
+            help_economy_exp_list = list(help_economy.values())
+            help_economy_exp_index_list = []
+            for i in help_economy_exp_list:
+                help_economy_exp_index_list.append(help_economy_exp_list.index(i))
+            #return if querry unvalid
+            if int(querry.content) not in help_economy_exp_index_list:
+                return await ctx.author.send(help_querry_exit())
+            #return if querry successful
+            return await ctx.author.send(help_economy_querry(int(querry.content)))
 
 # !register -- Take no args. Register the author of the command to the vault.
     @commands.command()
@@ -265,6 +285,26 @@ class Economy_Grind(commands.Cog):
         self.client = client
         print(f'\n- Economy Grind from bank.py is loaded.')
 
+# display the help grind section
+    async def help_grind(self,ctx):
+        await ctx.author.send(help_grind_success())
+        #check if theme is selected
+        def check(querry):
+            return ctx.author == querry.author
+        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        # iterate through the help file to fetch the store theme.
+        with open('main/assets/help.json') as help_index:
+            help_grind = json.load(help_index)
+            help_grind = help_grind["Grind"]
+            help_grind_exp_list = list(help_grind.values())
+            help_grind_exp_index_list = []
+            for i in help_grind_exp_list:
+                help_grind_exp_index_list.append(help_grind_exp_list.index(i))
+            #return if querry unvalid
+            if int(querry.content) not in help_grind_exp_index_list:
+                return await ctx.author.send(help_querry_exit())
+            #return if querry successful
+            return await ctx.author.send(help_grind_querry(int(querry.content)))
 
 # !coinflip OR !cf -- Takes one arg. Amount. Expect an answer after first message.
 # Either Head or Tail, a coin is tossed, if author wins, he double his bet. If author lose,

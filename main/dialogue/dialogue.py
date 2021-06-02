@@ -18,8 +18,83 @@ currency = "pipi-coins"
 global storeName
 storeName = "Pipi-Store"
 
+#---------------------------------------------------------------------------------------#       GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
+
+# message display when a querry is not successful in the !help section
+def help_querry_exit():
+    return (
+        f'> *This theme ID does not exist!*'
+        f'\n> *You exited the help querry*'
+        )
+
 #---------------------------------------------------------------------------------------#        GLOBAL ECONOMY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
+# display the economy help section
+def help_economy_success():
+    with open('main/assets/help.json') as help_index:
+        help_economy = json.load(help_index)
+        help_economy = help_economy["Economy"]
+        help_economy_list = list(help_economy)
+        preformat_display_theme = []
+        for theme in help_economy:
+            preformat_display_theme.append(
+                f'\n> ` {help_economy_list.index(theme)} `   :white_small_square:   **{theme}**'
+                )
+        display_help_economy = f'\n> '.join([i for i in preformat_display_theme])
+    
+    return (
+        f':bank:    **WELCOME TO THE ECONOMY HELP SECTION!**    :bank:'
+        f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
+        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
+        f'\n> '
+        f'{display_help_economy}'
+    )
+# display the economy help theme section
+def help_economy_querry(querry : int):
+    with open('main/assets/help.json') as help_index:
+        help_economy = json.load(help_index)
+        help_economy = help_economy["Economy"]
+        help_economy_list = list(help_economy)
+        help_economy_exp_list = list(help_economy.values())
+        theme_index = querry
+    return (
+        f'> :question:    {help_economy_list[theme_index]}'
+        f'\n> '
+        f'\n> :speech_left:    *{help_economy_exp_list[theme_index]}*'
+        )
+# display the grind help section
+def help_grind_success():
+    with open('main/assets/help.json') as help_index:
+        help_grind = json.load(help_index)
+        help_grind = help_grind["Grind"]
+        help_grind_list = list(help_grind)
+        preformat_display_theme = []
+        for theme in help_grind:
+            preformat_display_theme.append(
+                f'\n> ` {help_grind_list.index(theme)} `   :white_small_square:   **{theme}**'
+                )
+        display_help_grind = f'\n> '.join([i for i in preformat_display_theme])
+    
+    return (
+        f':money_mouth:    **WELCOME TO THE GRIND HELP SECTION!**    :money_mouth:'
+        f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
+        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
+        f'\n> '
+        f'{display_help_grind}'
+    )
+# display the grind theme help section
+def help_grind_querry(querry : int):
+    with open('main/assets/help.json') as help_index:
+        help_grind = json.load(help_index)
+        help_grind = help_grind["Grind"]
+        help_grind_list = list(help_grind)
+        help_grind_exp_list = list(help_grind.values())
+        theme_index = querry
+    return (
+        f'> :question:    {help_grind_list[theme_index]}'
+        f'\n> '
+        f'\n> :speech_left:    *{help_grind_exp_list[theme_index]}*'
+        ) 
 # message display when !register is successful
 def register_success(userID : discord.Member = None):
     if userID == None:
@@ -224,20 +299,47 @@ def help_index_success():
         display_help_index = f'\n> '.join([i for i in preformat_index_list])
 
     return (
-        f':globe_with_meridians:    **WELCOME TO THE HELP SECTION!**    :globe_with_meridians:'
+        f':dividers:    **WELCOME TO THE HELP INDEX!**    :dividers:'
         f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
         f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
         f'\n> '
         f'{display_help_index}'
         )
 
-# message display when a querry is not successful in the !help index section
-def help_index_querry_exit():
-    return (
-        f'> *This theme ID does not exist!*'
-        f'\n> *You exited the help querry*'
-        )
 
+# display the general help section
+def help_general_success():
+    with open('main/assets/help.json') as help_index:
+        help_general = json.load(help_index)
+        help_general = help_general["General"]
+        help_general_list = list(help_general)
+        preformat_display_theme = []
+        for theme in help_general:
+            preformat_display_theme.append(
+                f'\n> ` {help_general_list.index(theme)} `   :white_small_square:   **{theme}**'
+                )
+        display_help_general = f'\n> '.join([i for i in preformat_display_theme])
+    
+    return (
+        f':globe_with_meridians:    **WELCOME TO THE GENERAL HELP SECTION!**    :globe_with_meridians:'
+        f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
+        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
+        f'\n> '
+        f'{display_help_general}'
+    )
+# display the general theme help section
+def help_general_querry(querry : int):
+    with open('main/assets/help.json') as help_index:
+        help_general = json.load(help_index)
+        help_general = help_general["General"]
+        help_general_list = list(help_general)
+        help_general_exp_list = list(help_general.values())
+        theme_index = querry
+    return (
+        f'> :question:    {help_general_list[theme_index]}'
+        f'\n> '
+        f'\n> :speech_left:    *{help_general_exp_list[theme_index]}*'
+        ) 
 #---------------------------------------------------------------------------------------#        GLOBAL STORE COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
 # message display when !store help or !store is successful
@@ -255,7 +357,7 @@ def help_store_success():
         display_help_store = f'\n> '.join([i for i in preformat_display_theme])
 
     return (
-        f':bulb:    **WELCOME TO THE {storeName.upper()} HELP SECTION!**    :bulb:'
+        f':department_store:    **WELCOME TO THE {storeName.upper()} HELP SECTION!**    :department_store:'
         f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
         f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
         f'\n> '
@@ -276,13 +378,6 @@ def help_store_querry(querry : int):
         f'\n> :speech_left:    *{help_store_exp_list[theme_index]}*'
         )   
         
-# message display when a querry is not successful in the !store help section
-def help_store_querry_exit():
-    return (
-        f'> *This theme ID does not exist!*'
-        f'\n> *You exited the help querry*'
-        )
-
 # message display when !store showcase is successful
 # display the list of all available commands to buy
 def store_showcase_success():
