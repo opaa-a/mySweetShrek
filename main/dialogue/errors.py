@@ -116,7 +116,7 @@ def error_pay(error_type: str):
 
 # error message when !coinflip fails to execute
 def error_coinflip(error_type: str):
-    if error_type == "fail_answer":
+    if error_type == "fail_ans":
         return (
             f':x:   You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
             f'\n:arrow_right: ` !cf <amount> ` to try again.'

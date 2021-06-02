@@ -60,7 +60,7 @@ def help_economy_querry(querry : int):
     return (
         f'> :question:    {help_economy_list[theme_index]}'
         f'\n> '
-        f'\n> :speech_left:    *{help_economy_exp_list[theme_index]}*'
+        f'\n> :speech_left:    {help_economy_exp_list[theme_index]}'
         )
 # display the grind help section
 def help_grind_success():
@@ -93,7 +93,7 @@ def help_grind_querry(querry : int):
     return (
         f'> :question:    {help_grind_list[theme_index]}'
         f'\n> '
-        f'\n> :speech_left:    *{help_grind_exp_list[theme_index]}*'
+        f'\n> :speech_left:    {help_grind_exp_list[theme_index]}'
         ) 
 # message display when !register is successful
 def register_success(userID : discord.Member = None):
@@ -338,7 +338,7 @@ def help_general_querry(querry : int):
     return (
         f'> :question:    {help_general_list[theme_index]}'
         f'\n> '
-        f'\n> :speech_left:    *{help_general_exp_list[theme_index]}*'
+        f'\n> :speech_left:    {help_general_exp_list[theme_index]}'
         ) 
 #---------------------------------------------------------------------------------------#        GLOBAL STORE COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
@@ -375,7 +375,7 @@ def help_store_querry(querry : int):
     return (
         f'> :question:    {help_store_list[theme_index]}'
         f'\n> '
-        f'\n> :speech_left:    *{help_store_exp_list[theme_index]}*'
+        f'\n> :speech_left:    {help_store_exp_list[theme_index]}'
         )   
         
 # message display when !store showcase is successful

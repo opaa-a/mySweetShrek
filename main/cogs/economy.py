@@ -331,12 +331,12 @@ class Economy_Grind(commands.Cog):
         def check(ans):
             return ans.channel == ctx.channel and ans.author == ctx.author
 
-        answer = await self.client.wait_for('message', check=check)
+        ans = await self.client.wait_for('message', check=check)
 
-        if answer.content.lower() != 'tail' and answer.content.lower() != 'head':
-            return await ctx.reply(error_coinflip("fail_answer"))
+        if ans.content.lower() != 'tail' and ans.content.lower() != 'head':
+            return await ctx.reply(error_coinflip("fail_ans"))
 
-        guess = answer.content
+        guess = ans.content
         cf_result = random.choice(coin_faces)
         
         if str(author) == bully:
