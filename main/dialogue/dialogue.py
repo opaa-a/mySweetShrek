@@ -21,7 +21,7 @@ storeName = "Pipi-Store"
 #---------------------------------------------------------------------------------------#       GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 # message display when a querry is not successful in the !help section
-def help_querry_exit():
+def querry_exit():
     return (
         f'> *This theme ID does not exist!*'
         f'\n> *You exited the help querry*'
@@ -391,9 +391,19 @@ def store_showcase_success():
                 ) 
         store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
     return (
-        f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**    :shopping_bags:'
+        f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
         f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
         f'\n> '
         f'{store_inv_showcase}'
         ) 
 
+# message display when !store buy is successful
+def store_buy_success():
+    return(
+        f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
+        f'\n\n> **Reply to this message with the name of the item you want to purchase**'
+        f'\n> **To get the list of all the items in the store ` !store showcase `**'
+        )
+
+def store_purchase_complete():
+    return ()

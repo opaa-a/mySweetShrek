@@ -37,7 +37,7 @@ class Essential(commands.Cog):
                 help_general_exp_index_list.append(help_general_exp_list.index(i))
             #return if querry unvalid
             if int(querry.content) not in help_general_exp_index_list:
-                return await ctx.author.send(help_querry_exit())
+                return await ctx.author.send(querry_exit())
             #return if querry successful
             return await ctx.author.send(help_general_querry(int(querry.content)))
 
@@ -48,7 +48,7 @@ class Essential(commands.Cog):
         # check if theme is selected
         def check(querry):
             return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        querry = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the index of themes.
         with open('main/assets/help.json') as help_index:
             help_theme = json.load(help_index)
@@ -59,7 +59,7 @@ class Essential(commands.Cog):
         
         # return if querry is unvalid
         if int(querry.content) not in help_theme_index_list:
-            return await ctx.author.send(help_querry_exit())
+            return await ctx.author.send(querry_exit())
         
         # return if querry is successful
         if int(querry.content) == 0:

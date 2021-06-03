@@ -20,19 +20,15 @@ ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 # get_vault will search through the vault.json file with the userID specified
-# and return user_has_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
+# and return get_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
 def get_vault(userID : discord.Member):
     with open('./main/assets/vault.json', 'r') as vault:
         vault = json.load(vault)
         userID = str(userID)
-        
-        global user_has_vault
-        user_has_vault = False
 
-        for profile in vault:
-            if userID == profile:
-                user_has_vault = True
-                return user_has_vault
+        if userID in vault:
+            return True
+        return False
 
 
 # edit_vault is a simple updater function for the vault. when updates are made to the vault,
@@ -44,20 +40,17 @@ def edit_vault(data, filename='./main/assets/vault.json'):
 
 
 # check_admin as his name suggest, is a function to check is a specified userID is admin or not.
-# It will return user_is_admin either as TRUE if userID is admin or FALSE if userID is not.
+# It will return check_admin either as TRUE if userID is admin or FALSE if userID is not.
 def check_admin(userID : discord.Member):
     aID = int(ADMIN_ROLE_ID)
     userRoles = []
-    
-    global user_is_admin
-    user_is_admin = False
 
     for role in userID.roles:
         userRoles.append(role.id)
     
     if aID in userRoles:
-        user_is_admin = True
-        return user_is_admin
+        return True
+    return False
 
 
 # md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
@@ -67,19 +60,18 @@ def md_balance(userID : discord.Member, md_method : str, amount : int):
         vault = json.load(vault)
         userID = str(userID)
 
-        for profile in vault:
-            if profile == userID:
-                if md_method == "add":
-                    vault[userID]["balance"] += amount
-                elif md_method == "sub":
-                    vault[userID]["balance"] -= amount
-                elif md_method == "reset":
+        if userID in vault:
+            if md_method == "add":
+                vault[userID]["balance"] += amount
+            elif md_method == "sub":
+                vault[userID]["balance"] -= amount
+            elif md_method == "reset":
                     vault[userID]["balance"] = 0
 
     edit_vault(vault)
 
 
-# get_balance will return the balance of the userID specified as a int variable named balance.
+# get_balance will return the balance of the userID specified as a int through the function.
 def get_balance(userID):
     with open('./main/assets/vault.json') as vault:
         vault = json.load(vault)
@@ -88,28 +80,21 @@ def get_balance(userID):
         global balance
         balance = 0
 
-        for profile in vault:
-            if profile == userID:
-                balance = vault[userID]["balance"]
-                return balance
-
+        if userID in vault:
+            balance = vault[userID]["balance"]
+            return balance
+        return False
 
 # check_pay take a userID and an amount. The function will check if userID has a vault, 
 # if TRUE then the function will check if the balance is greater than the amount. 
 # If TRUE, canUserpay will return as TRUE. If FALSE, userCanPay will return as FALSE.  
 def check_pay(userID, amount):
-    global canUserPay
-    canUserPay = False
-    
-    get_vault(userID)
-    get_balance(userID)
-
-    if user_has_vault == False:
-        return canUserPay
+    if get_vault(userID) == False:
+        return False
         
-    if balance >= amount:
-        canUserPay = True
-        return canUserPay
+    if get_balance(userID) >= amount:
+        return True
+    return False
 
 
 #---------------------------------------------------------------------------------------#      ECONOMY ESSENTIALS COMMANDS      #---------------------------------------------------------------------------------------#
@@ -126,7 +111,7 @@ class Economy_Essentials(commands.Cog):
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        querry = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_economy = json.load(help_index)
@@ -137,7 +122,7 @@ class Economy_Essentials(commands.Cog):
                 help_economy_exp_index_list.append(help_economy_exp_list.index(i))
             #return if querry unvalid
             if int(querry.content) not in help_economy_exp_index_list:
-                return await ctx.author.send(help_querry_exit())
+                return await ctx.author.send(querry_exit())
             #return if querry successful
             return await ctx.author.send(help_economy_querry(int(querry.content)))
 
@@ -170,14 +155,12 @@ class Economy_Essentials(commands.Cog):
         if userID == None:
             userID = ctx.author
 
-        check_admin(ctx.author)
-        if user_is_admin != True:
+        if check_admin(ctx.author) != True:
             return await ctx.reply(error_user_is_not_admin())
-        
-        get_vault(userID)
-        if user_has_vault != True and userID == ctx.author:
+
+        if get_vault(userID) != True and userID == ctx.author:
             return await ctx.reply(error_user_has_no_vault())
-        elif user_has_vault != True:
+        elif get_vault(userID) != True:
             return await ctx.reply(error_user_has_no_vault(userID))
 
         md_balance(userID, "add", amount)
@@ -195,10 +178,9 @@ class Economy_Essentials(commands.Cog):
             userID = str(ctx.author)
             author = True
 
-        get_vault(userID)
-        if user_has_vault != True and author:
+        if get_vault(userID) != True and author:
             return await ctx.reply(error_user_has_no_vault())
-        elif user_has_vault != True:
+        elif get_vault(userID) != True:
             return await ctx.reply(error_user_has_no_vault(userID))
         
         get_balance(userID)
@@ -233,16 +215,13 @@ class Economy_Essentials(commands.Cog):
         if userID == author:
             return await ctx.reply(error_user_cant_pay_himself())
 
-        get_vault(author)
-        if user_has_vault != True:
+        if get_vault(author) != True:
             return await ctx.reply(error_user_has_no_vault())
 
-        get_vault(userID)
-        if user_has_vault != True:
+        if get_vault(userID) != True:
             return await ctx.reply(error_user_has_no_vault(userID))
 
-        check_pay(author, amount)
-        if canUserPay == True:
+        if check_pay(author, amount) == True:
             md_balance(author, "sub", amount)
             md_balance(userID, "add", amount)
             return await ctx.reply(pay_success(amount, userID))
@@ -291,7 +270,7 @@ class Economy_Grind(commands.Cog):
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        querry = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_grind = json.load(help_index)
@@ -302,7 +281,7 @@ class Economy_Grind(commands.Cog):
                 help_grind_exp_index_list.append(help_grind_exp_list.index(i))
             #return if querry unvalid
             if int(querry.content) not in help_grind_exp_index_list:
-                return await ctx.author.send(help_querry_exit())
+                return await ctx.author.send(querry_exit())
             #return if querry successful
             return await ctx.author.send(help_grind_querry(int(querry.content)))
 
@@ -318,12 +297,10 @@ class Economy_Grind(commands.Cog):
         cf_prize = amount * 2
         coin_faces = ["head","tail"]
 
-        get_vault(author)
-        if user_has_vault != True:
+        if get_vault(author) != True:
             return await ctx.reply(error_user_has_no_vault())
 
-        get_balance(author)
-        if balance < amount:
+        if get_balance(author) < amount:
             return await ctx.reply(error_user_cant_pay())
 
         await ctx.send(coinflip_success(amount, author, "cf_init"))
@@ -379,8 +356,7 @@ class Economy_Grind(commands.Cog):
         if answer_list[fact_index] != "null":
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
             
-        get_vault(answer.author) 
-        if  user_has_vault != True:
+        if  get_vault(answer.author) != True:
             return await answer.reply(facts_success("success_without_vault", prize))
             
         md_balance(answer.author, "add", prize)
@@ -439,8 +415,7 @@ class Economy_Reward(commands.Cog):
     @commands.command()
     async def claim(self, ctx, reward_type : str = None):
         
-        get_vault(ctx.author)
-        if user_has_vault == False:
+        if get_vault(ctx.author) == False:
             return await ctx.reply(error_user_has_no_vault())
         
         if reward_type == None:
