@@ -29,6 +29,7 @@ def display_inv(userID):
         vault = json.load(vault)
         userID = str(userID)
         inventory = vault[userID]['inventory']
+        
         return display_inv_success(userID, inventory)
 
 #---------------------------------------------------------------------------------------#      INVENTORY ESSENTIALS COMMANDS      #---------------------------------------------------------------------------------------#

@@ -386,7 +386,7 @@ def store_showcase_success():
         preformat_store_inv = []
         for item in store_inv:
             preformat_store_inv.append(
-                f'\n> ` {item} `   :   **{store_inv[item]["price"]} {currency} :coin:**'
+                f'\n> {store_inv[item]["icon"]} ` {item} `   :   **{store_inv[item]["price"]} {currency} :coin:**'
                 f'\n>   *{store_inv[item]["desc"]}*'
                 ) 
         store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
@@ -415,7 +415,21 @@ def store_purchase_complete(item_name : str):
 #---------------------------------------------------------------------------------------#        GLOBAL INVENTORY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
 def display_inv_success(userID, inventory):
+    with open('main/assets/store_inv.json') as store_inv:
+        store_inv = json.load(store_inv)
+        preformat_display_inventory = []
+        for item in inventory:
+            icon = store_inv[item]['icon']
+            desc = store_inv[item]['desc']
+            amount = inventory[item]
+            preformat_display_inventory.append(
+                f'\n> **{icon} ` {item} ` x ` {amount} `**'
+                f'\n> *{desc}*'
+                )
+            display_inventory = f'\n> '.join([i for i in preformat_display_inventory])
+
     return (
-        f':luggage:   **THIS IS YOUR INVENTORY**   :luggage:'
-        f'\n> {inventory}'
+        f':package:   **THIS IS YOUR INVENTORY**   :package:'
+        f'\n> '
+        f'{display_inventory}'
         )
