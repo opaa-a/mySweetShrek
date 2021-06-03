@@ -11,34 +11,46 @@ from dialogue.errors import *
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 def store_buy_item(userID, querry : str, price: int):
-    from cogs.economy import get_vault
-    from cogs.economy import get_balance
-    from cogs.economy import md_balance
+# import functions from economy
+    from cogs.economy import get_vault, get_balance, md_balance
+# buy item 'A la niche'
     if querry == 'A la niche!':
         if get_vault(userID) == False:
+            # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:
+            # return if user has not enough money
             return error_user_cant_pay()
-        md_balance(userID, "sub", price)
+        # log the purchase
         print(f'# STORE -- {userID} bought {querry}')
+        # purchase is successful, pay the item
+        md_balance(userID, "sub", price)
         return store_purchase_complete(str(querry))
-        
+# buy item 'GTFO'  
     if querry == 'GTFO!':
         if get_vault(userID) == False:
+            # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:
+            # return if user has not enough money
             return error_user_cant_pay()
-        md_balance(userID, "sub", price)
+        # log the purchase
         print(f'# STORE -- {userID} bought {querry}')
+        # purchase is successful, pay the item
+        md_balance(userID, "sub", price)
         return store_purchase_complete(str(querry))
-    
+# buy item 'Shush'  
     if querry == 'Shush!':
         if get_vault(userID) == False:
+            # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:
+            # return if user has not enough money
             return error_user_cant_pay()
-        md_balance(userID, "sub", price)
+        # log the purchase
         print(f'# STORE -- {userID} bought {querry}')
+        # purchase is successful, pay the item
+        md_balance(userID, "sub", price)
         return store_purchase_complete(str(querry))
 
 
