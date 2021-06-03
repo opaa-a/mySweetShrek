@@ -1,6 +1,5 @@
 import discord
 import json
-from discord import user
 from discord.ext import commands
 from dialogue.dialogue import *
 from dialogue.errors import *
@@ -21,7 +20,8 @@ def store_buy_item(userID, querry : str, price: int):
         if get_balance(userID) < price:
             return error_user_cant_pay()
         md_balance(userID, "sub", price)
-        return ('test')
+        print(f'# STORE -- {userID} bought {querry}')
+        return store_purchase_complete(str(querry))
         
     if querry == 'GTFO!':
         if get_vault(userID) == False:
@@ -29,7 +29,8 @@ def store_buy_item(userID, querry : str, price: int):
         if get_balance(userID) < price:
             return error_user_cant_pay()
         md_balance(userID, "sub", price)
-        return (f'test')
+        print(f'# STORE -- {userID} bought {querry}')
+        return store_purchase_complete(str(querry))
     
     if querry == 'Shush!':
         if get_vault(userID) == False:
@@ -37,9 +38,11 @@ def store_buy_item(userID, querry : str, price: int):
         if get_balance(userID) < price:
             return error_user_cant_pay()
         md_balance(userID, "sub", price)
-        return (f'test')
+        print(f'# STORE -- {userID} bought {querry}')
+        return store_purchase_complete(str(querry))
 
-#---------------------------------------------------------------------------------------#      STORE SHOWCASE COMMANDS      #---------------------------------------------------------------------------------------#
+
+#---------------------------------------------------------------------------------------#      STORE COMMANDS      #---------------------------------------------------------------------------------------#
 
 class Store(commands.Cog):
     def __init__(self, client):
@@ -87,7 +90,6 @@ class Store(commands.Cog):
                 store_inv = json.load(store_inv)
                 store_inv_list = list(store_inv)
                 store_item = store_inv[str(querry.content)]["price"]
-                print(store_item)
             # return if querry unvalid
             if str(querry.content) not in store_inv_list:
                 return await ctx.author.send(querry_exit())

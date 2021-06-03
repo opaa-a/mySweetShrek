@@ -405,5 +405,9 @@ def store_buy_success():
         f'\n> **To get the list of all the items in the store ` !store showcase `**'
         )
 
-def store_purchase_complete():
-    return ()
+def store_purchase_complete(item_name : str):
+    return (
+        f':package:   **You successfully purchased {item_name}**   :package:'
+        f'\n> *Your item has been placed in your inventory.*'
+        f'\n> *Learn more about the inventory in with the* ` !help ` *command.*'
+        )
