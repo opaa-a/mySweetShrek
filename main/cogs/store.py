@@ -4,7 +4,6 @@ from discord import user
 from discord.ext import commands
 from dialogue.dialogue import *
 from dialogue.errors import *
-from cogs.economy import *
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -13,21 +12,23 @@ from cogs.economy import *
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 def store_buy_item(userID, querry : str, price: int):
-    # from cogs.economy import get_vault
-    # from cogs.economy import get_balance
-    # from cogs.economy import md_balance
+    from cogs.economy import get_vault
+    from cogs.economy import get_balance
+    from cogs.economy import md_balance
     if querry == 'A la niche!':
         if get_vault(userID) == False:
             return error_user_has_no_vault()
         if get_balance(userID) < price:
             return error_user_cant_pay()
-        return (f'test')
+        md_balance(userID, "sub", price)
+        return ('test')
         
     if querry == 'GTFO!':
         if get_vault(userID) == False:
             return error_user_has_no_vault()
         if get_balance(userID) < price:
             return error_user_cant_pay()
+        md_balance(userID, "sub", price)
         return (f'test')
     
     if querry == 'Shush!':
@@ -35,9 +36,8 @@ def store_buy_item(userID, querry : str, price: int):
             return error_user_has_no_vault()
         if get_balance(userID) < price:
             return error_user_cant_pay()
+        md_balance(userID, "sub", price)
         return (f'test')
-
-
 
 #---------------------------------------------------------------------------------------#      STORE SHOWCASE COMMANDS      #---------------------------------------------------------------------------------------#
 

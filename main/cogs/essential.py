@@ -26,7 +26,7 @@ class Essential(commands.Cog):
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 10)
+        querry = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_general = json.load(help_index)
