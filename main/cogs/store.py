@@ -1,6 +1,7 @@
 import discord
 import json
 from discord.ext import commands
+from cogs.inventory import add_item_to_inv
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -25,6 +26,7 @@ def store_buy_item(userID, querry : str, price: int):
         print(f'# STORE -- {userID} bought {querry}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
+        add_item_to_inv(userID, "A la niche!", 1)
         return store_purchase_complete(str(querry))
 # buy item 'GTFO'  
     if querry == 'GTFO!':
@@ -38,6 +40,7 @@ def store_buy_item(userID, querry : str, price: int):
         print(f'# STORE -- {userID} bought {querry}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
+        add_item_to_inv(userID, "GTFO!", 1)
         return store_purchase_complete(str(querry))
 # buy item 'Shush'  
     if querry == 'Shush!':
@@ -51,6 +54,7 @@ def store_buy_item(userID, querry : str, price: int):
         print(f'# STORE -- {userID} bought {querry}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
+        add_item_to_inv(userID, "Shush!", 1)
         return store_purchase_complete(str(querry))
 
 

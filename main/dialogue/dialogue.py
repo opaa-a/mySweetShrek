@@ -411,3 +411,11 @@ def store_purchase_complete(item_name : str):
         f'\n> *Your item has been placed in your inventory.*'
         f'\n> *Learn more about the inventory in with the* ` !help ` *command.*'
         )
+
+#---------------------------------------------------------------------------------------#        GLOBAL INVENTORY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
+
+def display_inv_success(userID, inventory):
+    return (
+        f':luggage:   **THIS IS YOUR INVENTORY**   :luggage:'
+        f'\n> {inventory}'
+        )
