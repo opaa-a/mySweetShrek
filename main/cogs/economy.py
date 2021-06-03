@@ -290,10 +290,9 @@ class Economy_Grind(commands.Cog):
 # he lose the double of his bet.
     @commands.command(aliases=['cf'])
     async def coinflip(self, ctx, amount : int):
-        bully = ""
+        # bully = ""
         amount = abs(amount)
         author = ctx.author
-        channel = ctx.channel
         cf_prize = amount * 2
         coin_faces = ["head","tail"]
 
@@ -316,9 +315,9 @@ class Economy_Grind(commands.Cog):
         guess = ans.content
         cf_result = random.choice(coin_faces)
         
-        if str(author) == bully:
-            while guess == cf_result:
-                cf_result = random.choice(coin_faces)
+        # if str(author) == bully:
+        #     while guess == cf_result:
+        #         cf_result = random.choice(coin_faces)
 
         await ctx.send(
             f'And the result is...'
