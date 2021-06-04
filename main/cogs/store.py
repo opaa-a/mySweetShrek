@@ -71,6 +71,7 @@ class Store(commands.Cog):
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
             await ctx.author.send(help_store_success())
+            await ctx.message.add_reaction('📨')
             #check if theme is selected
             def check(querry):
                 return ctx.author == querry.author 
@@ -96,11 +97,12 @@ class Store(commands.Cog):
         
 # message delivered if parameter is 'showcase'
         if param.lower() == 'showcase':
-            return await ctx.author.send(store_showcase_success())
+            return await ctx.message.add_reaction('📨'), await ctx.author.send(store_showcase_success())
 
 # message delivered if parameter is 'buy'
         if param.lower() == 'buy':
             await ctx.author.send(store_buy_success())
+            await ctx.message.add_reaction('📨')
             # check if product is selected
             def check(querry):
                 return ctx.author == querry.author

@@ -176,4 +176,18 @@ def error_store(error_type: str):
 
 #---------------------------------------------------------------------------------------#       GLOBAL INVENTORY COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
-# error messahe when user doesn't have the item in his inventory and try to use it
+# error message when !use fails to execute
+def error_use(error_type: str):
+    if error_type == "bad_arg":
+        return (
+            f':x:   Oops! Looks like one or multiple arguments specified are not valid.'
+            f'\n:arrow_right:   ` !use <target> <item> `'
+            f'\n> *<target> must be specified and must be an existing AND CONNECTED user on the server*'
+            f'\n> *<item> must be specified and must be available in your inventory*'
+        )
+    if error_type == "missing_arg":
+        return (
+            f':x:   Oops! You need to specify a target and an item to use.'
+            f'\n:arrow_right:   ` !use <target> <item> `'
+        )
+    return print("# UNKNOWN ERROR -- !use FAILED TO SPECIFY ERROR TYPE")

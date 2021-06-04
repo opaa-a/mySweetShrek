@@ -77,7 +77,7 @@ class Inventory_Essentials(commands.Cog):
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
-        return await ctx.author.send(display_inv(ctx.author))
+        return await ctx.message.add_reaction('📨'), await ctx.author.send(display_inv(ctx.author))
 
 # !use -- Takes a mandatory arg. use an item in the inventory
     @commands.command()
@@ -101,6 +101,18 @@ class Inventory_Essentials(commands.Cog):
                 await ctx.author.send(use_success("item_used", target, item, ctx.author))
                 return await ctx.author.send(Item.item_shush())
             return await ctx.author.send(use_success("item_missing", target, item))
+
+#---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
+
+# !use error display
+    @use.error
+    async def error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            return print(log_error_bad_arg("use")), await ctx.author.send(error_use("bad_arg"))
+        if isinstance(error, commands.MissingRequiredArgument):
+            return print(log_error_missing_arg("use")), await ctx.author.send(error_use("missing_arg"))
+        return await ctx.author.send(unknown_error())
+
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
 

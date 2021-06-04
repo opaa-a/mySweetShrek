@@ -21,7 +21,6 @@ async def on_ready():
     for guild in client.guilds:                         # DEFINE THE VAR GUILD TO BE EQUAL TO THE CURRENT GUILD
         if guild.name == GUILD:
             break
-
     print(
         f'\n##########    BOT INFORMATION     ##########'
         f'\n'

@@ -51,6 +51,7 @@ class Essential(commands.Cog):
     @commands.command()
     async def help(self, ctx):
         await ctx.author.send(help_index_success())
+        await ctx.message.add_reaction('📨')
         # check if theme is selected
         def check(querry):
             return ctx.author == querry.author
@@ -86,15 +87,10 @@ class Essential(commands.Cog):
         if int(querry.content) == 4:
             from cogs.inventory import Inventory_Essentials
             return await Inventory_Essentials.help_inv(self, ctx)
-        # return await ctx.author.send(querry_exit('index help'))
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
-    # @help.error
-    # async def error(self, ctx, error):
-    #     if isinstance(error, commands.BadArgument):
-    #         print('test')
-    #         await ctx.author.send(error_help("bad_arg"))
+
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 

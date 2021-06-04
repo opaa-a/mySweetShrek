@@ -450,6 +450,13 @@ def display_inv_success(inventory):
     with open('main/assets/store_inv.json') as store_inv:
         store_inv = json.load(store_inv)
         preformat_display_inventory = []
+        if inventory == {}:
+            return (
+            f':package:   **THIS IS YOUR INVENTORY**   :package:'
+            f'\n> '
+            f'\n> :wind_blowing_face::leaves::wind_blowing_face:'
+            f'\n> **Ohoh! Looks like your inventory is empty**'
+                )
         for item in inventory:
             icon = store_inv[item]['icon']
             desc = store_inv[item]['desc']
