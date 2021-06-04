@@ -1,6 +1,8 @@
 import discord
 import json
 from discord.ext import commands
+from discord.ext.commands.errors import BadArgument
+from cogs.inventory import Inventory_Essentials
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -35,9 +37,13 @@ class Essential(commands.Cog):
             help_general_exp_index_list = []
             for i in help_general_exp_list:
                 help_general_exp_index_list.append(help_general_exp_list.index(i))
-            #return if querry unvalid
-            if int(querry.content) not in help_general_exp_index_list:
-                return await ctx.author.send(querry_exit())
+            #return if querry int unvalid
+            try:
+                if int(querry.content) not in help_general_exp_index_list:
+                    return await ctx.author.send(querry_exit('unknown_ID','general help'))
+            # return if querry is not int
+            except ValueError:
+                return await ctx.author.send(querry_exit('valueError_int', 'general help'))
             #return if querry successful
             return await ctx.author.send(help_general_querry(int(querry.content)))
 
@@ -57,9 +63,13 @@ class Essential(commands.Cog):
             for i in help_theme_list:
                 help_theme_index_list.append(help_theme_list.index(i))
         
-        # return if querry is unvalid
-        if int(querry.content) not in help_theme_index_list:
-            return await ctx.author.send(querry_exit())
+        # return if querry int is unvalid
+        try:
+            if int(querry.content) not in help_theme_index_list:
+                return await ctx.author.send(querry_exit('unknown_ID', 'index help'))
+        # return if querry is not int
+        except ValueError:
+            return await ctx.author.send(querry_exit('valueError_int', 'index help'))
         
         # return if querry is successful
         if int(querry.content) == 0:
@@ -74,11 +84,17 @@ class Essential(commands.Cog):
             from cogs.store import Store
             return await Store.store(self, ctx, 'help')
         if int(querry.content) == 4:
-            return await ctx.author.send('inventory')
+            from cogs.inventory import Inventory_Essentials
+            return await Inventory_Essentials.help_inv(self, ctx)
+        # return await ctx.author.send(querry_exit('index help'))
 
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
-
+    # @help.error
+    # async def error(self, ctx, error):
+    #     if isinstance(error, commands.BadArgument):
+    #         print('test')
+    #         await ctx.author.send(error_help("bad_arg"))
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 

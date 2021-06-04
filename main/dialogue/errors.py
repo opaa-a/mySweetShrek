@@ -19,6 +19,24 @@ def unknown_error():
         f'**:exclamation: Unknown error, please contact the administrator.**'
         )
 
+# message display when a querry is not successful in the !help section
+def querry_exit(exit_type: str, querry_type: str):
+    if exit_type == "unknown_ID":
+        return (
+            f'> *This ID does not exist!*'
+            f'\n> *You exited the {querry_type} querry*'
+            )
+    if exit_type == "valueError_int":
+        return (
+            f'> *Your querry must be a number!*'
+            f'\n> *You exited the {querry_type} querry*'
+        )
+    if exit_type == "valueError_str":
+        return (
+            f'> *Your querry must be a word!*'
+            f'\n> *You exited the {querry_type} querry*'
+        )
+    return unknown_error()
 #---------------------------------------------------------------------------------------#       GLOBAL ECONOMY COG FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when user is not registered to the vault.
@@ -136,7 +154,13 @@ def error_coinflip(error_type: str):
 
 #---------------------------------------------------------------------------------------#       GLOBAL ESSENTIAL COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
-
+def error_help(error_type: str):
+    if error_type == "bad_arg":
+        return (
+            f':x:   Oops! The theme you\'re looking for doesn\'t exist.'
+            f'\n*To access a theme, you must reply to the bot with the number associated to the theme.*'
+            )
+    return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
 
 #---------------------------------------------------------------------------------------#       GLOBAL STORE COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
@@ -149,3 +173,7 @@ def error_store(error_type: str):
             )
     return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
 
+
+#---------------------------------------------------------------------------------------#       GLOBAL INVENTORY COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
+
+# error messahe when user doesn't have the item in his inventory and try to use it

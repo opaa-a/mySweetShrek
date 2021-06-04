@@ -56,6 +56,7 @@ def store_buy_item(userID, querry : str, price: int):
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "Shush!", 1)
         return store_purchase_complete(str(querry))
+    # return querry_exit('store')
 
 
 #---------------------------------------------------------------------------------------#      STORE COMMANDS      #---------------------------------------------------------------------------------------#
@@ -83,9 +84,13 @@ class Store(commands.Cog):
                 help_store_exp_index_list = []
                 for i in help_store_exp_list:
                     help_store_exp_index_list.append(help_store_exp_list.index(i))
-            # return if querry unvalid
-            if int(querry.content) not in help_store_exp_index_list:
-                return await ctx.author.send(querry_exit())
+            # return if querry int unvalid
+            try:
+                if int(querry.content) not in help_store_exp_index_list:
+                    return await ctx.author.send(querry_exit('unknown_ID', 'store help'))
+            # return if querry is not int
+            except ValueError:
+                return await ctx.author.send(querry_exit('valueError_int', 'store help'))
             # return if querry successful
             return await ctx.author.send(help_store_querry(int(querry.content)))
         
@@ -105,15 +110,17 @@ class Store(commands.Cog):
             with open('main/assets/store_inv.json') as store_inv:
                 store_inv = json.load(store_inv)
                 store_inv_list = list(store_inv)
-                store_item = store_inv[str(querry.content)]["price"]
             # return if querry unvalid
-            if str(querry.content) not in store_inv_list:
-                return await ctx.author.send(querry_exit())
+                if str(querry.content) not in store_inv_list:
+                    return await ctx.author.send(querry_exit('unknown_ID', 'store buy'))
             # return if querry successful
+                store_item = store_inv[str(querry.content)]["price"]
             return await ctx.author.send(store_buy_item(ctx.author, str(querry.content), store_item))
 
 # message delivered if errors occurs
         return await ctx.reply(error_store("bad_arg"))
+
+#---------------------------------------------------------------------------------------#   STORE ERRORS   #---------------------------------------------------------------------------------------#
 
 
 

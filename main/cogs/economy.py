@@ -121,8 +121,12 @@ class Economy_Essentials(commands.Cog):
             for i in help_economy_exp_list:
                 help_economy_exp_index_list.append(help_economy_exp_list.index(i))
             #return if querry unvalid
-            if int(querry.content) not in help_economy_exp_index_list:
-                return await ctx.author.send(querry_exit())
+            try:
+                if int(querry.content) not in help_economy_exp_index_list:
+                    return await ctx.author.send(querry_exit('unknown_ID', 'economy help'))
+            # return if querry is not int
+            except ValueError:
+                return await ctx.author.send(querry_exit('valueError_int', 'economy help'))
             #return if querry successful
             return await ctx.author.send(help_economy_querry(int(querry.content)))
 
@@ -279,9 +283,13 @@ class Economy_Grind(commands.Cog):
             help_grind_exp_index_list = []
             for i in help_grind_exp_list:
                 help_grind_exp_index_list.append(help_grind_exp_list.index(i))
-            #return if querry unvalid
-            if int(querry.content) not in help_grind_exp_index_list:
-                return await ctx.author.send(querry_exit())
+            #return if querry int unvalid
+            try:
+                if int(querry.content) not in help_grind_exp_index_list:
+                    return await ctx.author.send(querry_exit('unknown_ID', 'grind help'))
+            # return if querry is not int
+            except ValueError:
+                return await ctx.author.send(querry_exit('valueError_int', 'grind help'))
             #return if querry successful
             return await ctx.author.send(help_grind_querry(int(querry.content)))
 
