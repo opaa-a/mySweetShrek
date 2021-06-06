@@ -510,5 +510,5 @@ def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
 def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
     if dialogue_ref == "user_already_in_chan":
         return (
-            f':x:   Nope, {target} is already in \'La Niche\'. Don\'t waste your item.'
+            f':x:   Nope, **{target}** is already in ` \'La Niche\' `. Don\'t waste your item.'
             )

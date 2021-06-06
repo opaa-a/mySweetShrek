@@ -13,7 +13,14 @@ from dialogue.errors import *
 
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
-
+def check_user_in_chan(userID: discord.Member, channel):
+    chan_member = []
+    for member in channel.members:
+        chan_member.append(member.id)
+    if userID.id in chan_member:
+        return True
+    return False
+        
 
 #---------------------------------------------------------------------------------------#      ESSENTIAL COMMANDS      #---------------------------------------------------------------------------------------#
 
@@ -89,9 +96,6 @@ class Essential(commands.Cog):
             from cogs.inventory import Inventory_Essentials
             return await Inventory_Essentials.help_inv(self, ctx)
             
-    @commands.command(aliases=['dchan'])
-    async def debug_chan(self, ctx):
-        return await ctx.send('test')
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
 

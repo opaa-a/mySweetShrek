@@ -9,7 +9,7 @@ GUILD = config('DISCORD_GUILD') # DISCORD GUILD IN ENV VAR
 DEF_CHAN = config('DISCORD_DEF_CHAN') # DISCORD DEFAULT CHANNEL IN ENV VAR  
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
-intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True)
+intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True, voice_states=True)
 client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 @client.event
@@ -32,7 +32,7 @@ async def on_ready():
         f'\n'
         f'\n############################################'
     )
-    
+
     await default_chan.send(f"I'm up and running my dude :sunglasses:")
     init_cog()
 

@@ -58,7 +58,7 @@ def check_item(userID: discord.Member, item: str):
 class Inventory_Essentials(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f'\n- Economy Essentials from inventory.py is loaded')
+        print(f'\n- Inventory Essentials from inventory.py is loaded')
 
 # display the help inventory section
     async def help_inv(self,ctx):
@@ -103,6 +103,7 @@ class Inventory_Essentials(commands.Cog):
         if item == "A la niche!":
             
             if check_item(ctx.author, item):
+                
                 await Item.item_alaniche(ctx, target, item)
                 return
                 #remove_item_from_inv(ctx.author, item, 1)
