@@ -32,7 +32,7 @@ async def on_ready():
         f'\n'
         f'\n############################################'
     )
-
+    
     await default_chan.send(f"I'm up and running my dude :sunglasses:")
     init_cog()
 

@@ -1,5 +1,6 @@
 import discord
 import json
+from discord import user
 from discord.channel import VoiceChannel
 from discord.ext import commands
 from cogs.economy import edit_vault
@@ -21,8 +22,17 @@ def add_item_to_inv(userID: discord.Member, item: str, amount: int):
         item = str(item)
         inventory = list(vault[userID]['inventory'])
         if item not in inventory:
-            vault[userID]['inventory'][item] = 0
-        vault[userID]['inventory'][item] += 1
+            vault[userID]['inventory'][item] = amount
+        vault[userID]['inventory'][item] += amount
+    edit_vault(vault)
+
+def remove_item_from_inv(userID: discord.Member, item: str, amount: int):
+    with open('main/assets/vault.json') as vault:
+        vault = json.load(vault)
+        userID = str(userID)
+        item = str(item)
+        inventory = list(vault[userID]['inventory'])
+        vault[userID]['inventory'][item] -= amount
     edit_vault(vault)
 
 def display_inv(userID: discord.Member):
@@ -87,21 +97,33 @@ class Inventory_Essentials(commands.Cog):
         if get_vault(ctx.author) != True:
             return error_user_has_no_vault(ctx.author)
 
+        if isinstance(ctx.channel, discord.channel.DMChannel):
+            return await ctx.author.send(use_success('command_in_dm'))
+
         if item == "A la niche!":
+            
             if check_item(ctx.author, item):
-                await ctx.reply(use_success("item_used", target, item, ctx.author))
-                return await Item.item_alaniche(ctx, target)
-            return await ctx.author.send(use_success("item_missing", target, item))
+                await Item.item_alaniche(ctx, target, item)
+                return
+                #remove_item_from_inv(ctx.author, item, 1)
+                #return await ctx.reply(use_success("item_used", target, item, ctx.author))
+            
+            
+            return await ctx.reply(use_success("item_missing", target, item))
+        
         if item == "GTFO!":
             if check_item(ctx.author, item):
+                remove_item_from_inv(ctx.author, item, 1)
                 await ctx.author.send(use_success("item_used", target, item, ctx.author))
-                return await ctx.author.send(Item.item_gtfo())
-            return await ctx.author.send(use_success("item_missing", target, item))
+                return await Item.item_gtfo(ctx, target)
+            return await ctx.reply(use_success("item_missing", target, item))
+        
         if item == "Shush!":
             if check_item(ctx.author, item):
-                await ctx.author.send(use_success("item_used", target, item, ctx.author))
-                return await ctx.author.send(Item.item_shush())
-            return await ctx.author.send(use_success("item_missing", target, item))
+                remove_item_from_inv(ctx.author, item, 1)
+                await ctx.reply(use_success("item_used", target, item, ctx.author))
+                return await Item.item_shush(ctx, target)
+            return await ctx.reply(use_success("item_missing", target, item))
 
 #---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
 

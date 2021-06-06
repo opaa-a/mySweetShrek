@@ -481,6 +481,15 @@ def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
             f':x:   Nope, you can\'t use what you don\'t own.'
             f'\n:arrow_right:   You can buy items with the command: ` !store buy `'
         )
+    if dialogue_ref == "command_in_dm":
+        return (
+            f':x:   You can\'t use the command ` !use ` in my DMs!'
+            f'\n:arrow_right:   ` !use <target> <item> `'
+        )
+    if dialogue_ref == "":
+        return (
+            f':x:   The target you specified is already in t'
+        )
     # return if use is successful
     if dialogue_ref == "item_used":
         author = str(author)
@@ -496,4 +505,10 @@ def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
         return (
             f'{icon}   **You successfully used {item} on {target}!**'
             f'\n:package: You now have ` {item_amount} ` **x** ` {item} ` in your inventory.'
+            )
+
+def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
+    if dialogue_ref == "user_already_in_chan":
+        return (
+            f':x:   Nope, {target} is already in \'La Niche\'. Don\'t waste your item.'
             )

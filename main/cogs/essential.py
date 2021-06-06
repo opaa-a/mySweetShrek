@@ -89,6 +89,9 @@ class Essential(commands.Cog):
             from cogs.inventory import Inventory_Essentials
             return await Inventory_Essentials.help_inv(self, ctx)
             
+    @commands.command(aliases=['dchan'])
+    async def debug_chan(self, ctx):
+        return await ctx.send('test')
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
 

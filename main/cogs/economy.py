@@ -130,6 +130,7 @@ class Economy_Essentials(commands.Cog):
             #return if querry successful
             return await ctx.author.send(help_economy_querry(int(querry.content)))
 
+
 # !register -- Take no args. Register the author of the command to the vault.
     @commands.command()
     async def register(self, ctx):
