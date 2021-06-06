@@ -1,5 +1,6 @@
 import discord
 import json
+from discord.channel import VoiceChannel
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from cogs.inventory import Inventory_Essentials
@@ -87,7 +88,7 @@ class Essential(commands.Cog):
         if int(querry.content) == 4:
             from cogs.inventory import Inventory_Essentials
             return await Inventory_Essentials.help_inv(self, ctx)
-
+            
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
 

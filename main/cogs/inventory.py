@@ -1,5 +1,6 @@
 import discord
 import json
+from discord.channel import VoiceChannel
 from discord.ext import commands
 from cogs.economy import edit_vault
 from cogs.economy import get_vault
@@ -88,8 +89,8 @@ class Inventory_Essentials(commands.Cog):
 
         if item == "A la niche!":
             if check_item(ctx.author, item):
-                await ctx.author.send(use_success("item_used", target, item, ctx.author))
-                return await ctx.author.send(Item.item_alaniche())
+                await ctx.reply(use_success("item_used", target, item, ctx.author))
+                return await Item.item_alaniche(ctx, target)
             return await ctx.author.send(use_success("item_missing", target, item))
         if item == "GTFO!":
             if check_item(ctx.author, item):
@@ -109,9 +110,9 @@ class Inventory_Essentials(commands.Cog):
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             return print(log_error_bad_arg("use")), await ctx.author.send(error_use("bad_arg"))
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             return print(log_error_missing_arg("use")), await ctx.author.send(error_use("missing_arg"))
-        return await ctx.author.send(unknown_error())
+        # return await ctx.author.send(unknown_error())
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#

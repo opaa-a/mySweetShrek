@@ -36,7 +36,7 @@ def querry_exit(exit_type: str, querry_type: str):
             f'> *Your querry must be a word!*'
             f'\n> *You exited the {querry_type} querry*'
         )
-    return unknown_error()
+    # return unknown_error()
 #---------------------------------------------------------------------------------------#       GLOBAL ECONOMY COG FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when user is not registered to the vault.

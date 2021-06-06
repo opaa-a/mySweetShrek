@@ -18,9 +18,10 @@ class Item(commands.Cog):
     def __init__(self, client):
         self.client = client
         print(f'\n- Item from items.py is loaded')
-    
-    def item_alaniche():
-        return (f'test a la niche')
+
+    def item_alaniche(ctx, target: discord.Member):
+        channel = ctx.guild.get_channel(804847478473883668)
+        return target.move_to(channel)
 
     def item_gtfo():
         return (f'test gtfo')
