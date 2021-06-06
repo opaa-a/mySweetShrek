@@ -103,13 +103,8 @@ class Inventory_Essentials(commands.Cog):
         if item == "A la niche!":
             
             if check_item(ctx.author, item):
-                
-                await Item.item_alaniche(ctx, target, item)
-                return
-                #remove_item_from_inv(ctx.author, item, 1)
-                #return await ctx.reply(use_success("item_used", target, item, ctx.author))
-            
-            
+                return await Item.item_alaniche(ctx, target, item)
+                            
             return await ctx.reply(use_success("item_missing", target, item))
         
         if item == "GTFO!":
