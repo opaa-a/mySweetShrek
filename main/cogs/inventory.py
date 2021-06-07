@@ -1,7 +1,5 @@
 import discord
 import json
-from discord import user
-from discord.channel import VoiceChannel
 from discord.ext import commands
 from cogs.economy import edit_vault
 from cogs.economy import get_vault

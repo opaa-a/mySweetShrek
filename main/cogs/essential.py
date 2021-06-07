@@ -1,9 +1,6 @@
 import discord
 import json
-from discord.channel import VoiceChannel
 from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
-from cogs.inventory import Inventory_Essentials
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -20,7 +17,17 @@ def check_user_in_chan(userID: discord.Member, channel):
     if userID.id in chan_member:
         return True
     return False
-        
+
+def check_user_is_bot(userID: discord.Member):
+    if userID.bot:
+        return True
+    return False
+
+def check_user_voice_chan(userID: discord.Member):
+    voice_state = userID.voice
+    if voice_state is None:
+        return False
+    return True
 
 #---------------------------------------------------------------------------------------#      ESSENTIAL COMMANDS      #---------------------------------------------------------------------------------------#
 

@@ -1,10 +1,6 @@
 import discord
 import json
 from discord.ext import commands
-# from dialogue.errors import *
-# from cogs.economy import *
-# from cogs.essential import *
-# from cogs.store import *
 
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
@@ -508,7 +504,15 @@ def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
             )
 
 def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
-    if dialogue_ref == "user_already_in_chan":
+    if dialogue_ref == "target_already_in_chan":
         return (
             f':x:   Nope, **{target}** is already in ` \'La Niche\' `. Don\'t waste your item.'
             )
+    if dialogue_ref == "target_not_connected":
+        return (
+            f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
+        )
+    if dialogue_ref == "target_is_bot":
+        return (
+            f':x:   No no no, you can\'t use this command on bots!'
+        )
