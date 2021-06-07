@@ -40,8 +40,8 @@ class Item(commands.Cog):
     async def item_gtfo():
         return (f'test gtfo')
 
-    async def item_shush():
-        return (f'test shush')
+    async def item_shush(ctx, target: discord.Member):
+        return 
 
 
 #---------------------------------------------------------------------------------------#       COGS SETUP      #---------------------------------------------------------------------------------------#
