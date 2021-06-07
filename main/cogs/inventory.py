@@ -113,10 +113,10 @@ class Inventory_Essentials(commands.Cog):
             return await ctx.reply(use_success("item_missing", target, item))
         
         if item == "Shush!":
+
             if check_item(ctx.author, item):
-                remove_item_from_inv(ctx.author, item, 1)
-                await ctx.reply(use_success("item_used", target, item, ctx.author))
-                return await Item.item_shush(ctx, target)
+                return await Item.item_shush(ctx, target, item)
+            
             return await ctx.reply(use_success("item_missing", target, item))
 
 #---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#

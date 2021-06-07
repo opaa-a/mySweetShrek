@@ -516,3 +516,17 @@ def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
         return (
             f':x:   No no no, you can\'t use this command on bots!'
         )
+
+def item_shush_success(dialogue_ref: str, target: discord.Member):
+    if dialogue_ref == "target_is_already_muted":
+        return (
+            f':x:   Nope, **{target}** is already muted!'
+            )
+    if dialogue_ref == "target_not_connected":
+        return (
+            f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
+            )
+    if dialogue_ref == "target_is_bot":
+        return (
+            f':x:   No no no, you can\'t use this command on bots!'
+        )

@@ -29,6 +29,11 @@ def check_user_voice_chan(userID: discord.Member):
         return False
     return True
 
+def check_user_is_muted(userID: discord.Member):
+    if userID.voice.mute:
+        return True
+    return False
+
 #---------------------------------------------------------------------------------------#      ESSENTIAL COMMANDS      #---------------------------------------------------------------------------------------#
 
 # Basic Commands regroup all the the useless/basic commands of the bot.
@@ -102,6 +107,11 @@ class Essential(commands.Cog):
         if int(querry.content) == 4:
             from cogs.inventory import Inventory_Essentials
             return await Inventory_Essentials.help_inv(self, ctx)
+    
+    @commands.command()
+    async def t(self, ctx):
+        userID = ctx.author
+        await ctx.send(userID.voice.mute)
             
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
