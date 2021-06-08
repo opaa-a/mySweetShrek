@@ -299,7 +299,10 @@ class Economy_Grind(commands.Cog):
 # he lose the double of his bet.
     @commands.command(aliases=['cf'])
     async def coinflip(self, ctx, amount : int):
-        # bully = ""
+        from cogs.essential import check_user_has_role
+        from cogs.essential import malus_rate
+        from cogs.essential import bonus_rate
+
         amount = abs(amount)
         author = ctx.author
         cf_prize = amount * 2
@@ -310,6 +313,13 @@ class Economy_Grind(commands.Cog):
 
         if get_balance(author) < amount:
             return await ctx.reply(error_user_cant_pay())
+        
+        # add malus rate to the prize if user is 'mauvais toutou'
+        if check_user_has_role(ctx.author, 805897076437155861):
+            cf_prize = cf_prize - cf_prize * malus_rate
+        # add bonus rate to the prize if user is 'bon toutou'
+        if check_user_has_role(ctx.author, 804849555094765598):
+            cf_prize = cf_prize * bonus_rate
 
         await ctx.send(coinflip_success(amount, author, "cf_init"))
         
@@ -338,8 +348,8 @@ class Economy_Grind(commands.Cog):
         await asyncio.sleep(1)
 
         if cf_result != guess:
-            md_balance(author, "sub", cf_prize)
-            return await ctx.send(coinflip_success(cf_prize, author, "cf_lose"))
+            md_balance(author, "sub", amount)
+            return await ctx.send(coinflip_success(amount, author, "cf_lose"))
         
         md_balance(author, "add", cf_prize)
         return await ctx.send(coinflip_success(cf_prize, author, "cf_win"))
@@ -349,12 +359,22 @@ class Economy_Grind(commands.Cog):
 # First person to get the right answer to the fact will earn between 1 and 15 {currency}.
     @commands.command(aliases=['fa'])
     async def facts(self, ctx):
+        from cogs.essential import check_user_has_role
+        from cogs.essential import malus_rate
+        from cogs.essential import bonus_rate
 
         client = discord.Client
         channel = ctx.channel
         random_fact = random.choice(fact_list)
         fact_index = fact_list.index(random_fact)
         prize = random.randint(1,15)
+
+        # add malus rate to the prize if user is 'mauvais toutou'
+        if check_user_has_role(ctx.author, 805897076437155861):
+            prize = prize - prize * malus_rate
+        # add bonus rate to the prize if user is 'bon toutou'
+        if check_user_has_role(ctx.author, 804849555094765598):
+            prize = prize * bonus_rate
 
         await ctx.send(random_fact)
 
@@ -390,6 +410,10 @@ class Economy_Reward(commands.Cog):
 
 # daily_reward is the a daily claimable reward with a default amount of 1000
     def daily_reward(self, ctx, userID : discord.Member):
+        from cogs.essential import check_user_has_role
+        from cogs.essential import malus_rate
+        from cogs.essential import bonus_rate
+
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             date_now = str(datetime.date.today())
@@ -397,6 +421,13 @@ class Economy_Reward(commands.Cog):
             
             userID = str(userID)
             dlr_claim = vault[userID]["reward"]["daily_reward_claim_date"]
+            
+            # add malus rate to the prize if user is 'mauvais toutou'
+            if check_user_has_role(ctx.author, 805897076437155861):
+                reward = reward - reward * malus_rate
+            # add bonus rate to the prize if user is 'bon toutou'
+            if check_user_has_role(ctx.author, 804849555094765598):
+                reward = reward * bonus_rate
 
             if dlr_claim == False:
                 vault[userID]["reward"]["daily_reward_claim_date"] = date_now

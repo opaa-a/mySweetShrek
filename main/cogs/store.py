@@ -28,8 +28,8 @@ def store_buy_item(userID, querry : str, price: int):
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "A la niche!", 1)
         return store_purchase_complete(str(querry))
-# buy item 'GTFO'  
-    if querry == 'GTFO!':
+# buy item 'Mauvais toutou'  
+    if querry == 'Mauvais toutou!':
         if get_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
@@ -40,7 +40,7 @@ def store_buy_item(userID, querry : str, price: int):
         print(f'# STORE -- {userID} bought {querry}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
-        add_item_to_inv(userID, "GTFO!", 1)
+        add_item_to_inv(userID, "Mauvais toutou!", 1)
         return store_purchase_complete(str(querry))
 # buy item 'Shush'  
     if querry == 'Shush!':
@@ -56,7 +56,8 @@ def store_buy_item(userID, querry : str, price: int):
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "Shush!", 1)
         return store_purchase_complete(str(querry))
-    # return querry_exit('store')
+    
+    return querry_exit('unknown_ID', 'store')
 
 
 #---------------------------------------------------------------------------------------#      STORE COMMANDS      #---------------------------------------------------------------------------------------#

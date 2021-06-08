@@ -6,7 +6,11 @@ from dialogue.errors import *
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
+global malus_rate
+malus_rate = 0.20
 
+global bonus_rate
+bonus_rate = 1.10
 
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
@@ -34,6 +38,13 @@ def check_user_is_muted(userID: discord.Member):
         return True
     return False
 
+def check_user_has_role(userID: discord.Member, role_id):
+    roles_id = []
+    for x in userID.roles:
+        roles_id.append(x.id)
+    if role_id in roles_id:
+        return True
+    return False
 #---------------------------------------------------------------------------------------#      ESSENTIAL COMMANDS      #---------------------------------------------------------------------------------------#
 
 # Basic Commands regroup all the the useless/basic commands of the bot.
@@ -109,9 +120,10 @@ class Essential(commands.Cog):
             return await Inventory_Essentials.help_inv(self, ctx)
     
     @commands.command()
-    async def t(self, ctx):
-        userID = ctx.author
-        await ctx.send(userID.voice.mute)
+    async def debug(self, ctx):
+        if check_user_has_role(ctx.author, 804849555094765598):
+            return await ctx.send('user has role')
+        return await ctx.send('user does not have role')
             
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 

@@ -1,6 +1,7 @@
 import discord
 import asyncio
 from discord.ext import commands
+from discord.role import Role
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -19,7 +20,7 @@ class Item(commands.Cog):
         self.client = client
         print(f'\n- Item from items.py is loaded')
 
-    async def item_alaniche(ctx, target: discord.Member, item: str):
+    async def item_a_la_niche(ctx, target: discord.Member, item: str):
         # get the functions from the cog inventory
         from cogs.inventory import remove_item_from_inv 
         from cogs.essential import check_user_in_chan
@@ -46,8 +47,36 @@ class Item(commands.Cog):
         # move the target to the channel "la niche" & send success dialogue
         return await target.move_to(channel), await ctx.reply(use_success("item_used", target, item, ctx.author))
 
-    async def item_gtfo():
-        return (f'test gtfo')
+    async def item_mauvais_toutou(ctx, target: discord.Member, item: str):
+        from cogs.inventory import remove_item_from_inv 
+        from cogs.essential import check_user_has_role
+        from cogs.essential import check_user_is_bot
+        from cogs.economy import get_vault
+        
+        role_mauvais_toutou = ctx.guild.get_role(805897076437155861)
+        role_bon_toutou = ctx.guild.get_role(804849555094765598)
+        role_hold_time = (60*60)*24
+
+        if check_user_has_role(target, 805897076437155861):
+            return await ctx.reply('target has role')
+        
+        if check_user_is_bot(target):
+            return await ctx.reply('target is bot')
+        
+        if get_vault(target) is False:
+            return await ctx.reply('target is not registered')
+        
+        remove_item_from_inv(ctx.author, item, 1)
+        
+        await target.add_roles(role_mauvais_toutou)
+        if check_user_has_role(target, 804849555094765598):
+            await target.remove_roles(role_bon_toutou)
+
+        await ctx.reply(use_success("item_used", target, item, ctx.author))
+
+        await asyncio.sleep(role_hold_time)
+
+        return await target.remove_roles(role_mauvais_toutou)
 
     async def item_shush(ctx, target: discord.Member, item: str):
         # get the functions from the cog inventory
