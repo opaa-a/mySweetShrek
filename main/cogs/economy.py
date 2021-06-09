@@ -294,6 +294,40 @@ class Economy_Grind(commands.Cog):
             #return if querry successful
             return await ctx.author.send(help_grind_querry(int(querry.content)))
 
+
+# A 'bon toutou' is picked every 24 hours, it'll give the user perks like a 5% more income and 5% discounts...
+    async def bon_toutou(self, userID: discord.Member):
+        from cogs.essential import check_user_has_role
+        from cogs.essential import check_user_is_bot
+        from cogs.background_tasks import Bon_Toutou_Task
+        guild = self.client.get_guild(774048252848111636)
+        role_bon_toutou = guild.get_role(804849555094765598)
+        role_hold_time = (60*60)*24
+
+        if check_user_has_role(userID, 805897076437155861):
+            print(f'\n# BON TOUTOU ERROR -- {userID} is Mauvais Toutou!')
+            return await Bon_Toutou_Task.bon_toutou_assign(self)
+        
+        if check_user_is_bot(userID):
+            print(f'\n# BON TOUTOU ERROR -- {userID} is a bot!')
+            return await Bon_Toutou_Task.bon_toutou_assign(self)
+        
+        if get_vault(userID) is False:
+            print(f'\n# BON TOUTOU ERROR -- {userID} is not registered!')
+            return await Bon_Toutou_Task.bon_toutou_assign(self)
+        
+        # if userID == prior_userID:
+        #     print(f'\n# BON TOUTOU ERROR -- {userID} was already the Bon Toutou')
+        #     return await Bon_Toutou_Task.bon_toutou_assign(self )
+
+        await userID.add_roles(role_bon_toutou)
+
+        await asyncio.sleep(role_hold_time)
+
+        await userID.remove_roles(role_bon_toutou)
+
+
+
 # !coinflip OR !cf -- Takes one arg. Amount. Expect an answer after first message.
 # Either Head or Tail, a coin is tossed, if author wins, he double his bet. If author lose,
 # he lose the double of his bet.

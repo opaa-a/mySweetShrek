@@ -120,9 +120,8 @@ class Essential(commands.Cog):
             return await Inventory_Essentials.help_inv(self, ctx)
     
     @commands.command()
-    async def debug(self, ctx, str):
-        await ctx.reply(str.lower())
-
+    async def debug(self, ctx):
+        return
             
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 

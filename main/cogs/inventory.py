@@ -86,14 +86,16 @@ class Inventory_Essentials(commands.Cog):
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
+        if get_vault(ctx.author) is False:
+            return await ctx.reply(error_user_has_no_vault())
         return await ctx.message.add_reaction('📨'), await ctx.author.send(display_inv(ctx.author))
 
 # !use -- Takes a mandatory arg. use an item in the inventory
     @commands.command()
     async def use(self, ctx, target: discord.Member, *, item: str):
         # check if user has vault
-        if get_vault(ctx.author) != True:
-            return error_user_has_no_vault(ctx.author)
+        if get_vault(ctx.author) is False:
+            return await ctx.reply(error_user_has_no_vault())
 
         if isinstance(ctx.channel, discord.channel.DMChannel):
             return await ctx.author.send(use_success('command_in_dm'))
@@ -124,9 +126,9 @@ class Inventory_Essentials(commands.Cog):
     @use.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_bad_arg("use")), await ctx.author.send(error_use("bad_arg"))
+            return print(log_error_bad_arg("use")), await ctx.reply(error_use("bad_arg"))
         elif isinstance(error, commands.MissingRequiredArgument):
-            return print(log_error_missing_arg("use")), await ctx.author.send(error_use("missing_arg"))
+            return print(log_error_missing_arg("use")), await ctx.reply(error_use("missing_arg"))
         # return await ctx.author.send(unknown_error())
 
 
