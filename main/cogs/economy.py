@@ -331,7 +331,7 @@ class Economy_Grind(commands.Cog):
         if ans.content.lower() != 'tail' and ans.content.lower() != 'head':
             return await ctx.reply(error_coinflip("fail_ans"))
 
-        guess = ans.content
+        guess = ans.content.lower()
         cf_result = random.choice(coin_faces)
         
         # if str(author) == bully:

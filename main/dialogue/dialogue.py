@@ -530,3 +530,17 @@ def item_shush_success(dialogue_ref: str, target: discord.Member):
         return (
             f':x:   No no no, you can\'t use this command on bots!'
         )
+
+def item_mauvais_toutou(dialogue_ref: str, target: discord.Member):
+    if dialogue_ref == "target_already_has_role":
+        return (
+            f':x:   Nope, **{target}** is already \'Mauvais toutou\'!'
+            )
+    if dialogue_ref == "target_is_not_registered":
+        return (
+            f':x:   Ohoh! Looks like **{target}** is not registered to the vault. You can\'t target users that are not in the vault.'
+            )
+    if dialogue_ref == "target_is_bot":
+        return (
+            f':x:   No no no, you can\'t use this command on bots!'
+            )

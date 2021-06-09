@@ -120,10 +120,9 @@ class Essential(commands.Cog):
             return await Inventory_Essentials.help_inv(self, ctx)
     
     @commands.command()
-    async def debug(self, ctx):
-        if check_user_has_role(ctx.author, 804849555094765598):
-            return await ctx.send('user has role')
-        return await ctx.send('user does not have role')
+    async def debug(self, ctx, str):
+        await ctx.reply(str.lower())
+
             
 #---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
 
