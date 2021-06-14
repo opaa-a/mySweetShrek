@@ -5,7 +5,8 @@ from decouple import config
 
 TOKEN = config('DISCORD_TOKEN') # DISCORD TOKEN IN ENV VAR
 GUILD = config('DISCORD_GUILD') # DISCORD GUILD IN ENV VAR
-DEF_CHAN = config('DISCORD_DEF_CHAN') # DISCORD DEFAULT CHANNEL IN ENV VAR  
+DEF_CHAN = config('DISCORD_DEF_CHAN') # DISCORD DEFAULT CHANNEL IN ENV VAR
+LOG_CHAN = config('DISCORD_LOG_CHAN')
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID') # DISCORD ADMIN ROLE IDENTIFIER
 
 intents = discord.Intents(messages=True, guilds=True, reactions=True, members=True, presences=True, voice_states=True)
@@ -14,7 +15,8 @@ client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 @client.event
 async def on_ready():
     
-    default_chan = client.get_channel(int(DEF_CHAN))    # DEFINE THE DEFAULT CHANNEL THE BOT WILL BE DEBUGGED IN
+    default_chan = client.get_channel(int(DEF_CHAN))    # DEFINE THE DEFAULT CHANNEL THE BOT WILL BE DEBUGGED IN*
+    log_chan = client.get_channel(int(LOG_CHAN))
 
     global guild 
     for guild in client.guilds:                         # DEFINE THE VAR GUILD TO BE EQUAL TO THE CURRENT GUILD
@@ -22,6 +24,18 @@ async def on_ready():
             break
     print(
         f'\n##########    BOT INFORMATION     ##########'
+        f'\n'
+        f'\n1.         Bot ID: {client.user}'
+        f'\n2.         Guild Name: {guild.name}'
+        f'\n3.         Guild ID: {guild.id}'
+        f'\n4.         Default Channel: {default_chan.name}'
+        f'\n5.         Guild Owner: {guild.owner}'
+        f'\n'
+        f'\n############################################'
+    )
+
+    await log_chan.send(
+        f'\n##########      BOT IS ONLINE     ##########'
         f'\n'
         f'\n1.         Bot ID: {client.user}'
         f'\n2.         Guild Name: {guild.name}'
