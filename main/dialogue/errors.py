@@ -1,7 +1,5 @@
 import discord
-from discord.ext import commands
-
-
+from main_rev3_0 import log_format
 #---------------------------------------------------------------------------------------#       LOG ERRORS       #---------------------------------------------------------------------------------------#
 
 def log_error_bad_arg(target: str):

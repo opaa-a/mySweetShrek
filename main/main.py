@@ -16,7 +16,6 @@ client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 async def on_ready():
     
     default_chan = client.get_channel(int(DEF_CHAN))    # DEFINE THE DEFAULT CHANNEL THE BOT WILL BE DEBUGGED IN*
-    log_chan = client.get_channel(int(LOG_CHAN))
 
     global guild 
     for guild in client.guilds:                         # DEFINE THE VAR GUILD TO BE EQUAL TO THE CURRENT GUILD
@@ -33,32 +32,19 @@ async def on_ready():
         f'\n'
         f'\n############################################'
     )
-
-    await log_chan.send(
-        f'\n##########      BOT IS ONLINE     ##########'
-        f'\n'
-        f'\n1.         Bot ID: {client.user}'
-        f'\n2.         Guild Name: {guild.name}'
-        f'\n3.         Guild ID: {guild.id}'
-        f'\n4.         Default Channel: {default_chan.name}'
-        f'\n5.         Guild Owner: {guild.owner}'
-        f'\n'
-        f'\n############################################'
-    )
-
-    await default_chan.send(f"I'm up and running my dude :sunglasses:")
+    
     init_cog()
 
                     # !load -- MANUALLY LOAD COGS
 @client.command()
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
-    await ctx.reply(f':ballot_box_with_check:   {extension} has been successfully loaded!')
+    return await ctx.reply(f':ballot_box_with_check:   {extension} has been successfully loaded!')
 
 @load.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.reply(f'Oops! You need to specify a cog!\n- `!load <cog>`')
+        return await ctx.reply(f'Oops! You need to specify a cog!\n- `!load <cog>`')
 
                 # !unload -- MANUALLY UNLOAD COGS
 @client.command()
