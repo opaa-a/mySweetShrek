@@ -1,7 +1,9 @@
 import os
 import discord
+from discord import user
 from discord.ext import commands
 from decouple import config
+from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded, MissingAnyRole, MissingRequiredArgument
 from dialogue.main_dialogue import *
 from dialogue.global_dialogue import *
 from dialogue.errors import *
@@ -21,21 +23,7 @@ client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 # ---------------------------------------------- # CLASS # ---------------------------------------------- #
 
-class log_format:
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
 
-    INFO = '\033[96m[i] '
-    ERROR = '\033[31;4;1m/!\ '
-    FAIL = '\033[93;1m[x] '
-
-class dialogue_icon:
-    success = ':ballot_box_with_check:'
-    error = ':exclamation:'
-    fail = ':x:'
 
 # ---------------------------------------------- # GLOABL FUNCTIONS # ---------------------------------------------- #
 
@@ -57,17 +45,64 @@ def init_cog():
 
     return unknown_error()
 
+def check_cog_exist(cog: str):
+    cog_list = []
+    for filename in os.listdir('./main/cogs'):         
+        if filename.endswith(".py"):
+            cog_list.append(f'cogs.{filename[:-3]}')
+    
+    if cog in cog_list:
+        return True
+    return False
+
 # ---------------------------------------------- # COMMANDS # ---------------------------------------------- #
 
 @client.command()
 async def load(ctx, cog: str):
     from cogs.essential import check_user_has_role
-    if check_user_has_role(ctx.author, ADMIN_ROLE_ID) is False:
-        return await ctx.reply(Global_Dialogue.user_not_allowed()), print(Global_Log.user_not_allowed('load', ctx.author))
-    
-    client.load_extension(cog)
-    return await ctx.reply(Main_Dialogue.load_command_success(cog)), print()
+    # check if user has permissions to use the command
+    if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
+        return print(Global_Log.command_has_been_used('load', ctx.author, log_format.DATE)), await ctx.reply(Global_Dialogue.user_not_allowed('load', ctx.author))
+    # check if the specified cog exist
+    if check_cog_exist(cog) is False:
+        return await ctx.reply(Main_ErrorHandler.load_error_cog_doesnt_exist(cog, ctx.author, log_format.DATE))
+    # if conditions are met, try to execute
+    try:
+        client.load_extension(cog)
+        return await ctx.reply(Main_Dialogue.load_command_success(cog, ctx.author))
+    # if cog already loaded, return this exception
+    except ExtensionAlreadyLoaded:
+        return await ctx.reply(Main_ErrorHandler.load_error_cog_already_loaded(cog, ctx.author, log_format.DATE))
+# handle missing requiered arg error for load command
+@load.error
+async def error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        print(Global_Log.command_has_been_used('load', ctx.author, log_format.DATE))
+        return await ctx.reply(Global_Dialogue.arg_missing('load', ctx.author, '!load <cog>'))
 
+
+@client.command()
+async def unload(ctx, cog:str):
+    from cogs.essential import check_user_has_role
+    # check if user has permissions to use the command
+    if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
+        return print(Global_Log.command_has_been_used('unload', ctx.author, log_format.DATE)), await ctx.reply(Global_Dialogue.user_not_allowed('unload', ctx.author))
+    # check if the specified cog exist
+    if check_cog_exist(cog) is False:
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author, log_format.DATE))
+    # if conditions are met, try to execute
+    try:
+        client.unload_extension(cog)
+        return await ctx.reply(Main_Dialogue.unload_command_success(cog, ctx.author))
+    # if cog already loaded, return this exception
+    except ExtensionNotLoaded:
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_already_unloaded(cog, ctx.author, log_format.DATE))
+# handle missing requiered arg error for load command
+@unload.error
+async def error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        print(Global_Log.command_has_been_used('unload', ctx.author, log_format.DATE))
+        return await ctx.reply(Global_Dialogue.arg_missing('unload', ctx.author, '!unload <cog>'))
 # ---------------------------------------------- # EVENTS # ---------------------------------------------- #
 
 @client.event
