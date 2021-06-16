@@ -1,9 +1,9 @@
 import os
 import discord
-from discord import user
+import json
 from discord.ext import commands
 from decouple import config
-from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded, MissingAnyRole, MissingRequiredArgument
+from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded
 from dialogue.main_dialogue import *
 from dialogue.global_dialogue import *
 from dialogue.errors import *
@@ -26,6 +26,22 @@ client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 
 # ---------------------------------------------- # GLOABL FUNCTIONS # ---------------------------------------------- #
+def edit_json(data, file):
+    with open(file, 'w') as file:
+        json.dump(data, file, indent=4)
+        file.close()
+
+def edit_cog_list(cog: str, method: str):
+    with open('./main/assets/cogs.json') as cogs:
+        cog_file = json.load(cogs)
+    
+    if method == "load":
+        cog_file["COGS"][cog] = True
+
+    elif method == "unload":
+        cog_file["COGS"][cog] = False
+    
+    return edit_json(cog_file, "./main/assets/cogs.json")
 
 # init_cog load all .py files located in ./main/cogs
 def init_cog():
@@ -36,9 +52,14 @@ def init_cog():
             cog_list.append(f'cogs.{filename[:-3]}')
     # if cog folder not empty, load cogs
     if len(cog_list) > 0:
+        # open cog file
+        with open('./main/assets/cogs.json') as cogs:
+            cog_file = json.load(cogs)
+        # load cogs and add them to the file, passing them to True
         for cog in cog_list:
+            cog_file["COGS"][cog] = True
             client.load_extension(cog)
-        return print(Main_Log.init_cog_success)
+        return print(Main_Log.init_cog_success), edit_json(cog_file, "./main/assets/cogs.json")
     # elif cog folder is empty, return error log
     elif len(cog_list) == 0:
         return print(Main_Log.init_cog_empty_cogs)
@@ -62,22 +83,22 @@ async def load(ctx, cog: str):
     from cogs.essential import check_user_has_role
     # check if user has permissions to use the command
     if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
-        return print(Global_Log.command_has_been_used('load', ctx.author, log_format.DATE)), await ctx.reply(Global_Dialogue.user_not_allowed('load', ctx.author))
+        return print(Global_Log.command_has_been_used('load', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('load', ctx.author))
     # check if the specified cog exist
     if check_cog_exist(cog) is False:
-        return await ctx.reply(Main_ErrorHandler.load_error_cog_doesnt_exist(cog, ctx.author, log_format.DATE))
+        return await ctx.reply(Main_ErrorHandler.load_error_cog_doesnt_exist(cog, ctx.author))
     # if conditions are met, try to execute
     try:
-        client.load_extension(cog)
-        return await ctx.reply(Main_Dialogue.load_command_success(cog, ctx.author))
+        edit_cog_list(cog, "load")
+        return await ctx.reply(Main_Dialogue.load_command_success(cog, ctx.author)), client.load_extension(cog)
     # if cog already loaded, return this exception
     except ExtensionAlreadyLoaded:
-        return await ctx.reply(Main_ErrorHandler.load_error_cog_already_loaded(cog, ctx.author, log_format.DATE))
+        return await ctx.reply(Main_ErrorHandler.load_error_cog_already_loaded(cog, ctx.author))
 # handle missing requiered arg error for load command
 @load.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        print(Global_Log.command_has_been_used('load', ctx.author, log_format.DATE))
+        print(Global_Log.command_has_been_used('load', ctx.author))
         return await ctx.reply(Global_Dialogue.arg_missing('load', ctx.author, '!load <cog>'))
 
 
@@ -86,23 +107,84 @@ async def unload(ctx, cog:str):
     from cogs.essential import check_user_has_role
     # check if user has permissions to use the command
     if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
-        return print(Global_Log.command_has_been_used('unload', ctx.author, log_format.DATE)), await ctx.reply(Global_Dialogue.user_not_allowed('unload', ctx.author))
+        return print(Global_Log.command_has_been_used('unload', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('unload', ctx.author))
     # check if the specified cog exist
     if check_cog_exist(cog) is False:
-        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author, log_format.DATE))
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author))
     # if conditions are met, try to execute
     try:
-        client.unload_extension(cog)
-        return await ctx.reply(Main_Dialogue.unload_command_success(cog, ctx.author))
-    # if cog already loaded, return this exception
+        edit_cog_list(cog, "unload")
+        return await ctx.reply(Main_Dialogue.unload_command_success(cog, ctx.author)), client.unload_extension(cog)
+    # if cog already unloaded, return this exception
     except ExtensionNotLoaded:
-        return await ctx.reply(Main_ErrorHandler.unload_error_cog_already_unloaded(cog, ctx.author, log_format.DATE))
-# handle missing requiered arg error for load command
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_already_unloaded(cog, ctx.author))
+# handle missing requiered arg error for unload command
 @unload.error
 async def error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        print(Global_Log.command_has_been_used('unload', ctx.author, log_format.DATE))
+        print(Global_Log.command_has_been_used('unload', ctx.author))
         return await ctx.reply(Global_Dialogue.arg_missing('unload', ctx.author, '!unload <cog>'))
+
+
+@client.command()
+async def reload(ctx, cog: str):
+    from cogs.essential import check_user_has_role
+    # check if user has permissions to use the command
+    if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
+        return print(Global_Log.command_has_been_used('reload', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('reload', ctx.author))
+    # check if the specified cog exist
+    if check_cog_exist(cog) is False:
+        return await ctx.reply(Main_ErrorHandler.reload_error_cog_doesnt_exist(cog, ctx.author))
+    # if conditions are met, try to execute
+    try:
+        return await ctx.reply(Main_Dialogue.reload_command_success(cog, ctx.author)), client.unload_extension(cog), client.load_extension(cog)
+    # if cog is unloaded, return this exception
+    except ExtensionNotLoaded:
+        return await ctx.reply(Main_ErrorHandler.reload_error_cog_is_unloaded(cog, ctx.author))
+# handle missing required arg error for reload command
+@reload.error
+async def error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        print(Global_Log.command_has_been_used('reload', ctx.author))
+        return await ctx.reply(Global_Dialogue.arg_missing('reload', ctx.author, '!reload <cog>'))
+
+
+@client.command(aliases=['cl'])
+async def coglist(ctx):
+    from cogs.essential import check_user_has_role
+    # check if user has permissions to use the command
+    try:
+        if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
+            return print(Global_Log.command_has_been_used('coglist', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('coglist', ctx.author))
+    except AttributeError:
+        return print(Global_Log.command_has_been_used('coglist', ctx.author)), await ctx.author.send(Global_Dialogue.command_executed_in_dm('coglist', ctx.author))
+    # fecth the cogs json file and edit get its data
+    with open('./main/assets/cogs.json') as cogs:
+        cog_file = json.load(cogs)
+        cog_dict = dict(cog_file["COGS"])
+        cog_list = []
+        # add a icon green or red depending on the status of the cog.
+        for cog in cog_dict:
+            if cog_dict[cog] == True:
+                cog = f':green_circle:  **{cog}**'
+                cog_list.append(cog)
+            else:
+                cog = f':red_circle:  **{cog}**'
+                cog_list.append(cog)
+        cog_list = '\n\n '.join(cog_list)
+    # create the embed
+    embed = discord.Embed(title="Cogs list",color=0xFD3864)
+    embed.add_field(name="Here is the list of all the cogs.", value=f'\n{cog_list}')
+    # return the result of the command.
+    return Main_Dialogue.cl_command_success(ctx.author), await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(embed=embed)
+
+@client.command()
+async def source(ctx):
+    print(Global_Log.command_has_been_used('source', ctx.author),'\n\t',Global_Log.command_run_without_exception('source'))
+    return await ctx.reply(
+        f'Here is my GitHub!'
+        f'\nhttps://github.com/opaa-a/mySweetShrek'
+        )
 # ---------------------------------------------- # EVENTS # ---------------------------------------------- #
 
 @client.event
