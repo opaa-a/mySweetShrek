@@ -1,8 +1,8 @@
 import discord
 import json
 from discord.ext import commands
-from dialogue.dialogue import *
-from dialogue.errors import *
+from dialogue.global_dialogue import *
+from dialogue.essential_dialogue import *
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -51,11 +51,11 @@ def check_user_has_role(userID: discord.Member, role_id):
 class Essential(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Essential from basic.py is loaded.")
+        print(f'\n{log_format.INFO}- Essential from basic.py is loaded.{log_format.END}')
 
 # display the help general section
     async def help_general(self,ctx):
-        await ctx.author.send(help_general_success())
+        await ctx.author.send(Essential_Dialogue.help_general_function_success(ctx.author))
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
@@ -71,21 +71,23 @@ class Essential(commands.Cog):
             #return if querry int unvalid
             try:
                 if int(querry.content) not in help_general_exp_index_list:
-                    return await ctx.author.send(querry_exit('unknown_ID','general help'))
+                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID','general help', ctx.author))
             # return if querry is not int
             except ValueError:
-                return await ctx.author.send(querry_exit('valueError_int', 'general help'))
+                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'general help', ctx.author))
             #return if querry successful
-            return await ctx.author.send(help_general_querry(int(querry.content)))
+            return await ctx.author.send(Essential_Dialogue.help_general_querry(int(querry.content), ctx.author))
 
 # !help -- Takes no mandatory args. display help.
     @commands.command()
     async def help(self, ctx):
-        await ctx.author.send(help_index_success())
-        await ctx.message.add_reaction('📨')
+        await ctx.author.send(Essential_Dialogue.help_command_success(ctx.author))
+        await ctx.message.add_reaction(dialogue_icon.dm)
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
         # check if theme is selected
         def check(querry):
             return ctx.author == querry.author
+        # bot is waiting for a querry
         querry = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the index of themes.
         with open('main/assets/help.json') as help_index:
@@ -98,10 +100,10 @@ class Essential(commands.Cog):
         # return if querry int is unvalid
         try:
             if int(querry.content) not in help_theme_index_list:
-                return await ctx.author.send(querry_exit('unknown_ID', 'index help'))
+                return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'index help', ctx.author))
         # return if querry is not int
         except ValueError:
-            return await ctx.author.send(querry_exit('valueError_int', 'index help'))
+            return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'index help', ctx.author))
         
         # return if querry is successful
         if int(querry.content) == 0:
@@ -122,10 +124,6 @@ class Essential(commands.Cog):
     @commands.command()
     async def debug(self, ctx):
         return
-            
-#---------------------------------------------------------------------------------------#       BASIC ERROR        #---------------------------------------------------------------------------------------#
-
-
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 

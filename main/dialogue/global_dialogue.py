@@ -14,8 +14,9 @@ class log_format:
     INFO = '\033[96m[i] '
     ERROR = '\033[93;4;1m/!\ '
     FAIL = '\033[31;1m[-] '
-    NOEXC = '\033[32;1m[+]'
-    COM = '\033[35;1m[COM]'
+    NOEXC = '\033[32;1m[+] '
+    COM = '\033[35;1m[COM] '
+    WAIT = '\033[35m[...] '
 
 # Dialogue default icons
 class dialogue_icon:
@@ -23,6 +24,13 @@ class dialogue_icon:
     error = ':exclamation:'
     fail = ':x:'
     dm = '📨'
+
+# Dialogue global variables
+class global_dialogue_var:
+    # currency used on the server.
+    currency = "pipi-coins"
+    # name used for the store.
+    storeName = "Pipi-Store"
 
 # Global scope dialogues
 class Global_Dialogue:
@@ -44,10 +52,37 @@ class Global_Dialogue:
         print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} EXECUTED THIS COMMAND IN THE BOT DMs.{log_format.END}')
         return f'{dialogue_icon.fail}   Oops! You need to execute this command in a channel and not in my DMs!'
 
+    # return if querry is exited by an error
+    def querry_exit(error: str, querry_type: str, userID: discord.Member):
+        print(f'\t{log_format.FAIL} QUERRY {querry_type} HAS BEEN EXITED BY {userID} DUE TO FOLLOWING ERROR {error}.{log_format.END}')
+        
+        if error == 'unknown_ID':            
+            return (
+                f'> *This ID does not exist!*'
+                f'\n> *You exited the {querry_type} querry*'
+                )
+        if error == 'valueError_int':
+            return (
+                f'> *Your querry must be a number!*'
+                f'\n> *You exited the {querry_type} querry*'
+            )
+        if error == 'valueError_str':
+            return (
+                f'> *Your querry must be a word!*'
+                f'\n> *You exited the {querry_type} querry*'
+            )
+
 # Global scope logs
 class Global_Log:
     # log everytime user use command    
     def command_has_been_used(command: str, userID: discord.Member):
         return f'\n{log_format.COM} COMMAND {command} has been used by {userID} at {log_format.DATE}{log_format.END}'
+    # log everytime command is run without exception
     def command_run_without_exception(command: str):
-        return f'{log_format.NOEXC} {command} RAN WITHOUT EXCEPTION.{log_format.END}'
+        return f'\t{log_format.NOEXC} {command} RAN WITHOUT EXCEPTION.{log_format.END}'
+    # log when bot is waiting for a querry
+    def bot_is_waiting_for_querry(userID: discord.Member):
+        return f'\t{log_format.WAIT} BOT IS WAITING FOR QUERRY FROM {userID}.{log_format.END}'
+    # return when querry is successful
+    def querry_success(querry_type: str, userID: discord.Member):
+        return f'\t{log_format.NOEXC} {querry_type} QUERRY REQUEST HAS BEEN SUCCESSFULLY USED BY {userID}.{log_format.END}'

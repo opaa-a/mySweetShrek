@@ -4,10 +4,10 @@ import random
 import asyncio
 import datetime
 from discord.ext import commands
-from discord.ext import tasks
 from decouple import config
 from dialogue.dialogue import *
 from dialogue.errors import *
+from dialogue.economy_dialogue import *
 from facts_dic import *
 
 
@@ -103,11 +103,11 @@ def check_pay(userID, amount):
 class Economy_Essentials(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Economy Essentials from bank.py is loaded.")
+        print(f"\n{log_format.INFO}- Economy Essentials from bank.py is loaded.{log_format.END}")
 
 # display the help economy section
     async def help_economy(self,ctx):
-        await ctx.author.send(help_economy_success())
+        await ctx.author.send(Economy_Essential_Dialogue.help_economy_function_success(ctx.author))
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
@@ -123,12 +123,12 @@ class Economy_Essentials(commands.Cog):
             #return if querry unvalid
             try:
                 if int(querry.content) not in help_economy_exp_index_list:
-                    return await ctx.author.send(querry_exit('unknown_ID', 'economy help'))
+                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'economy help', ctx.author))
             # return if querry is not int
             except ValueError:
-                return await ctx.author.send(querry_exit('valueError_int', 'economy help'))
+                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'economy help', ctx.author))
             #return if querry successful
-            return await ctx.author.send(help_economy_querry(int(querry.content)))
+            return await ctx.author.send(Economy_Essential_Dialogue.help_economy_querry(int(querry.content), ctx.author))
 
 
 # !register -- Take no args. Register the author of the command to the vault.
@@ -267,11 +267,11 @@ class Economy_Essentials(commands.Cog):
 class Economy_Grind(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f'\n- Economy Grind from bank.py is loaded.')
+        print(f'\n{log_format.INFO}- Economy Grind from bank.py is loaded.{log_format.END}')
 
 # display the help grind section
     async def help_grind(self,ctx):
-        await ctx.author.send(help_grind_success())
+        await ctx.author.send(Economy_Grind_Dialogue.help_grind_success(ctx.author))
         #check if theme is selected
         def check(querry):
             return ctx.author == querry.author
@@ -287,12 +287,12 @@ class Economy_Grind(commands.Cog):
             #return if querry int unvalid
             try:
                 if int(querry.content) not in help_grind_exp_index_list:
-                    return await ctx.author.send(querry_exit('unknown_ID', 'grind help'))
+                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'grind help', ctx.author))
             # return if querry is not int
             except ValueError:
-                return await ctx.author.send(querry_exit('valueError_int', 'grind help'))
+                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'grind help', ctx.author))
             #return if querry successful
-            return await ctx.author.send(help_grind_querry(int(querry.content)))
+            return await ctx.author.send(Economy_Grind_Dialogue.help_grind_querry(int(querry.content), ctx.author))
 
 
 # A 'bon toutou' is picked every 24 hours, it'll give the user perks like a 5% more income and 5% discounts...

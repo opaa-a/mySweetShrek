@@ -2,6 +2,7 @@ import discord
 import json
 from discord.ext import commands
 from cogs.inventory import add_item_to_inv
+from dialogue.store_dialogue import *
 from dialogue.dialogue import *
 from dialogue.errors import *
 
@@ -71,8 +72,8 @@ class Store(commands.Cog):
     async def store(self, ctx, param : str = None):
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
-            await ctx.author.send(help_store_success())
-            await ctx.message.add_reaction('📨')
+            await ctx.author.send(Store_Dialogue.help_store_success(ctx.author))
+            await ctx.message.add_reaction(dialogue_icon.dm)
             #check if theme is selected
             def check(querry):
                 return ctx.author == querry.author 
@@ -89,12 +90,12 @@ class Store(commands.Cog):
             # return if querry int unvalid
             try:
                 if int(querry.content) not in help_store_exp_index_list:
-                    return await ctx.author.send(querry_exit('unknown_ID', 'store help'))
+                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'store help', ctx.author))
             # return if querry is not int
             except ValueError:
-                return await ctx.author.send(querry_exit('valueError_int', 'store help'))
+                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'store help', ctx.author))
             # return if querry successful
-            return await ctx.author.send(help_store_querry(int(querry.content)))
+            return await ctx.author.send(Store_Dialogue.help_store_querry(int(querry.content), ctx.author))
         
 # message delivered if parameter is 'showcase'
         if param.lower() == 'showcase':
