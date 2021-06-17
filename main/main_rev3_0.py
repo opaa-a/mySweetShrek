@@ -3,7 +3,7 @@ import discord
 import json
 from discord.ext import commands
 from decouple import config
-from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded
+from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotFound, ExtensionNotLoaded
 from dialogue.main_dialogue import *
 from dialogue.global_dialogue import *
 from dialogue.errors import *
@@ -21,16 +21,15 @@ intents = discord.Intents(messages=True, guilds=True, reactions=True, members=Tr
 client = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 
-# ---------------------------------------------- # CLASS # ---------------------------------------------- #
-
-
-
 # ---------------------------------------------- # GLOABL FUNCTIONS # ---------------------------------------------- #
+
+# function that dump new content to a specified json file
 def edit_json(data, file):
     with open(file, 'w') as file:
         json.dump(data, file, indent=4)
         file.close()
 
+# function that edit if a cog is loaded or unloaded in the cogs json file
 def edit_cog_list(cog: str, method: str):
     with open('./main/assets/cogs.json') as cogs:
         cog_file = json.load(cogs)
@@ -66,16 +65,6 @@ def init_cog():
 
     return unknown_error()
 
-def check_cog_exist(cog: str):
-    cog_list = []
-    for filename in os.listdir('./main/cogs'):         
-        if filename.endswith(".py"):
-            cog_list.append(f'cogs.{filename[:-3]}')
-    
-    if cog in cog_list:
-        return True
-    return False
-
 # ---------------------------------------------- # COMMANDS # ---------------------------------------------- #
 
 @client.command()
@@ -84,16 +73,17 @@ async def load(ctx, cog: str):
     # check if user has permissions to use the command
     if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
         return print(Global_Log.command_has_been_used('load', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('load', ctx.author))
-    # check if the specified cog exist
-    if check_cog_exist(cog) is False:
-        return await ctx.reply(Main_ErrorHandler.load_error_cog_doesnt_exist(cog, ctx.author))
     # if conditions are met, try to execute
     try:
+        client.load_extension(cog)
         edit_cog_list(cog, "load")
-        return await ctx.reply(Main_Dialogue.load_command_success(cog, ctx.author)), client.load_extension(cog)
+        return await ctx.reply(Main_Dialogue.load_command_success(cog, ctx.author))
     # if cog already loaded, return this exception
     except ExtensionAlreadyLoaded:
         return await ctx.reply(Main_ErrorHandler.load_error_cog_already_loaded(cog, ctx.author))
+    # if cog does not exist, return this exception
+    except ExtensionNotFound:
+        return await ctx.reply(Main_ErrorHandler.load_error_cog_doesnt_exist(cog, ctx.author))
 # handle missing requiered arg error for load command
 @load.error
 async def error(ctx, error):
@@ -108,16 +98,17 @@ async def unload(ctx, cog:str):
     # check if user has permissions to use the command
     if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
         return print(Global_Log.command_has_been_used('unload', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('unload', ctx.author))
-    # check if the specified cog exist
-    if check_cog_exist(cog) is False:
-        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author))
     # if conditions are met, try to execute
     try:
+        client.unload_extension(cog)
         edit_cog_list(cog, "unload")
-        return await ctx.reply(Main_Dialogue.unload_command_success(cog, ctx.author)), client.unload_extension(cog)
+        return await ctx.reply(Main_Dialogue.unload_command_success(cog, ctx.author))
     # if cog already unloaded, return this exception
     except ExtensionNotLoaded:
         return await ctx.reply(Main_ErrorHandler.unload_error_cog_already_unloaded(cog, ctx.author))
+    # if cog does not exist, return this exception
+    except ExtensionNotFound:
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author))
 # handle missing requiered arg error for unload command
 @unload.error
 async def error(ctx, error):
@@ -132,15 +123,17 @@ async def reload(ctx, cog: str):
     # check if user has permissions to use the command
     if check_user_has_role(ctx.author, ADMIN_ROLE_ID):
         return print(Global_Log.command_has_been_used('reload', ctx.author)), await ctx.reply(Global_Dialogue.user_not_allowed('reload', ctx.author))
-    # check if the specified cog exist
-    if check_cog_exist(cog) is False:
-        return await ctx.reply(Main_ErrorHandler.reload_error_cog_doesnt_exist(cog, ctx.author))
     # if conditions are met, try to execute
     try:
-        return await ctx.reply(Main_Dialogue.reload_command_success(cog, ctx.author)), client.unload_extension(cog), client.load_extension(cog)
+        client.unload_extension(cog)
+        client.load_extension(cog)
+        return await ctx.reply(Main_Dialogue.reload_command_success(cog, ctx.author))
     # if cog is unloaded, return this exception
     except ExtensionNotLoaded:
         return await ctx.reply(Main_ErrorHandler.reload_error_cog_is_unloaded(cog, ctx.author))
+    # if cog does not exist, return this exception
+    except ExtensionNotFound:
+        return await ctx.reply(Main_ErrorHandler.unload_error_cog_doesnt_exist(cog, ctx.author))
 # handle missing required arg error for reload command
 @reload.error
 async def error(ctx, error):

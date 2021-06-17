@@ -31,7 +31,7 @@ class Main_ErrorHandler:
     # --------------------- # load command # --------------------- #
     def load_error_cog_already_loaded(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('load', userID),'\n\t',f'{log_format.FAIL} {cog} WAS NOT LOADED DUE TO IT BEING ALREADY LOADED.{log_format.END}')
-        return f'{dialogue_icon.fail}   Oops! You can\'t load {cog} since it is already loaded!'
+        return f'{dialogue_icon.fail}   Oops! You can\'t load **{cog}** since it is already loaded!'
     
     def load_error_cog_doesnt_exist(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('load', userID),'\n\t',f'{log_format.FAIL} {cog} COG IS NOT RECOGNIZED THEREFORE LOAD COMMAND FAILED TO EXECUTE.{log_format.END}')
@@ -40,7 +40,7 @@ class Main_ErrorHandler:
     # --------------------- # unload command # --------------------- #
     def unload_error_cog_already_unloaded(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('unload', userID),'\n\t',f'{log_format.FAIL} {cog} WAS NOT UNLOADED DUE TO IT BEING ALREADY UNLOADED.{log_format.END}')
-        return f'{dialogue_icon.fail}   Oops! You can\'t unload {cog} since it is already unloaded!'
+        return f'{dialogue_icon.fail}   Oops! You can\'t unload **{cog}** since it is already unloaded!'
 
     def unload_error_cog_doesnt_exist(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('unload', userID),'\n\t',f'{log_format.FAIL} {cog} COG IS NOT RECOGNIZED THEREFORE UNLOAD COMMAND FAILED TO EXECUTE.{log_format.END}')
@@ -49,7 +49,7 @@ class Main_ErrorHandler:
     # --------------------- # unload command # --------------------- #
     def reload_error_cog_is_unloaded(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('reload', userID),'\n\t',f'{log_format.FAIL} {cog} WAS NOT RELOADED DUE TO IT BEING UNLOADED.{log_format.END}')
-        return f'{dialogue_icon.fail}   Oops! You can\'t reload {cog} since it is unloaded!'
+        return f'{dialogue_icon.fail}   Oops! You can\'t reload **{cog}** since it is unloaded!'
 
     def reload_error_cog_doesnt_exist(cog: str, userID: discord.Member):
         print(Global_Log.command_has_been_used('reload', userID),'\n\t',f'{log_format.FAIL} {cog} COG IS NOT RECOGNIZED THEREFORE RELOAD COMMAND FAILED TO EXECUTE.{log_format.END}')
