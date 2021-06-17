@@ -39,7 +39,20 @@ class Economy_Essential_Dialogue:
             f'\n> '
             f'\n> :speech_left:    {help_economy_exp_list[theme_index]}'
             )
-    
+    # register command 
+    def register_success(userID : discord.Member = None):
+        if userID == None:
+            return (
+                f':ballot_box_with_check:   YES PAPAAAA!   :zany_face::zany_face:'
+                f'\n> You have been successfully registered.'
+                f'\n> You can now earn {global_dialogue_var.currency}!   :money_with_wings:'
+                f'\n> *You can access all the commands related to the economy with* ` !help economy `'
+                )
+        return (
+            f':ballot_box_with_check:   YES PAPAAAA!   :zany_face::zany_face:'
+            f'\n> {userID} Has been successfully registered!'
+        )
+
 class Economy_Grind_Dialogue:
     # help_grind function
     def help_grind_success(userID: discord.Member):

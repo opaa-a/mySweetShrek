@@ -46,16 +46,6 @@ def error_user_has_no_vault(userID : discord.Member = None):
     return (
         f':x:   Ohoh! Looks like {userID} is not registered into the vault.')
 
-# error message when user does not have admin privileges
-def error_user_is_not_admin(userID : discord.Member = None):
-    if userID == None:
-        return (
-            f'\n:x:   Oh no no no... You don\'t have access to this command mate. :face_with_monocle:'
-            )
-    return (
-        f':x:   {userID} does not have admin privileges... too bad. :hugging:'
-        )
-
 # error message when user tries to register while being already registered
 def error_user_is_already_registered(userID : discord.Member = None):
     if userID == None:
