@@ -4,22 +4,22 @@ from dialogue.global_dialogue import Global_Log, log_format, dialogue_icon
 class Main_Dialogue:
     # load command
     def load_command_success(cog: str, userID: discord.Member):
-        print(Global_Log.command_has_been_used('load', userID),'\n\t',Global_Log.command_run_without_exception('load'))
+        print(Global_Log.command_has_been_used('load', userID),'\n',Global_Log.command_run_without_exception('load'))
         return f'{dialogue_icon.success}   You successfully loaded **{cog}**!'
     
     # unload command
     def unload_command_success(cog: str, userID: discord.Member):
-        print(Global_Log.command_has_been_used('unload', userID),'\n\t',Global_Log.command_run_without_exception('unload'))
+        print(Global_Log.command_has_been_used('unload', userID),'\n',Global_Log.command_run_without_exception('unload'))
         return f'{dialogue_icon.success}   You successfully unloaded **{cog}**!'
     
     # reload command
     def reload_command_success(cog: str, userID: discord.Member):
-        print(Global_Log.command_has_been_used('reload', userID),'\n\t',Global_Log.command_run_without_exception('reload'))
+        print(Global_Log.command_has_been_used('reload', userID),'\n',Global_Log.command_run_without_exception('reload'))
         return f'{dialogue_icon.success}   You successfully reloaded **{cog}**!'
 
     # coglist command
     def cl_command_success(userID: discord.Member):
-        return print(Global_Log.command_has_been_used('coglist', userID), '\n\t',Global_Log.command_run_without_exception('coglist'))
+        return print(Global_Log.command_has_been_used('coglist', userID), '\n',Global_Log.command_run_without_exception('coglist'))
 
 class Main_Log:
     # init_cog function

@@ -16,12 +16,11 @@ from facts_dic import *
 # ID of the admin role on the current server. (used to check if a user is an admin)
 ADMIN_ROLE_ID = config('DISCORD_ADMIN_ROLE_ID')
 
-
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
-# get_vault will search through the vault.json file with the userID specified
-# and return get_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
-def get_vault(userID : discord.Member):
+# check_vault will search through the vault.json file with the userID specified
+# and return check_vault as TRUE if userID is in vault or FALSE if userID isn't in the vault.
+def check_vault(userID : discord.Member):
     with open('./main/assets/vault.json', 'r') as vault:
         vault = json.load(vault)
         userID = str(userID)
@@ -55,20 +54,20 @@ def check_admin(userID : discord.Member):
 
 # md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
 # The userID will either have the amount substracted or added to his account. If reset is used, his account will be wiped.
-def md_balance(userID : discord.Member, md_method : str, amount : int):       
+def md_balance(userID : discord.Member, method : str, amount : int):       
     with open('./main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
 
         if userID in vault:
-            if md_method == "add":
+            if method == "add":
                 vault[userID]["balance"] += amount
-            elif md_method == "sub":
+            elif method == "sub":
                 vault[userID]["balance"] -= amount
-            elif md_method == "reset":
+            elif method == "reset":
                     vault[userID]["balance"] = 0
-
     edit_vault(vault)
+    return print(Economy_Essential_Log.md_balance_log(userID, method, amount))
 
 
 # get_balance will return the balance of the userID specified as a int through the function.
@@ -77,8 +76,8 @@ def get_balance(userID):
         vault = json.load(vault)
         userID = str(userID)
 
-        global balance
-        balance = 0
+        # global balance
+        # balance = 0
 
         if userID in vault:
             balance = vault[userID]["balance"]
@@ -89,7 +88,7 @@ def get_balance(userID):
 # if TRUE then the function will check if the balance is greater than the amount. 
 # If TRUE, canUserpay will return as TRUE. If FALSE, userCanPay will return as FALSE.  
 def check_pay(userID, amount):
-    if get_vault(userID) == False:
+    if check_vault(userID) == False:
         return False
         
     if get_balance(userID) >= amount:
@@ -134,71 +133,71 @@ class Economy_Essentials(commands.Cog):
 # !register -- Take no args. Register the author of the command to the vault.
     @commands.command()
     async def register(self, ctx):
+        # log the command
+        print(Global_Log.command_has_been_used('register', ctx.author))
         author = str(ctx.author)
-
+        # call check_vault to check if user is already registered
+        if check_vault(ctx.author):
+            return await ctx.reply(error_user_is_already_registered())
+        # if user not registered, dumb informations to the DB
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
-            registery = []
-
-            for profile in vault:
-                registery.append(profile)
-                
-            if  author in registery:
-                await ctx.reply(error_user_is_already_registered())
-
-            else:
-                vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}, "inventory": {}}
-                await ctx.reply(register_success())
-
-        edit_vault(vault)
+            vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}, "inventory": {}}   ### IF ANYTHING IS ADDED TO THE VAULT PROFILE OF A USER, ADD VALUE AND KEY HERE.
+        return edit_vault(vault), await ctx.reply(Economy_Essential_Dialogue.register_success())
 
 
 # !addcoins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
     @commands.command()
     async def addcoins(self, ctx, amount : int, userID : discord.Member = None):
+        # log the command
+        print(Global_Log.command_has_been_used('addcoins', userID))
+        # this prevent negative numbers to be added to an account
         amount = abs(amount)
+        # check if author is getting his own informations or a user informations
         if userID == None:
             userID = ctx.author
-
-        if check_admin(ctx.author) != True:
-            return await ctx.reply(error_user_is_not_admin())
-
-        if get_vault(userID) != True and userID == ctx.author:
-            return await ctx.reply(error_user_has_no_vault())
-        elif get_vault(userID) != True:
-            return await ctx.reply(error_user_has_no_vault(userID))
+        # call check_admin to check if user is allowed to perform this command
+        if check_admin(ctx.author) is False:
+            return await ctx.reply(Global_Dialogue.user_not_allowed('addcoins', userID))
+        # call check_vault to check if user is registered
+        if check_vault(userID) is False and userID == ctx.author:
+            return await ctx.reply(Global_Dialogue.user_not_registered('addcoins'))
+        elif check_vault(userID) is False:
+            return await ctx.reply(Global_Dialogue.user_not_registered('addcoins', userID))
 
         md_balance(userID, "add", amount)
         if userID == ctx.author:
-            return await ctx.reply(addcoins_success(amount))
-        return await ctx.send(addcoins_success(amount, userID))                
+            return await ctx.reply(Global_Dialogue.addcoins_success(amount))
+        return await ctx.send(Global_Dialogue.addcoins_success(amount, userID))                
 
 
 # !balance OR !bal -- Take an optionnal arg: userID. Show the balance of the userID, 
 # by default the author is the userID
     @commands.command(aliases=['bal'])
     async def balance(self, ctx, userID : discord.Member = None):
-        author = False
+        # log the command
+        print(Global_Log.command_has_been_used('balance', userID))
+        # check if author is getting his own informations or a user informations
         if userID == None:
-            userID = str(ctx.author)
-            author = True
-
-        if get_vault(userID) != True and author:
-            return await ctx.reply(error_user_has_no_vault())
-        elif get_vault(userID) != True:
-            return await ctx.reply(error_user_has_no_vault(userID))
+            userID = ctx.author
+        # call check_vault to check if user is registered
+        if check_vault(userID) is False and userID == ctx.author:
+            return await ctx.reply(Global_Dialogue.user_not_registered('balance'))
+        elif check_vault(userID) is False:
+            return await ctx.reply(Global_Dialogue.user_not_registered('balance', userID))
         
-        get_balance(userID)
-        if author:
-            return await ctx.send(balance_success(balance))
-        return await ctx.send(balance_success(balance, userID))
+        # get_balance(userID)
+        if userID == ctx.author:
+            return await ctx.send(Economy_Essential_Dialogue.balance_success(get_balance(userID)))
+        return await ctx.send(Economy_Essential_Dialogue.balance_success(get_balance(userID), userID))
 
 
 # !balancetop OR !baltop -- Takes no args. Display all the accounts on the vault,
 # ordered from richest to poorest (first to last).
     @commands.command(aliases=['baltop'])
     async def balancetop(self, ctx):
-        
+        # log the command
+        print(Global_Log.command_has_been_used('balancetop', ctx.author))
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             profiles = {}
@@ -208,30 +207,31 @@ class Economy_Essentials(commands.Cog):
                 profiles[profile] = bal
                 baltop = sorted(profiles.items(), key=lambda x: x[1], reverse=True)
 
-            await ctx.send(balancetop_success(baltop))
+            await ctx.send(embed=Economy_Essential_Dialogue.balancetop_success(baltop))
 
 
 # !pay -- Take 2 args, userID and amount. Transfer amount from the author balance to the userID balance.
     @commands.command()
     async def pay(self, ctx, userID : discord.Member, amount : int):
-        author = ctx.author
+        # log the command
+        print(Global_Log.command_has_been_used('pay', ctx.author))
         amount = abs(amount)
         
-        if userID == author:
-            return await ctx.reply(error_user_cant_pay_himself())
+        if userID == ctx.author:
+            return await ctx.reply(Economy_Essential_Dialogue.user_cant_pay_himself(ctx.author))
 
-        if get_vault(author) != True:
-            return await ctx.reply(error_user_has_no_vault())
+        if check_vault(ctx.author) is False:
+            return await ctx.reply(Global_Dialogue.user_not_registered('pay'))
 
-        if get_vault(userID) != True:
-            return await ctx.reply(error_user_has_no_vault(userID))
+        if check_vault(userID) is False:
+            return await ctx.reply(Global_Dialogue.user_not_registered('pay', userID))
 
-        if check_pay(author, amount) == True:
-            md_balance(author, "sub", amount)
+        if check_pay(ctx.author, amount) is True:
+            md_balance(ctx.author, "sub", amount)
             md_balance(userID, "add", amount)
-            return await ctx.reply(pay_success(amount, userID))
+            return await ctx.reply(Economy_Essential_Dialogue.pay_success(amount, userID))
 
-        return await ctx.reply(error_user_cant_pay())
+        return await ctx.reply(Global_Dialogue.user_cant_pay('pay'))
 
 
 #---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
@@ -240,10 +240,11 @@ class Economy_Essentials(commands.Cog):
     @addcoins.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_bad_arg("addcoins")), await ctx.reply(error_addcoins("bad_arg"))
+            print(Global_Log.command_has_been_used("addcoins", ctx.author))
+            return await ctx.reply(Global_Dialogue.bad_arg('addcoins', ctx.author, '!addcoins <user> <amount>   --   <user> being an existing discord member and <amoun> being a number.'))
         elif isinstance(error, commands.MissingRequiredArgument):
-            return print(log_error_missing_arg("addcoins")), await ctx.reply(error_addcoins("missing_arg"))
-        return await ctx.reply(unknown_error())
+            print(Global_Log.command_has_been_used("addcoins", ctx.author))
+            return await ctx.reply(Global_Dialogue.arg_missing('addcoins', ctx.author, '!addcoins <user> <amount>'))
 
 # !balance error display
     @balance.error
@@ -312,7 +313,7 @@ class Economy_Grind(commands.Cog):
             print(f'\n# BON TOUTOU ERROR -- {userID} is a bot!')
             return await Bon_Toutou_Task.bon_toutou_assign(self)
         
-        if get_vault(userID) is False:
+        if check_vault(userID) is False:
             print(f'\n# BON TOUTOU ERROR -- {userID} is not registered!')
             return await Bon_Toutou_Task.bon_toutou_assign(self)
         
@@ -342,7 +343,7 @@ class Economy_Grind(commands.Cog):
         cf_prize = amount * 2
         coin_faces = ["head","tail"]
 
-        if get_vault(author) != True:
+        if check_vault(author) != True:
             return await ctx.reply(error_user_has_no_vault())
 
         if get_balance(author) < amount:
@@ -418,7 +419,7 @@ class Economy_Grind(commands.Cog):
         if answer_list[fact_index] != "null":
             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
             
-        if  get_vault(answer.author) != True:
+        if  check_vault(answer.author) != True:
             return await answer.reply(facts_success("success_without_vault", prize))
             
         md_balance(answer.author, "add", prize)
@@ -488,7 +489,7 @@ class Economy_Reward(commands.Cog):
     @commands.command()
     async def claim(self, ctx, reward_type : str = None):
         
-        if get_vault(ctx.author) == False:
+        if check_vault(ctx.author) == False:
             return await ctx.reply(error_user_has_no_vault())
         
         if reward_type == None:

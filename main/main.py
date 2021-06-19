@@ -166,7 +166,7 @@ async def coglist(ctx):
                 cog_list.append(cog)
         cog_list = '\n\n '.join(cog_list)
     # create the embed
-    embed = discord.Embed(title="Cogs list",color=0xFD3864)
+    embed = discord.Embed(title="Cogs list",color=discord.Colour.random())
     embed.add_field(name="Here is the list of all the cogs.", value=f'\n{cog_list}')
     # return the result of the command.
     return Main_Dialogue.cl_command_success(ctx.author), await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(embed=embed)

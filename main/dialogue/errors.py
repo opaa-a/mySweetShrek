@@ -57,15 +57,15 @@ def error_user_is_already_registered(userID : discord.Member = None):
         )
 
 # error message when user can't pay
-def error_user_cant_pay(userID : discord.Member = None):
-    if userID == None:
-        return (
-            f':x:   Nope, looks like your broke ass don\'t have enough money.'
-            f'\n:arrow_right:   Use ` !balance ` to check your balance.'
-            )
-    return (
-        f':x:   Nope, looks like {userID} is broke and can\'t afford this transaction.'
-        )
+# def error_user_cant_pay(userID : discord.Member = None):
+#     if userID == None:
+#         return (
+#             f':x:   Nope, looks like your broke ass don\'t have enough money.'
+#             f'\n:arrow_right:   Use ` !balance ` to check your balance.'
+#             )
+#     return (
+#         f':x:   Nope, looks like {userID} is broke and can\'t afford this transaction.'
+#         )
 
 # error message when user tries to pay himself
 def error_user_cant_pay_himself():

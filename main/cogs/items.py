@@ -54,7 +54,7 @@ class Item(commands.Cog):
         from cogs.inventory import remove_item_from_inv 
         from cogs.essential import check_user_has_role
         from cogs.essential import check_user_is_bot
-        from cogs.economy import get_vault
+        from cogs.economy import check_vault
         
         # set the roles 'mauvais toutou' and 'bon toutou' /// Also decide how long the 'mauvais toutou' role is given. 24 hours here.
         role_mauvais_toutou = ctx.guild.get_role(805897076437155861)
@@ -70,7 +70,7 @@ class Item(commands.Cog):
             return await ctx.reply(item_mauvais_toutou("target_is_bot", target))
         
         # check if user has a vault
-        if get_vault(target) is False:
+        if check_vault(target) is False:
             return await ctx.reply(item_mauvais_toutou("target_is_not_registered", target))
         
         # remove the used item from the inventory of the author

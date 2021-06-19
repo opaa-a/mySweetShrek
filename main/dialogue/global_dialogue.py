@@ -1,4 +1,6 @@
 import discord
+# import random
+import numpy
 from datetime import datetime
 
 # Log message template
@@ -35,18 +37,45 @@ class global_dialogue_var:
 # Global scope dialogues
 class Global_Dialogue:
     # return if user is not allowed to perform a command
-    def user_not_allowed(command:str, userID: discord.Member):
+    def user_not_allowed(command: str, userID: discord.Member):
         print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} TRIED TO PERFORM THIS COMMAND WITHOUT NEEDED PERMISSIONS.{log_format.END}')
         return f'{dialogue_icon.fail}   Ohoh! Looks like you are not allowed to perform this command.'
     
     # return if a required argument is missing
     def arg_missing(command: str, userID: discord.Member, command_typo: str = None):
-        print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} DID NOT SPECIFIED A REQUIRED ARGUMENT{log_format.END}')
+        print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} DID NOT SPECIFIED A REQUIRED ARGUMENT.{log_format.END}')
         return (
             f'{dialogue_icon.fail}   Oh no! You missed one or multiple required arguments!'
             f'\n*Try again with this typo:  `{command_typo}`*'
             )
-
+    def bad_arg(command: str, userID: discord.Member, command_typo: str = None):
+        print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} SPECIFIED A WRONG ARGUMENT.{log_format.END}')
+        return (
+            f'{dialogue_icon.fail}   Ohoh! Looks like one or multiple arguments you mentioned are incorrect.'
+            f'\n*Try again with this typo:  `{command_typo}`*'
+            )
+    # return if user is not registered
+    def user_not_registered(command: str, userID : discord.Member = None):
+        print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER IS NOT REGISTERED TO THE VAULT.{log_format.END}')
+        if userID == None:
+            return (
+                f'\n{dialogue_icon.fail}   Ohoh! Looks like you are not register into the vault!'
+                f'\n*Use `!register` to register to the vault.*'
+                )
+        return (
+            f'{dialogue_icon.fail}   Ohoh! Looks like {userID} is not registered into the vault.')
+    # return if user can't pay something
+    def user_cant_pay(command: str, userID : discord.Member = None):
+        if userID == None:
+            print(f'\t{log_format.FAIL} COMMAND {command} FAILED - AUTHOR CAN\'T AFFORD THIS TRANSACTION')
+            return (
+                f'{dialogue_icon.fail}   Nope, looks like your broke ass don\'t have enough money.'
+                f'\n*Use `!balance` to check your balance.*'
+                )
+        print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} CAN\'T AFFORD THIS TRANSACTION')
+        return (
+            f'{dialogue_icon.fail}   Nope, looks like {userID} is broke and can\'t afford this transaction.'
+            )
     # return if command is in dm
     def command_executed_in_dm(command: str, userID: discord.Member):
         print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} EXECUTED THIS COMMAND IN THE BOT DMs.{log_format.END}')

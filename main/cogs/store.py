@@ -14,10 +14,10 @@ from dialogue.errors import *
 
 def store_buy_item(userID, querry : str, price: int):
 # import functions from economy
-    from cogs.economy import get_vault, get_balance, md_balance
+    from cogs.economy import check_vault, get_balance, md_balance
 # buy item 'A la niche'
     if querry == 'A la niche!':
-        if get_vault(userID) == False:
+        if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:
@@ -31,7 +31,7 @@ def store_buy_item(userID, querry : str, price: int):
         return store_purchase_complete(str(querry))
 # buy item 'Mauvais toutou'  
     if querry == 'Mauvais toutou!':
-        if get_vault(userID) == False:
+        if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:
@@ -45,7 +45,7 @@ def store_buy_item(userID, querry : str, price: int):
         return store_purchase_complete(str(querry))
 # buy item 'Shush'  
     if querry == 'Shush!':
-        if get_vault(userID) == False:
+        if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
         if get_balance(userID) < price:

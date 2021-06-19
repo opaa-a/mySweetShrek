@@ -2,7 +2,7 @@ import discord
 import json
 from discord.ext import commands
 from cogs.economy import edit_vault
-from cogs.economy import get_vault
+from cogs.economy import check_vault
 from cogs.items import Item
 from dialogue.dialogue import *
 from dialogue.errors import *
@@ -86,7 +86,7 @@ class Inventory_Essentials(commands.Cog):
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
-        if get_vault(ctx.author) is False:
+        if check_vault(ctx.author) is False:
             return await ctx.reply(error_user_has_no_vault())
         return await ctx.message.add_reaction('📨'), await ctx.author.send(display_inv(ctx.author))
 
@@ -94,7 +94,7 @@ class Inventory_Essentials(commands.Cog):
     @commands.command()
     async def use(self, ctx, target: discord.Member, *, item: str):
         # check if user has vault
-        if get_vault(ctx.author) is False:
+        if check_vault(ctx.author) is False:
             return await ctx.reply(error_user_has_no_vault())
 
         if isinstance(ctx.channel, discord.channel.DMChannel):
