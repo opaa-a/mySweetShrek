@@ -1,13 +1,14 @@
 import discord
-import random
 import json
+import random
+from dialogue.global_dialogue import *
 from discord.ext import tasks, commands
 
 class Bon_Toutou_Task(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.bon_toutou_assign.start()
-        print(f'\n- Bon Toutou Background Task from background_tasks.py is loaded.')
+        print(f'\n{log_format.INFO}- Bon Toutou Background Task from background_tasks.py is loaded.{log_format.END}')
 
     @tasks.loop(hours=24)
     async def bon_toutou_assign(self):
@@ -18,7 +19,7 @@ class Bon_Toutou_Task(commands.Cog):
             guild_member_list.append(member)
 
         random_userID = random.choice(guild_member_list)
-        print(f'\n# BON TOUTOU -- {random_userID} is selected')
+        print(f'{log_format.INFO} BON TOUTOU HAS ASIGN {random_userID}.{log_format.END}')
         return await Economy_Grind.bon_toutou(self, random_userID)
 
 

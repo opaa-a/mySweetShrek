@@ -29,14 +29,12 @@ def check_vault(userID : discord.Member):
             return True
         return False
 
-
 # edit_vault is a simple updater function for the vault. when updates are made to the vault,
 # this function is called and it will dump the updated version of the vault.json
 def edit_vault(data, filename='./main/assets/vault.json'):
     with open(filename, 'w') as file:
         json.dump(data, file, indent=4)
         file.close()
-
 
 # check_admin as his name suggest, is a function to check is a specified userID is admin or not.
 # It will return check_admin either as TRUE if userID is admin or FALSE if userID is not.
@@ -50,7 +48,6 @@ def check_admin(userID : discord.Member):
     if aID in userRoles:
         return True
     return False
-
 
 # md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
 # The userID will either have the amount substracted or added to his account. If reset is used, his account will be wiped.
@@ -68,7 +65,6 @@ def md_balance(userID : discord.Member, method : str, amount : int):
                     vault[userID]["balance"] = 0
     edit_vault(vault)
     return print(Economy_Essential_Log.md_balance_log(userID, method, amount))
-
 
 # get_balance will return the balance of the userID specified as a int through the function.
 def get_balance(userID):
@@ -95,6 +91,28 @@ def check_pay(userID, amount):
         return True
     return False
 
+# check_former_bon_toutou is a function to check if a user registered into the vault has been the latest bon toutou
+# This function will return a var userID that is a discord.Member.
+def check_former_bon_toutou(userID: discord.Member):
+    userID = str(userID)
+    with open('./main/assets/vault.json') as vault:
+        vault = json.load(vault)
+        if vault[userID]['reward']['former_bon_toutou'] == True:
+            return True
+        return False
+
+# md_bon_toutou_status will modify BOOL value of former_bon_toutou in the vault
+# it will set to True to the new bon toutou and set to False to the former.
+def md_bon_toutou_status(userID: discord.Member):
+    userID = str(userID)
+    with open('./main/assets/vault.json') as vault:
+        vault = json.load(vault)
+        for profile in vault:
+            if vault[profile]['reward']['former_bon_toutou'] == True:
+                vault[profile]['reward']['former_bon_toutou'] = False
+        vault[userID]['reward']['former_bon_toutou'] = True
+        edit_vault(vault)
+        
 
 #---------------------------------------------------------------------------------------#      ECONOMY ESSENTIALS COMMANDS      #---------------------------------------------------------------------------------------#
 
@@ -142,9 +160,26 @@ class Economy_Essentials(commands.Cog):
         # if user not registered, dumb informations to the DB
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
-            vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False}, "inventory": {}}   ### IF ANYTHING IS ADDED TO THE VAULT PROFILE OF A USER, ADD VALUE AND KEY HERE.
+            vault[author] = {"balance": 0, "reward": {"daily_reward_claim_date": False, "former_bon_toutou": False}, "inventory": {}}   ### IF ANYTHING IS ADDED TO THE VAULT PROFILE OF A USER, ADD VALUE AND KEY HERE.
         return edit_vault(vault), await ctx.reply(Economy_Essential_Dialogue.register_success())
 
+# !reloadVAULT -- take no args. Reload the vault to dump new changes.
+    @commands.command()
+    async def reloadVAULT(self, ctx):
+        # log 
+        print(Global_Log.command_has_been_used('reloadVAULT', ctx.author))
+        # check if user has permissions
+        if check_admin(ctx.author) is False:
+            return await ctx.reply(Global_Dialogue.user_not_allowed('reloadVAULT', ctx.author))
+        # open vault
+        with open('./main/assets/vault.json') as vault:
+            vault = json.load(vault)
+            for userID in vault:
+                vault[userID]['reward']['former_bon_toutou'] = False ### THIS IS THE LINE TO CHANGE WHEN SOMTHING NEEDS TO BE DUMPED INTO THE VAULT
+                # dump new content
+                edit_vault(vault)
+        # return dm
+        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(Economy_Essential_Dialogue.reloadVAULT_success('vault[userID][\'reward\'][\'former_bon_toutou\'] = False'))
 
 # !addcoins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
     @commands.command()
@@ -241,7 +276,7 @@ class Economy_Essentials(commands.Cog):
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             print(Global_Log.command_has_been_used("addcoins", ctx.author))
-            return await ctx.reply(Global_Dialogue.bad_arg('addcoins', ctx.author, '!addcoins <user> <amount>   --   <user> being an existing discord member and <amoun> being a number.'))
+            return await ctx.reply(Global_Dialogue.bad_arg('addcoins', ctx.author, '!addcoins <user> <amount>   --   <user> being an existing discord member and <amount> being a number.'))
         elif isinstance(error, commands.MissingRequiredArgument):
             print(Global_Log.command_has_been_used("addcoins", ctx.author))
             return await ctx.reply(Global_Dialogue.arg_missing('addcoins', ctx.author, '!addcoins <user> <amount>'))
@@ -250,17 +285,18 @@ class Economy_Essentials(commands.Cog):
     @balance.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_missing_arg("balance")), await ctx.reply(error_balance("bad_arg"))
-        return await ctx.reply(unknown_error())
+            print(Global_Log.command_has_been_used("balance", ctx.author))
+            return await ctx.reply(Global_Dialogue.bad_arg('balance', ctx.author, '!balance <user>   --   <user> being an existing discord member.'))
 
 # !pay error display
     @pay.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_bad_arg("pay")), await ctx.reply(error_pay("bad_arg"))
+            print(Global_Log.command_has_been_used("pay", ctx.author))
+            return await ctx.reply(Global_Dialogue.bad_arg('pay', ctx.author, '!pay <user> <amount>   --   <user> being an existing discord member and <amount> being a number.'))
         elif isinstance(error, commands.MissingRequiredArgument):
-            return print(log_error_missing_arg("pay")), await ctx.reply(error_pay("missing_arg"))
-        return await ctx.reply(unknown_error())
+            print(Global_Log.command_has_been_used("pay", ctx.author))
+            return await ctx.reply(Global_Dialogue.arg_missing('pay', ctx.author, '!pay <user> <amount>'))
 
 #---------------------------------------------------------------------------------------#       ECONOMY GRIND       #---------------------------------------------------------------------------------------#
 
@@ -306,21 +342,23 @@ class Economy_Grind(commands.Cog):
         role_hold_time = (60*60)*24
 
         if check_user_has_role(userID, 805897076437155861):
-            print(f'\n# BON TOUTOU ERROR -- {userID} is Mauvais Toutou!')
+            print(Economy_Grind_Log.target_is_mauvais_toutou(userID))
             return await Bon_Toutou_Task.bon_toutou_assign(self)
         
         if check_user_is_bot(userID):
-            print(f'\n# BON TOUTOU ERROR -- {userID} is a bot!')
+            print(Economy_Grind_Log.target_is_a_bot(userID))
             return await Bon_Toutou_Task.bon_toutou_assign(self)
         
         if check_vault(userID) is False:
-            print(f'\n# BON TOUTOU ERROR -- {userID} is not registered!')
+            print(Economy_Grind_Log.target_is_not_registered(userID))
             return await Bon_Toutou_Task.bon_toutou_assign(self)
         
-        # if userID == prior_userID:
-        #     print(f'\n# BON TOUTOU ERROR -- {userID} was already the Bon Toutou')
-        #     return await Bon_Toutou_Task.bon_toutou_assign(self )
+        if check_former_bon_toutou(userID):
+            print(Economy_Grind_Log.target_is_former_bt(userID))
+            return await Bon_Toutou_Task.bon_toutou_assign(self)
 
+        md_bon_toutou_status(userID)
+        await userID.send(Economy_Grind_Dialogue.bon_toutou_success(userID))
         await userID.add_roles(role_bon_toutou)
 
         await asyncio.sleep(role_hold_time)

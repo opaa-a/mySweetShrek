@@ -64,6 +64,14 @@ class Economy_Essential_Dialogue:
             f':ballot_box_with_check:   YES PAPAAAA!   :zany_face::zany_face:'
             f'\n> {userID} Has been successfully registered!'
         )
+    # reloadVAULT command
+    def reloadVAULT_success(dump_content: str):
+        print(Global_Log.command_run_without_exception('reloadVAULT'))
+        print(f'\t{log_format.INFO} DUMP: {dump_content}')
+        return (
+            f'{dialogue_icon.success}   **reloadVAULT has been successful.**'
+            f'\n**DUMP CONTENT:**   `{dump_content}`'
+            )
     # addcoins command
     def addcoins_success(amount, userID : discord.Member = None):
         print(Global_Log.command_run_without_exception('addcoins'))
@@ -189,6 +197,7 @@ class Economy_Essential_ErrorHandler:
 
 # ---------------------------------------------- # GRIND DIALOGUE # ---------------------------------------------- #
 class Economy_Grind_Dialogue:
+    # FUNCTION
     # help_grind function
     def help_grind_success(userID: discord.Member):
         with open('main/assets/help.json') as help_index:
@@ -224,7 +233,28 @@ class Economy_Grind_Dialogue:
             f'\n> '
             f'\n> :speech_left:    {help_grind_exp_list[theme_index]}'
             ) 
+    # bon_toutou function
+    def bon_toutou_success(userID: discord.Member):
+        print(f'\t{log_format.NOEXC} {userID} HAS BEEN SUCCESSFULLY ASSGINED THE ROLE OF bon toutou.{log_format.END}')
+        return (
+            f':bone:   *Yay! You have been assigned the role of bon toutou!*   :bone:'
+            f'\n*This role will grant you 10% off items on the shop and 10% more earnings from every sources for 24 hours!*'
+            )
+    # COMMAND
 
 # ---------------------------------------------- # GRIND log # ---------------------------------------------- #
+class Economy_Grind_Log:
+    # return if target is mauvais toutou
+    def target_is_mauvais_toutou(userID: discord.Member):
+        return f'\t{log_format.FAIL} {userID} HAS BEEN SELECTED AS THE bon toutou BUT IS ALREADY mauvais toutou.{log_format.END} '
+    # return if target is a bot
+    def target_is_a_bot(userID: discord.Member):
+        return f'\t{log_format.FAIL} {userID} HAS BEEN SELECTED AS THE bon toutou BUT IS A BOT.{log_format.END}'
+    # return if target is not registered
+    def target_is_not_registered(userID: discord.Member):
+        return f'\t{log_format.FAIL} {userID} HAS BEEN SELECTED AS THE bon toutou BUT IS NOT REGISTERED.{log_format.END}'
+    # return if target is not fomer bon toutou
+    def target_is_former_bt(userID: discord.Member):
+        return f'\t{log_format.FAIL} {userID} HAS BEEN SELECTED AS THE bon toutou BUT WAS THE PREVIOUS bon toutou.{log_format.END}'
 
 # ---------------------------------------------- # GRIND error # ---------------------------------------------- #
