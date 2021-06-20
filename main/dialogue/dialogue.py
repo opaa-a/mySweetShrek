@@ -215,23 +215,23 @@ from discord.ext import commands
 #         )
 
 # message display when !coinflip is successful
-def coinflip_success(amount: int, author, dialogue_ref: str):
-    if dialogue_ref == "cf_init":
-        return (
-        f':coin: **{author}** is in a playful mood, {amount} {currency} have been bet!'
-        f'\n:arrow_right:Pick **HEAD** or **TAIL**'
-        f'\n> *You got to write it down, like with your keyboard...*'
-        )
-    elif dialogue_ref == "cf_win":
-        return (
-            f':+1:   Well played to **{author}** who won **{amount}** {currency}   :confetti_ball:'
-            f'\n> ` !cf <amount> ` to play again!'
-            )
-    elif dialogue_ref == "cf_lose":
-        return (
-            f':-1:   Congratulations! **{author}** lost **{amount}** {currency}   :joy::ok_hand:'
-            f'\n> ` !cf <amount> ` to play again!'
-            )
+# def coinflip_success(amount: int, author, dialogue_ref: str):
+#     if dialogue_ref == "cf_init":
+#         return (
+#         f':coin: **{author}** is in a playful mood, {amount} {currency} have been bet!'
+#         f'\n:arrow_right:Pick **HEAD** or **TAIL**'
+#         f'\n> *You got to write it down, like with your keyboard...*'
+#         )
+#     elif dialogue_ref == "cf_win":
+#         return (
+#             f':+1:   Well played to **{author}** who won **{amount}** {currency}   :confetti_ball:'
+#             f'\n> ` !cf <amount> ` to play again!'
+#             )
+#     elif dialogue_ref == "cf_lose":
+#         return (
+#             f':-1:   Congratulations! **{author}** lost **{amount}** {currency}   :joy::ok_hand:'
+#             f'\n> ` !cf <amount> ` to play again!'
+#             )
 
 # message display when !facts is successful
 def facts_success(dialogue_ref: str, amount: int):

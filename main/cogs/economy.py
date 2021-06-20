@@ -3,6 +3,7 @@ import json
 import random
 import asyncio
 import datetime
+from decimal import Decimal
 from discord.ext import commands
 from decouple import config
 from dialogue.dialogue import *
@@ -51,7 +52,7 @@ def check_admin(userID : discord.Member):
 
 # md_balance (modify balance) is a function that take a userID, a method (add, sub or reset) and an amount.
 # The userID will either have the amount substracted or added to his account. If reset is used, his account will be wiped.
-def md_balance(userID : discord.Member, method : str, amount : int):       
+def md_balance(userID : discord.Member, method : str, amount: int):
     with open('./main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
@@ -72,11 +73,9 @@ def get_balance(userID):
         vault = json.load(vault)
         userID = str(userID)
 
-        # global balance
-        # balance = 0
-
         if userID in vault:
             balance = vault[userID]["balance"]
+            # balance = round(float(fbalance),2)
             return balance
         return False
 
@@ -202,8 +201,8 @@ class Economy_Essentials(commands.Cog):
 
         md_balance(userID, "add", amount)
         if userID == ctx.author:
-            return await ctx.reply(Global_Dialogue.addcoins_success(amount))
-        return await ctx.send(Global_Dialogue.addcoins_success(amount, userID))                
+            return await ctx.reply(Economy_Essential_Dialogue.addcoins_success(amount))
+        return await ctx.send(Economy_Essential_Dialogue.addcoins_success(amount, userID))                
 
 
 # !balance OR !bal -- Take an optionnal arg: userID. Show the balance of the userID, 
@@ -372,37 +371,40 @@ class Economy_Grind(commands.Cog):
 # he lose the double of his bet.
     @commands.command(aliases=['cf'])
     async def coinflip(self, ctx, amount : int):
+        print(Global_Log.command_has_been_used('coinflip', ctx.author))
         from cogs.essential import check_user_has_role
         from cogs.essential import malus_rate
         from cogs.essential import bonus_rate
 
         amount = abs(amount)
-        author = ctx.author
         cf_prize = amount * 2
         coin_faces = ["head","tail"]
 
-        if check_vault(author) != True:
-            return await ctx.reply(error_user_has_no_vault())
+        if check_vault(ctx.author) is False:
+            return await ctx.reply(Global_Dialogue.user_not_registered('coinflip'))
 
-        if get_balance(author) < amount:
-            return await ctx.reply(error_user_cant_pay())
+        if get_balance(ctx.author) < amount:
+            return await ctx.reply(Global_Dialogue.user_cant_pay('coinflip'))
         
         # add malus rate to the prize if user is 'mauvais toutou'
         if check_user_has_role(ctx.author, 805897076437155861):
             cf_prize = cf_prize - cf_prize * malus_rate
+            print(cf_prize)
         # add bonus rate to the prize if user is 'bon toutou'
         if check_user_has_role(ctx.author, 804849555094765598):
             cf_prize = cf_prize * bonus_rate
+            print(cf_prize)
 
-        await ctx.send(coinflip_success(amount, author, "cf_init"))
-        
+        await ctx.send(Economy_Grind_Dialogue.coinflip_success(amount, ctx.author, "cf_init"))
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+
         def check(ans):
             return ans.channel == ctx.channel and ans.author == ctx.author
 
         ans = await self.client.wait_for('message', check=check)
 
         if ans.content.lower() != 'tail' and ans.content.lower() != 'head':
-            return await ctx.reply(error_coinflip("fail_ans"))
+            return await ctx.reply(Economy_Grind_ErrorHandler.coinflip_error("fail_ans", ctx.author))
 
         guess = ans.content.lower()
         cf_result = random.choice(coin_faces)
@@ -421,11 +423,11 @@ class Economy_Grind(commands.Cog):
         await asyncio.sleep(1)
 
         if cf_result != guess:
-            md_balance(author, "sub", amount)
-            return await ctx.send(coinflip_success(amount, author, "cf_lose"))
+            md_balance(ctx.author, "sub", amount)
+            return await ctx.send(Economy_Grind_Dialogue.coinflip_success(amount, ctx.author, "cf_lose"))
         
-        md_balance(author, "add", cf_prize)
-        return await ctx.send(coinflip_success(cf_prize, author, "cf_win"))
+        md_balance(ctx.author, "add", cf_prize)
+        return await ctx.send(Economy_Grind_Dialogue.coinflip_success(cf_prize, ctx.author, "cf_win"))
 
 
 # !facts OR !fa -- Takes no arg, but expect an answer. Send a fact to the context channel. 

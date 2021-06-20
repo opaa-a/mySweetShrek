@@ -1,5 +1,6 @@
 import discord
 import json
+from decimal import Decimal
 from discord.ext import commands
 from dialogue.global_dialogue import *
 from dialogue.essential_dialogue import *

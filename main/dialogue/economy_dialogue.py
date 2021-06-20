@@ -241,6 +241,25 @@ class Economy_Grind_Dialogue:
             f'\n*This role will grant you 10% off items on the shop and 10% more earnings from every sources for 24 hours!*'
             )
     # COMMAND
+    # coinflip command
+    def coinflip_success(amount: int, author, dialogue_ref: str):
+        if dialogue_ref == "cf_init":
+            return (
+            f':coin: **{author}** is in a playful mood, {amount} {global_dialogue_var.currency} have been bet!'
+            f'\n:arrow_right:Pick **HEAD** or **TAIL**'
+            f'\n*You got to write it down, like with your keyboard...*'
+            )
+        print(Global_Log.command_run_without_exception('coinflip'))
+        if dialogue_ref == "cf_win":
+            return (
+                f':+1:   Well played to **{author}** who won **{amount}** {global_dialogue_var.currency}   :confetti_ball:'
+                f'\n*`!cf <amount>` to play again!*'
+                )
+        if dialogue_ref == "cf_lose":
+            return (
+                f':-1:   Congratulations! **{author}** lost **{amount}** {global_dialogue_var.currency}   :joy::ok_hand:'
+                f'\n*`!cf <amount>` to play again!*'
+                )
 
 # ---------------------------------------------- # GRIND log # ---------------------------------------------- #
 class Economy_Grind_Log:
@@ -258,3 +277,22 @@ class Economy_Grind_Log:
         return f'\t{log_format.FAIL} {userID} HAS BEEN SELECTED AS THE bon toutou BUT WAS THE PREVIOUS bon toutou.{log_format.END}'
 
 # ---------------------------------------------- # GRIND error # ---------------------------------------------- #
+class Economy_Grind_ErrorHandler:
+    # coinflip_error
+    def coinflip_error(error_type: str, userID: discord.Member):
+        print(f'\t{log_format.FAIL} QUERRY coinflip HAS BEEN EXITED BY {userID}.{log_format.END}')
+        if error_type == "fail_ans":
+            return (
+                f'{dialogue_icon.fail}   You failed answering a simple "head or tail" question, no doubt that\'s why your life sucks.'
+                f'\n*`!cf <amount>` to try again.*'
+                )
+        elif error_type == "bad_arg":
+            return (
+                f'{dialogue_icon.fail}   Ohoh! Looks like you don\'t know what a fucking number is!'
+                f'\n*`!cf <amount>`   --   <amount> being a number.*'
+                )
+        elif error_type == "missing_arg":
+            return (
+                f'{dialogue_icon.fail}   Ohoh! Looks like you forgot to specify the amount!'
+                f'\n*`!cf <amount>`*'
+                )
