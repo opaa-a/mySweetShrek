@@ -63,8 +63,6 @@ def init_cog():
     elif len(cog_list) == 0:
         return print(Main_Log.init_cog_empty_cogs)
 
-    return unknown_error()
-
 # ---------------------------------------------- # COMMANDS # ---------------------------------------------- #
 
 @client.command()

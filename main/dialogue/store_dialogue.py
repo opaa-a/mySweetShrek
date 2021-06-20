@@ -25,13 +25,13 @@ class Store_Dialogue:
             f'{display_help_store}'
             )
     # help_store_querry function
-    def help_store_querry(querry : int, userID: discord.Member):
+    def help_store_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
             help_store = json.load(help_index)
             help_store = help_store["Store"]
             help_store_list = list(help_store)
             help_store_exp_list = list(help_store.values())
-            theme_index = querry
+            theme_index = query
         
         print(Global_Log.querry_success('store help', userID))
         return (

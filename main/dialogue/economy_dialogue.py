@@ -27,13 +27,13 @@ class Economy_Essential_Dialogue:
             f'{display_help_economy}'
         )
     # help_economy_querry function
-    def help_economy_querry(querry : int, userID: discord.Member):
+    def help_economy_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
             help_economy = json.load(help_index)
             help_economy = help_economy["Economy"]
             help_economy_list = list(help_economy)
             help_economy_exp_list = list(help_economy.values())
-            theme_index = querry
+            theme_index = query
         
         print(Global_Log.querry_success('economy help', userID))
         return (
@@ -228,13 +228,13 @@ class Economy_Grind_Dialogue:
             f'{display_help_grind}'
         )
     # help_grind_querry function
-    def help_grind_querry(querry : int, userID: discord.Member):
+    def help_grind_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
             help_grind = json.load(help_index)
             help_grind = help_grind["Grind"]
             help_grind_list = list(help_grind)
             help_grind_exp_list = list(help_grind.values())
-            theme_index = querry
+            theme_index = query
         print(Global_Log.querry_success('grind help', userID))
         return (
             f'> :question:    {help_grind_list[theme_index]}'

@@ -46,13 +46,13 @@ class Essential_Dialogue:
             f'{display_help_general}'
         )
     # help_general_querry function
-    def help_general_querry(querry : int, userID: discord.Member):
+    def help_general_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
             help_general = json.load(help_index)
             help_general = help_general["General"]
             help_general_list = list(help_general)
             help_general_exp_list = list(help_general.values())
-            theme_index = querry
+            theme_index = query
        
         print(Global_Log.querry_success('general help', userID))
         return (

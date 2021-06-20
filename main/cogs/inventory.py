@@ -62,9 +62,9 @@ class Inventory_Essentials(commands.Cog):
     async def help_inv(self,ctx):
         await ctx.author.send(help_inv_success())
         #check if theme is selected
-        def check(querry):
-            return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 20)
+        def check(query):
+            return ctx.author == query.author
+        query = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_inv = json.load(help_index)
@@ -73,15 +73,15 @@ class Inventory_Essentials(commands.Cog):
             help_inv_exp_index_list = []
             for i in help_inv_exp_list:
                 help_inv_exp_index_list.append(help_inv_exp_list.index(i))
-            #return if querry int unvalid
+            #return if query int unvalid
             try:
-                if int(querry.content) not in help_inv_exp_index_list:
+                if int(query.content) not in help_inv_exp_index_list:
                     return await ctx.author.send(querry_exit('unknown_ID','general help'))
-            # return if querry is not int
+            # return if query is not int
             except ValueError:
                 return await ctx.author.send(querry_exit('valueError_int', 'general help'))
-            #return if querry successful
-            return await ctx.author.send(help_inv_querry(int(querry.content)))
+            #return if query successful
+            return await ctx.author.send(help_inv_querry(int(query.content)))
 
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])

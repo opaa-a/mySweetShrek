@@ -12,11 +12,11 @@ from dialogue.errors import *
 
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
-def store_buy_item(userID, querry : str, price: int):
+def store_buy_item(userID, query : str, price: int):
 # import functions from economy
     from cogs.economy import check_vault, get_balance, md_balance
 # buy item 'A la niche'
-    if querry == 'A la niche!':
+    if query == 'A la niche!':
         if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
@@ -24,13 +24,13 @@ def store_buy_item(userID, querry : str, price: int):
             # return if user has not enough money
             return error_user_cant_pay()
         # log the purchase
-        print(f'# STORE -- {userID} bought {querry}')
+        print(f'# STORE -- {userID} bought {query}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "A la niche!", 1)
-        return store_purchase_complete(str(querry))
+        return store_purchase_complete(str(query))
 # buy item 'Mauvais toutou'  
-    if querry == 'Mauvais toutou!':
+    if query == 'Mauvais toutou!':
         if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
@@ -38,13 +38,13 @@ def store_buy_item(userID, querry : str, price: int):
             # return if user has not enough money
             return error_user_cant_pay()
         # log the purchase
-        print(f'# STORE -- {userID} bought {querry}')
+        print(f'# STORE -- {userID} bought {query}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "Mauvais toutou!", 1)
-        return store_purchase_complete(str(querry))
+        return store_purchase_complete(str(query))
 # buy item 'Shush'  
-    if querry == 'Shush!':
+    if query == 'Shush!':
         if check_vault(userID) == False:
             # return if user is not registered
             return error_user_has_no_vault()
@@ -52,11 +52,11 @@ def store_buy_item(userID, querry : str, price: int):
             # return if user has not enough money
             return error_user_cant_pay()
         # log the purchase
-        print(f'# STORE -- {userID} bought {querry}')
+        print(f'# STORE -- {userID} bought {query}')
         # purchase is successful, pay the item
         md_balance(userID, "sub", price)
         add_item_to_inv(userID, "Shush!", 1)
-        return store_purchase_complete(str(querry))
+        return store_purchase_complete(str(query))
     
     return querry_exit('unknown_ID', 'store')
 
@@ -75,9 +75,9 @@ class Store(commands.Cog):
             await ctx.author.send(Store_Dialogue.help_store_success(ctx.author))
             await ctx.message.add_reaction(dialogue_icon.dm)
             #check if theme is selected
-            def check(querry):
-                return ctx.author == querry.author 
-            querry = await self.client.wait_for('message', check=check, timeout = 20)
+            def check(query):
+                return ctx.author == query.author 
+            query = await self.client.wait_for('message', check=check, timeout = 20)
             
             # iterate through the help file to fetch the store theme.
             with open('main/assets/help.json') as help_index:
@@ -87,15 +87,15 @@ class Store(commands.Cog):
                 help_store_exp_index_list = []
                 for i in help_store_exp_list:
                     help_store_exp_index_list.append(help_store_exp_list.index(i))
-            # return if querry int unvalid
+            # return if query int unvalid
             try:
-                if int(querry.content) not in help_store_exp_index_list:
+                if int(query.content) not in help_store_exp_index_list:
                     return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'store help', ctx.author))
-            # return if querry is not int
+            # return if query is not int
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'store help', ctx.author))
-            # return if querry successful
-            return await ctx.author.send(Store_Dialogue.help_store_querry(int(querry.content), ctx.author))
+            # return if query successful
+            return await ctx.author.send(Store_Dialogue.help_store_querry(int(query.content), ctx.author))
         
 # message delivered if parameter is 'showcase'
         if param.lower() == 'showcase':
@@ -106,20 +106,20 @@ class Store(commands.Cog):
             await ctx.author.send(store_buy_success())
             await ctx.message.add_reaction('📨')
             # check if product is selected
-            def check(querry):
-                return ctx.author == querry.author
-            querry = await self.client.wait_for('message', check=check, timeout = 30)
+            def check(query):
+                return ctx.author == query.author
+            query = await self.client.wait_for('message', check=check, timeout = 30)
 
             # iterate through the store_inv file to fetch store inventory items
             with open('main/assets/store_inv.json') as store_inv:
                 store_inv = json.load(store_inv)
                 store_inv_list = list(store_inv)
-            # return if querry unvalid
-                if str(querry.content) not in store_inv_list:
+            # return if query unvalid
+                if str(query.content) not in store_inv_list:
                     return await ctx.author.send(querry_exit('unknown_ID', 'store buy'))
-            # return if querry successful
-                store_item = store_inv[str(querry.content)]["price"]
-            return await ctx.author.send(store_buy_item(ctx.author, str(querry.content), store_item))
+            # return if query successful
+                store_item = store_inv[str(query.content)]["price"]
+            return await ctx.author.send(store_buy_item(ctx.author, str(query.content), store_item))
 
 # message delivered if errors occurs
         return await ctx.reply(error_store("bad_arg"))

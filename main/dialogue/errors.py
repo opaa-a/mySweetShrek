@@ -16,22 +16,22 @@ import discord
 #         f'**:exclamation: Unknown error, please contact the administrator.**'
 #         )
 
-# message display when a querry is not successful in the !help section
+# message display when a query is not successful in the !help section
 # def querry_exit(exit_type: str, querry_type: str):
 #     if exit_type == "unknown_ID":
 #         return (
 #             f'> *This ID does not exist!*'
-#             f'\n> *You exited the {querry_type} querry*'
+#             f'\n> *You exited the {querry_type} query*'
 #             )
 #     if exit_type == "valueError_int":
 #         return (
-#             f'> *Your querry must be a number!*'
-#             f'\n> *You exited the {querry_type} querry*'
+#             f'> *Your query must be a number!*'
+#             f'\n> *You exited the {querry_type} query*'
 #         )
 #     if exit_type == "valueError_str":
 #         return (
-#             f'> *Your querry must be a word!*'
-#             f'\n> *You exited the {querry_type} querry*'
+#             f'> *Your query must be a word!*'
+#             f'\n> *You exited the {querry_type} query*'
 #         )
     # return unknown_error()
 #---------------------------------------------------------------------------------------#       GLOBAL ECONOMY COG FUNCTIONS ERRORS       #---------------------------------------------------------------------------------------#

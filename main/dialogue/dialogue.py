@@ -41,13 +41,13 @@ from discord.ext import commands
 #         f'{display_help_economy}'
 #     )
 # display the economy help theme section
-# def help_economy_querry(querry : int):
+# def help_economy_querry(query : int):
 #     with open('main/assets/help.json') as help_index:
 #         help_economy = json.load(help_index)
 #         help_economy = help_economy["Economy"]
 #         help_economy_list = list(help_economy)
 #         help_economy_exp_list = list(help_economy.values())
-#         theme_index = querry
+#         theme_index = query
 #     return (
 #         f'> :question:    {help_economy_list[theme_index]}'
 #         f'\n> '
@@ -74,13 +74,13 @@ from discord.ext import commands
 #         f'{display_help_grind}'
 #     )
 # display the grind theme help section
-# def help_grind_querry(querry : int):
+# def help_grind_querry(query : int):
 #     with open('main/assets/help.json') as help_index:
 #         help_grind = json.load(help_index)
 #         help_grind = help_grind["Grind"]
 #         help_grind_list = list(help_grind)
 #         help_grind_exp_list = list(help_grind.values())
-#         theme_index = querry
+#         theme_index = query
 #     return (
 #         f'> :question:    {help_grind_list[theme_index]}'
 #         f'\n> '
@@ -319,13 +319,13 @@ from discord.ext import commands
 #     )
 
 # # display the general theme help section
-# def help_general_querry(querry : int):
+# def help_general_querry(query : int):
 #     with open('main/assets/help.json') as help_index:
 #         help_general = json.load(help_index)
 #         help_general = help_general["General"]
 #         help_general_list = list(help_general)
 #         help_general_exp_list = list(help_general.values())
-#         theme_index = querry
+#         theme_index = query
 #     return (
 #         f'> :question:    {help_general_list[theme_index]}'
 #         f'\n> '
@@ -356,14 +356,14 @@ from discord.ext import commands
 #         f'{display_help_store}'
 #         )
 
-# message display when a querry is successful in the !store help section
-# def help_store_querry(querry : int):
+# message display when a query is successful in the !store help section
+# def help_store_querry(query : int):
 #     with open('main/assets/help.json') as help_index:
 #         help_store = json.load(help_index)
 #         help_store = help_store["Store"]
 #         help_store_list = list(help_store)
 #         help_store_exp_list = list(help_store.values())
-#         theme_index = querry
+#         theme_index = query
 #     return (
 #         f'> :question:    {help_store_list[theme_index]}'
 #         f'\n> '
@@ -428,13 +428,13 @@ def help_inv_success():
         )
 
 # display the general theme help section
-def help_inv_querry(querry : int):
+def help_inv_querry(query : int):
     with open('main/assets/help.json') as help_index:
         help_inv = json.load(help_index)
         help_inv = help_inv["Inventory"]
         help_inv_list = list(help_inv)
         help_inv_exp_list = list(help_inv.values())
-        theme_index = querry
+        theme_index = query
     return (
         f'> :question:    {help_inv_list[theme_index]}'
         f'\n> '

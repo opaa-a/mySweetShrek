@@ -81,24 +81,24 @@ class Global_Dialogue:
         print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} EXECUTED THIS COMMAND IN THE BOT DMs.{log_format.END}')
         return f'{dialogue_icon.fail}   Oops! You need to execute this command in a channel and not in my DMs!'
 
-    # return if querry is exited by an error
+    # return if query is exited by an error
     def querry_exit(error: str, querry_type: str, userID: discord.Member):
         print(f'\t{log_format.FAIL} QUERRY {querry_type} HAS BEEN EXITED BY {userID} DUE TO FOLLOWING ERROR {error}.{log_format.END}')
         
         if error == 'unknown_ID':            
             return (
                 f'> *This ID does not exist!*'
-                f'\n> *You exited the {querry_type} querry*'
+                f'\n> *You exited the {querry_type} query*'
                 )
         if error == 'valueError_int':
             return (
-                f'> *Your querry must be a number!*'
-                f'\n> *You exited the {querry_type} querry*'
+                f'> *Your query must be a number!*'
+                f'\n> *You exited the {querry_type} query*'
             )
         if error == 'valueError_str':
             return (
-                f'> *Your querry must be a word!*'
-                f'\n> *You exited the {querry_type} querry*'
+                f'> *Your query must be a word!*'
+                f'\n> *You exited the {querry_type} query*'
             )
 
 # Global scope logs
@@ -109,9 +109,9 @@ class Global_Log:
     # log everytime command is run without exception
     def command_run_without_exception(command: str):
         return f'\t{log_format.NOEXC} {command} RAN WITHOUT EXCEPTION.{log_format.END}'
-    # log when bot is waiting for a querry
+    # log when bot is waiting for a query
     def bot_is_waiting_for_querry(userID: discord.Member):
         return f'\t{log_format.WAIT} BOT IS WAITING FOR QUERRY FROM {userID}.{log_format.END}'
-    # return when querry is successful
+    # return when query is successful
     def querry_success(querry_type: str, userID: discord.Member):
         return f'\t{log_format.NOEXC} {querry_type} QUERRY REQUEST HAS BEEN SUCCESSFULLY USED BY {userID}.{log_format.END}'

@@ -124,9 +124,9 @@ class Economy_Essentials(commands.Cog):
     async def help_economy(self,ctx):
         await ctx.author.send(Economy_Essential_Dialogue.help_economy_function_success(ctx.author))
         #check if theme is selected
-        def check(querry):
-            return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 20)
+        def check(query):
+            return ctx.author == query.author
+        query = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_economy = json.load(help_index)
@@ -135,15 +135,15 @@ class Economy_Essentials(commands.Cog):
             help_economy_exp_index_list = []
             for i in help_economy_exp_list:
                 help_economy_exp_index_list.append(help_economy_exp_list.index(i))
-            #return if querry unvalid
+            #return if query unvalid
             try:
-                if int(querry.content) not in help_economy_exp_index_list:
+                if int(query.content) not in help_economy_exp_index_list:
                     return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'economy help', ctx.author))
-            # return if querry is not int
+            # return if query is not int
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'economy help', ctx.author))
-            #return if querry successful
-            return await ctx.author.send(Economy_Essential_Dialogue.help_economy_querry(int(querry.content), ctx.author))
+            #return if query successful
+            return await ctx.author.send(Economy_Essential_Dialogue.help_economy_querry(int(query.content), ctx.author))
 
 
 # !register -- Take no args. Register the author of the command to the vault.
@@ -308,9 +308,9 @@ class Economy_Grind(commands.Cog):
     async def help_grind(self,ctx):
         await ctx.author.send(Economy_Grind_Dialogue.help_grind_success(ctx.author))
         #check if theme is selected
-        def check(querry):
-            return ctx.author == querry.author
-        querry = await self.client.wait_for('message', check=check, timeout = 20)
+        def check(query):
+            return ctx.author == query.author
+        query = await self.client.wait_for('message', check=check, timeout = 20)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_grind = json.load(help_index)
@@ -319,15 +319,15 @@ class Economy_Grind(commands.Cog):
             help_grind_exp_index_list = []
             for i in help_grind_exp_list:
                 help_grind_exp_index_list.append(help_grind_exp_list.index(i))
-            #return if querry int unvalid
+            #return if query int unvalid
             try:
-                if int(querry.content) not in help_grind_exp_index_list:
+                if int(query.content) not in help_grind_exp_index_list:
                     return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'grind help', ctx.author))
-            # return if querry is not int
+            # return if query is not int
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'grind help', ctx.author))
-            #return if querry successful
-            return await ctx.author.send(Economy_Grind_Dialogue.help_grind_querry(int(querry.content), ctx.author))
+            #return if query successful
+            return await ctx.author.send(Economy_Grind_Dialogue.help_grind_querry(int(query.content), ctx.author))
 
 
 # A 'bon toutou' is picked every 24 hours, it'll give the user perks like a 5% more income and 5% discounts...
