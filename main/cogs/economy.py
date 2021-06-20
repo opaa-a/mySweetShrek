@@ -9,7 +9,6 @@ from decouple import config
 from dialogue.dialogue import *
 from dialogue.errors import *
 from dialogue.economy_dialogue import *
-from facts_dic import *
 
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
@@ -155,7 +154,7 @@ class Economy_Essentials(commands.Cog):
         author = str(ctx.author)
         # call check_vault to check if user is already registered
         if check_vault(ctx.author):
-            return await ctx.reply(error_user_is_already_registered())
+            return await ctx.reply(Economy_Essential_ErrorHandler.user_already_registered())
         # if user not registered, dumb informations to the DB
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
@@ -210,7 +209,7 @@ class Economy_Essentials(commands.Cog):
     @commands.command(aliases=['bal'])
     async def balance(self, ctx, userID : discord.Member = None):
         # log the command
-        print(Global_Log.command_has_been_used('balance', userID))
+        print(Global_Log.command_has_been_used('balance', ctx.author))
         # check if author is getting his own informations or a user informations
         if userID == None:
             userID = ctx.author
@@ -430,40 +429,40 @@ class Economy_Grind(commands.Cog):
         return await ctx.send(Economy_Grind_Dialogue.coinflip_success(cf_prize, ctx.author, "cf_win"))
 
 
-# !facts OR !fa -- Takes no arg, but expect an answer. Send a fact to the context channel. 
-# First person to get the right answer to the fact will earn between 1 and 15 {currency}.
-    @commands.command(aliases=['fa'])
-    async def facts(self, ctx):
-        from cogs.essential import check_user_has_role
-        from cogs.essential import malus_rate
-        from cogs.essential import bonus_rate
+# # !facts OR !fa -- Takes no arg, but expect an answer. Send a fact to the context channel. 
+# # First person to get the right answer to the fact will earn between 1 and 15 {currency}.
+#     @commands.command(aliases=['fa'])
+#     async def facts(self, ctx):
+#         from cogs.essential import check_user_has_role
+#         from cogs.essential import malus_rate
+#         from cogs.essential import bonus_rate
 
-        client = discord.Client
-        channel = ctx.channel
-        random_fact = random.choice(fact_list)
-        fact_index = fact_list.index(random_fact)
-        prize = random.randint(1,15)
+#         client = discord.Client
+#         channel = ctx.channel
+#         random_fact = random.choice(fact_list)
+#         fact_index = fact_list.index(random_fact)
+#         prize = random.randint(1,15)
 
-        # add malus rate to the prize if user is 'mauvais toutou'
-        if check_user_has_role(ctx.author, 805897076437155861):
-            prize = prize - prize * malus_rate
-        # add bonus rate to the prize if user is 'bon toutou'
-        if check_user_has_role(ctx.author, 804849555094765598):
-            prize = prize * bonus_rate
+#         # add malus rate to the prize if user is 'mauvais toutou'
+#         if check_user_has_role(ctx.author, 805897076437155861):
+#             prize = prize - prize * malus_rate
+#         # add bonus rate to the prize if user is 'bon toutou'
+#         if check_user_has_role(ctx.author, 804849555094765598):
+#             prize = prize * bonus_rate
 
-        await ctx.send(random_fact)
+#         await ctx.send(random_fact)
 
-        def check(ans):
-            return ans.content == answer_list[fact_index] and ans.channel == channel and ans.author != discord.Member.bot
+#         def check(ans):
+#             return ans.content == answer_list[fact_index] and ans.channel == channel and ans.author != discord.Member.bot
         
-        if answer_list[fact_index] != "null":
-            answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
+#         if answer_list[fact_index] != "null":
+#             answer = await client.wait_for(self.client, 'message', check=check, timeout=15)
             
-        if  check_vault(answer.author) != True:
-            return await answer.reply(facts_success("success_without_vault", prize))
+#         if  check_vault(answer.author) != True:
+#             return await answer.reply(facts_success("success_without_vault", prize))
             
-        md_balance(answer.author, "add", prize)
-        return await answer.reply(facts_success("success_with_vault", prize))
+#         md_balance(answer.author, "add", prize)
+#         return await answer.reply(facts_success("success_with_vault", prize))
 
 #---------------------------------------------------------------------------------------#   ECONOMY GRIND ERRORS   #---------------------------------------------------------------------------------------#
 
@@ -471,15 +470,18 @@ class Economy_Grind(commands.Cog):
     @coinflip.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            await ctx.reply(error_coinflip("bad_arg"))
+            print(Global_Log.command_has_been_used('coinflip', ctx.author))
+            await ctx.reply(Global_Dialogue.bad_arg('coinflip', ctx.author, '!coinflip <amount>   --   <amount> being a number!'))
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.reply(error_coinflip("missing_arg"))
+            print(Global_Log.command_has_been_used('coinflip', ctx.author))
+            await ctx.reply(Global_Dialogue.arg_missing('coinflip', ctx.author, '!coinflip <amount>'))
+
 #---------------------------------------------------------------------------------------#       ECONOMY REWARDS       #---------------------------------------------------------------------------------------#
 
 class Economy_Reward(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f"\n- Economy Rewards from bank.py is loaded.")
+        print(f"\n{log_format.INFO}- Economy Rewards from bank.py is loaded.{log_format.END}")
 
 #---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
 
@@ -508,15 +510,15 @@ class Economy_Reward(commands.Cog):
                 vault[userID]["reward"]["daily_reward_claim_date"] = date_now
                 vault[userID]["balance"] += reward
                 edit_vault(vault)
-                return daily_reward_success(userID, reward, "first_claim")
+                return Economy_Grind_Dialogue.daily_reward_success(userID, reward, "first_claim")
 
             if dlr_claim < date_now:
                 vault[userID]["reward"]["daily_reward_claim_date"] = date_now
                 vault[userID]["balance"] += reward
                 edit_vault(vault)
-                return daily_reward_success(userID, reward, "claim_success")
+                return Economy_Grind_Dialogue.daily_reward_success(userID, reward, "claim_success")
 
-            return daily_reward_success(userID, reward)
+            return Economy_Grind_Dialogue.daily_reward_success(userID, reward)
 
 #
     def passive_inc_reward(self, ctx):
@@ -528,18 +530,19 @@ class Economy_Reward(commands.Cog):
 # With a reward name as a an arg, claim the specified reward if available.
     @commands.command()
     async def claim(self, ctx, reward_type : str = None):
+        print(Global_Log.command_has_been_used('claim', ctx.author))
         
         if check_vault(ctx.author) == False:
-            return await ctx.reply(error_user_has_no_vault())
+            return await ctx.reply(Global_Dialogue.user_not_registered('claim'))
         
-        if reward_type == None:
-            return await ctx.reply(claim_success())
+        # if reward_type == None:
+        #     return await ctx.reply(claim_success())
 
         if reward_type == "daily":
             return await ctx.reply(self.daily_reward(ctx, ctx.author))
         
-        if reward_type == "p":
-            return self.passive_inc_reward(ctx)
+        # if reward_type == "":
+        #     return self.passive_inc_reward(ctx)
 
 
 #---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#

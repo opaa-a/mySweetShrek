@@ -193,7 +193,15 @@ class Economy_Essential_Log:
 
 # ---------------------------------------------- # ESSENTIAL error # ---------------------------------------------- #
 class Economy_Essential_ErrorHandler:
-    pass
+    def user_already_registered(userID: discord.Member = None):
+        print(f'\t{log_format.FAIL} COMMAND register FAILED - USER IS ALREADY REGISTERED')
+        if userID == None:
+            return (
+                f':x:   Ohoh! Looks like you are already registered!'
+                )
+        return (
+            f':x:   Ohoh! Looks like {userID} is already registered!'
+            )
 
 # ---------------------------------------------- # GRIND DIALOGUE # ---------------------------------------------- #
 class Economy_Grind_Dialogue:
@@ -240,7 +248,27 @@ class Economy_Grind_Dialogue:
             f':bone:   *Yay! You have been assigned the role of bon toutou!*   :bone:'
             f'\n*This role will grant you 10% off items on the shop and 10% more earnings from every sources for 24 hours!*'
             )
+    
     # COMMAND
+    # claim daily command
+    def daily_reward_success(author, amount, dialogue_ref: str = None):    
+        print(Global_Log.command_run_without_exception('claim daily'))
+        if dialogue_ref == "first_claim":
+            return (
+                f':partying_face:   **{author} is claiming his daily reward for the very first time!**'
+                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
+                f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
+                )
+        elif dialogue_ref == "claim_success":
+            return (
+                f':calendar:   {author} has claim his daily reward!'
+                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
+                f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
+                )
+        return (
+            f'{dialogue_icon.fail}   Looks like you already claimed that reward today!'
+            f'\n:calendar:   Come back tomorrow!'
+            )
     # coinflip command
     def coinflip_success(amount: int, author, dialogue_ref: str):
         if dialogue_ref == "cf_init":
