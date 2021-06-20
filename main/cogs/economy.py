@@ -3,13 +3,12 @@ import json
 import random
 import asyncio
 import datetime
-from decimal import Decimal
 from discord.ext import commands
 from decouple import config
 from dialogue.dialogue import *
 from dialogue.errors import *
 from dialogue.economy_dialogue import *
-
+from cogs.essential import check_user_is_bot, passive_income_rate
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -173,11 +172,11 @@ class Economy_Essentials(commands.Cog):
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             for userID in vault:
-                vault[userID]['reward']['former_bon_toutou'] = False ### THIS IS THE LINE TO CHANGE WHEN SOMTHING NEEDS TO BE DUMPED INTO THE VAULT
+                vault[userID]['reward']['passive_income_stack'] = 0 ### THIS IS THE LINE TO CHANGE WHEN SOMTHING NEEDS TO BE DUMPED INTO THE VAULT
                 # dump new content
                 edit_vault(vault)
         # return dm
-        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(Economy_Essential_Dialogue.reloadVAULT_success('vault[userID][\'reward\'][\'former_bon_toutou\'] = False'))
+        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(Economy_Essential_Dialogue.reloadVAULT_success("vault[userID]['reward']['passive_income_stack'] = 0"))
 
 # !addcoins -- ADMIN ONLY. Take 2 args, a target userID and an amount.
     @commands.command()
@@ -484,6 +483,16 @@ class Economy_Reward(commands.Cog):
         print(f"\n{log_format.INFO}- Economy Rewards from bank.py is loaded.{log_format.END}")
 
 #---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
+# who_is_vocal filter users that are in the vocal
+# users that got a vault and are not bots are given passive income every 30 seconds;
+# passive income is defined by passive_income_rate.
+    def who_is_vocal(users):
+        with open('./main/assets/vault.json') as vault:
+            vault = json.load(vault)
+            for userID in users:
+                if check_user_is_bot(userID) is False and check_vault(userID):
+                    vault[str(userID)]["reward"]["passive_income_stack"] += passive_income_rate
+            return edit_vault(vault)
 
 # daily_reward is the a daily claimable reward with a default amount of 1000
     def daily_reward(self, ctx, userID : discord.Member):
@@ -520,9 +529,28 @@ class Economy_Reward(commands.Cog):
 
             return Economy_Grind_Dialogue.daily_reward_success(userID, reward)
 
-#
-    def passive_inc_reward(self, ctx):
-        return
+    def passive_income_stack(self, ctx, userID: discord.Member):
+        from cogs.essential import check_user_has_role
+        from cogs.essential import malus_rate
+        from cogs.essential import bonus_rate
+
+        userID = str(userID)
+        with open('./main/assets/vault.json') as vault:
+            vault = json.load(vault)
+            stack = vault[userID]["reward"]["passive_income_stack"]
+            
+            # add malus rate to the prize if user is 'mauvais toutou'
+            if check_user_has_role(ctx.author, 805897076437155861):
+                reward = stack - stack * malus_rate
+            # add bonus rate to the prize if user is 'bon toutou'
+            if check_user_has_role(ctx.author, 804849555094765598):
+                reward = stack * bonus_rate
+
+            vault[userID]["balance"] += reward
+            vault[userID]["reward"]["passive_income_stack"] = 0
+            edit_vault(vault)
+            return Economy_Grind_Dialogue.stack_success(ctx.author, stack, reward)
+
 
 #---------------------------------------------------------------------------------------#       ECONOMY REWARDS COMMANDS      #---------------------------------------------------------------------------------------#
 
@@ -532,17 +560,14 @@ class Economy_Reward(commands.Cog):
     async def claim(self, ctx, reward_type : str = None):
         print(Global_Log.command_has_been_used('claim', ctx.author))
         
-        if check_vault(ctx.author) == False:
+        if check_vault(ctx.author) is False:
             return await ctx.reply(Global_Dialogue.user_not_registered('claim'))
-        
-        # if reward_type == None:
-        #     return await ctx.reply(claim_success())
 
         if reward_type == "daily":
             return await ctx.reply(self.daily_reward(ctx, ctx.author))
         
-        # if reward_type == "":
-        #     return self.passive_inc_reward(ctx)
+        if reward_type == "stack":
+            return await ctx.reply(self.passive_income_stack(ctx, ctx.author))
 
 
 #---------------------------------------------------------------------------------------#   ECONOMY REWARDS ERRORS   #---------------------------------------------------------------------------------------#

@@ -250,25 +250,6 @@ class Economy_Grind_Dialogue:
             )
     
     # COMMAND
-    # claim daily command
-    def daily_reward_success(author, amount, dialogue_ref: str = None):    
-        print(Global_Log.command_run_without_exception('claim daily'))
-        if dialogue_ref == "first_claim":
-            return (
-                f':partying_face:   **{author} is claiming his daily reward for the very first time!**'
-                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
-                f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
-                )
-        elif dialogue_ref == "claim_success":
-            return (
-                f':calendar:   {author} has claim his daily reward!'
-                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
-                f'\n:arrow_right:   ` !claim daily ` *to get your own daily reward*'
-                )
-        return (
-            f'{dialogue_icon.fail}   Looks like you already claimed that reward today!'
-            f'\n:calendar:   Come back tomorrow!'
-            )
     # coinflip command
     def coinflip_success(amount: int, author, dialogue_ref: str):
         if dialogue_ref == "cf_init":
@@ -288,6 +269,33 @@ class Economy_Grind_Dialogue:
                 f':-1:   Congratulations! **{author}** lost **{amount}** {global_dialogue_var.currency}   :joy::ok_hand:'
                 f'\n*`!cf <amount>` to play again!*'
                 )
+    # claim daily command
+    def daily_reward_success(author, amount: int, dialogue_ref: str = None):    
+        print(Global_Log.command_run_without_exception('claim daily'))
+        if dialogue_ref == "first_claim":
+            return (
+                f':partying_face:   **{author} is claiming his daily reward for the very first time!**'
+                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
+                f'\n:arrow_right:   `!claim daily` *to get your own daily reward*'
+                )
+        elif dialogue_ref == "claim_success":
+            return (
+                f':calendar:   {author} has claim his daily reward!'
+                f'\n:coin:   *{author} got {amount} {global_dialogue_var.currency} from his daily reward!*'
+                f'\n:arrow_right:   `!claim daily` *to get your own daily reward*'
+                )
+        return (
+            f'{dialogue_icon.fail}   Looks like you already claimed that reward today!'
+            f'\n:calendar:   Come back tomorrow!'
+            )
+    # claim passive income stack command
+    def stack_success(userID: discord.Member, stack: int, amount: int):
+        print(Global_Log.command_run_without_exception('claim stack'))
+        return (
+            f':chart_with_upwards_trend:    **{userID} has claimed his stacks!**'
+            f'\n:coin:    {userID} had **{stack} stacks**. He claimed them for **{amount} {global_dialogue_var.currency}!**'
+            f'\n:arrow_right:   `! claim stack` *to claim your stacks!*'
+            )
 
 # ---------------------------------------------- # GRIND log # ---------------------------------------------- #
 class Economy_Grind_Log:

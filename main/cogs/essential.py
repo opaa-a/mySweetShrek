@@ -13,6 +13,9 @@ malus_rate = 0.20
 global bonus_rate
 bonus_rate = 1.10
 
+global passive_income
+passive_income_rate = 2.5
+
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 def check_user_in_chan(userID: discord.Member, channel):
@@ -124,7 +127,14 @@ class Essential(commands.Cog):
     
     @commands.command()
     async def debug(self, ctx):
-        return
+        guild = self.client.get_guild(774048252848111636)
+        user_on_vocal = []
+        for voice_channel in guild.voice_channels:
+            for i in voice_channel.voice_states:
+                userID = self.client.get_user(i)
+                user_on_vocal.append(str(userID))
+            x = f'\n- '.join([i for i in user_on_vocal])
+        await ctx.send(f'\n- {x}')
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 

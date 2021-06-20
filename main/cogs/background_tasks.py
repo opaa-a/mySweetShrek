@@ -1,8 +1,12 @@
 import discord
 import json
 import random
+from cogs.economy import Economy_Reward
 from dialogue.global_dialogue import *
 from discord.ext import tasks, commands
+
+
+#---------------------------------------------------------------------------------------#        TASKS       #---------------------------------------------------------------------------------------#
 
 class Bon_Toutou_Task(commands.Cog):
     def __init__(self, client):
@@ -22,6 +26,22 @@ class Bon_Toutou_Task(commands.Cog):
         print(f'{log_format.INFO} BON TOUTOU HAS ASIGN {random_userID}.{log_format.END}')
         return await Economy_Grind.bon_toutou(self, random_userID)
 
+class Who_Is_Vocal(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        self.who_is_vocal.start()
+        print(f'\n{log_format.INFO}- Who is Vocal from background_tasks.py is loaded.{log_format.END}')
+
+    @tasks.loop(seconds=30)
+    async def who_is_vocal(self):
+        guild = self.client.get_guild(774048252848111636)
+        user_on_vocal = []
+        for voice_channel in guild.voice_channels:
+            for i in voice_channel.voice_states:
+                userID = self.client.get_user(i)
+                user_on_vocal.append(userID)
+        return Economy_Reward.who_is_vocal(user_on_vocal)
 
 def setup(client):
     client.add_cog(Bon_Toutou_Task(client))
+    client.add_cog(Who_Is_Vocal(client))
