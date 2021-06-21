@@ -127,14 +127,18 @@ class Essential(commands.Cog):
     
     @commands.command()
     async def debug(self, ctx):
-        guild = self.client.get_guild(774048252848111636)
-        user_on_vocal = []
-        for voice_channel in guild.voice_channels:
-            for i in voice_channel.voice_states:
-                userID = self.client.get_user(i)
-                user_on_vocal.append(str(userID))
-            x = f'\n- '.join([i for i in user_on_vocal])
-        await ctx.send(f'\n- {x}')
+        x = [300,900,5000,10000,50000]
+        for stack in x:
+            rate = stack / 100000
+            inc = stack * rate
+            reward = stack + inc
+            await ctx.send(
+                f'\n**STACK   ==   {stack}**'
+                f'\n**RATE   ==   {rate}**'
+                f'\n**INC   ==   {inc}**'
+                f'\n**REWARD   ==   {reward}**'
+                f'\n------------------------------'
+                )
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 

@@ -294,7 +294,7 @@ class Economy_Grind_Dialogue:
         return (
             f':chart_with_upwards_trend:    **{userID} has claimed his stacks!**'
             f'\n:coin:    {userID} had **{stack} stacks**. He claimed them for **{amount} {global_dialogue_var.currency}!**'
-            f'\n:arrow_right:   `! claim stack` *to claim your stacks!*'
+            f'\n:arrow_right:   `!claim stack` *to claim your stacks!*'
             )
 
 # ---------------------------------------------- # GRIND log # ---------------------------------------------- #

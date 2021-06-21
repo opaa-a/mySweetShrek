@@ -109,7 +109,11 @@ def md_bon_toutou_status(userID: discord.Member):
                 vault[profile]['reward']['former_bon_toutou'] = False
         vault[userID]['reward']['former_bon_toutou'] = True
         edit_vault(vault)
-        
+
+def stockmarket_rate(stack: float):
+    rate = stack / 100000
+    inc = stack * rate
+    return inc
 
 #---------------------------------------------------------------------------------------#      ECONOMY ESSENTIALS COMMANDS      #---------------------------------------------------------------------------------------#
 
@@ -538,7 +542,8 @@ class Economy_Reward(commands.Cog):
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
             stack = vault[userID]["reward"]["passive_income_stack"]
-            
+            reward = stack + stockmarket_rate(stack)
+
             # add malus rate to the prize if user is 'mauvais toutou'
             if check_user_has_role(ctx.author, 805897076437155861):
                 reward = stack - stack * malus_rate
