@@ -127,7 +127,13 @@ class Economy_Essentials(commands.Cog):
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
-        query = await self.client.wait_for('message', check=check, timeout = 20)
+        
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        try:
+            query = await self.client.wait_for('message', check=check, timeout = 20)
+        except asyncio.TimeoutError:
+            return Global_Dialogue.query_exit('timeout','general help', ctx.author)
+
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_economy = json.load(help_index)
@@ -313,7 +319,11 @@ class Economy_Grind(commands.Cog):
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
-        query = await self.client.wait_for('message', check=check, timeout = 20)
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        try:
+            query = await self.client.wait_for('message', check=check, timeout = 20)
+        except asyncio.TimeoutError:
+            return Global_Dialogue.query_exit('timeout', 'help grind', ctx.author)
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_grind = json.load(help_index)
@@ -402,7 +412,8 @@ class Economy_Grind(commands.Cog):
 
         def check(ans):
             return ans.channel == ctx.channel and ans.author == ctx.author
-
+        
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
         ans = await self.client.wait_for('message', check=check)
 
         if ans.content.lower() != 'tail' and ans.content.lower() != 'head':

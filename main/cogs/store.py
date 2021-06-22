@@ -1,5 +1,6 @@
 import discord
 import json
+import asyncio
 from discord.ext import commands
 from cogs.inventory import add_item_to_inv
 from dialogue.store_dialogue import *
@@ -72,8 +73,12 @@ class Store(commands.Cog):
             #check if theme is selected
             def check(query):
                 return ctx.author == query.author 
-            query = await self.client.wait_for('message', check=check, timeout = 20)
+            
             print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+            try:
+                query = await self.client.wait_for('message', check=check, timeout = 20)
+            except asyncio.TimeoutError:
+                return Global_Dialogue.query_exit('timeout','store help', ctx.author)
             
             # iterate through the help file to fetch the store theme.
             with open('main/assets/help.json') as help_index:
@@ -104,8 +109,12 @@ class Store(commands.Cog):
             # check if product is selected
             def check(query):
                 return ctx.author == query.author
-            query = await self.client.wait_for('message', check=check, timeout = 30)
+            
             print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+            try:
+                query = await self.client.wait_for('message', check=check, timeout = 30)
+            except asyncio.TimeoutError:
+                return Global_Dialogue.query_exit('timeout','store buy', ctx.author)
 
             # iterate through the store_inv file to fetch store inventory items
             with open('main/assets/store_inv.json') as store_inv:

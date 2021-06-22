@@ -80,24 +80,29 @@ class Global_Dialogue:
         return f'{dialogue_icon.fail}   Oops! You need to execute this command in a channel and not in my DMs!'
 
     # return if query is exited by an error
-    def query_exit(error: str, querry_type: str, userID: discord.Member):
-        print(f'\t{log_format.FAIL} QUERRY {querry_type} HAS BEEN EXITED BY {userID} DUE TO FOLLOWING ERROR {error}.{log_format.END}')
+    def query_exit(error: str, query_type: str, userID: discord.Member):
+        print(f'\t{log_format.FAIL} QUERRY {query_type} HAS BEEN EXITED BY {userID} DUE TO FOLLOWING ERROR {error}.{log_format.END}')
         
         if error == 'unknown_ID':            
             return (
                 f'> *This ID does not exist!*'
-                f'\n> *You exited the {querry_type} query*'
+                f'\n> *You exited the {query_type} query*'
                 )
         if error == 'valueError_int':
             return (
                 f'> *Your query must be a number!*'
-                f'\n> *You exited the {querry_type} query*'
+                f'\n> *You exited the {query_type} query*'
             )
         if error == 'valueError_str':
             return (
                 f'> *Your query must be a word!*'
-                f'\n> *You exited the {querry_type} query*'
+                f'\n> *You exited the {query_type} query*'
             )
+        if error == 'timeout':
+            return (
+                f'> *You took too long to answer!*'
+                f'\n> *You exited the {query_type} query.*'
+                )
 
 # Global scope logs
 class Global_Log:

@@ -1,5 +1,6 @@
 import discord
 import json
+import asyncio
 from discord.ext import commands
 from cogs.economy import edit_vault
 from cogs.economy import check_vault
@@ -66,7 +67,13 @@ class Inventory_Essentials(commands.Cog):
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
-        query = await self.client.wait_for('message', check=check, timeout = 20)
+        
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        try:
+            query = await self.client.wait_for('message', check=check, timeout = 20)
+        except asyncio.TimeoutError:
+            return Global_Dialogue.query_exit('timeout','general help', ctx.author)
+            
         # iterate through the help file to fetch the store theme.
         with open('main/assets/help.json') as help_index:
             help_inv = json.load(help_index)

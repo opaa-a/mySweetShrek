@@ -1,5 +1,6 @@
 import discord
 import json
+import asyncio
 from discord.ext import commands
 from dialogue.global_dialogue import *
 from dialogue.essential_dialogue import *
@@ -62,8 +63,14 @@ class Essential(commands.Cog):
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
-        query = await self.client.wait_for('message', check=check, timeout = 20)
-        # iterate through the help file to fetch the store theme.
+        
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        try:
+            query = await self.client.wait_for('message', check=check, timeout = 20)
+            # iterate through the help file to fetch the store theme.
+        except asyncio.TimeoutError:
+            return Global_Dialogue.query_exit('timeout','general help', ctx.author)
+        
         with open('main/assets/help.json') as help_index:
             help_general = json.load(help_index)
             help_general = help_general["General"]
@@ -91,7 +98,12 @@ class Essential(commands.Cog):
         def check(query):
             return ctx.author == query.author
         # bot is waiting for a query
-        query = await self.client.wait_for('message', check=check, timeout = 20)
+        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        try:
+            query = await self.client.wait_for('message', check=check, timeout = 20)
+        except asyncio.TimeoutError:
+            return Global_Dialogue.query_exit('timeout','general help', ctx.author)
+
         # iterate through the help file to fetch the index of themes.
         with open('main/assets/help.json') as help_index:
             help_theme = json.load(help_index)
