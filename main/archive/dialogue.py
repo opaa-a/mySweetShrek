@@ -372,175 +372,175 @@ from discord.ext import commands
         
 # message display when !store showcase is successful
 # display the list of all available commands to buy
-def store_showcase_success():
-    with open('main/assets/store_inv.json') as store_inv:
-        store_inv = json.load(store_inv)
-        preformat_store_inv = []
-        for item in store_inv:
-            preformat_store_inv.append(
-                f'\n> {store_inv[item]["icon"]} ` {item} `   :   **{store_inv[item]["price"]} {currency} :coin:**'
-                f'\n>   *{store_inv[item]["desc"]}*'
-                ) 
-        store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
-    return (
-        f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
-        f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
-        f'\n> '
-        f'{store_inv_showcase}'
-        ) 
+# def store_showcase_success():
+#     with open('main/assets/store_inv.json') as store_inv:
+#         store_inv = json.load(store_inv)
+#         preformat_store_inv = []
+#         for item in store_inv:
+#             preformat_store_inv.append(
+#                 f'\n> {store_inv[item]["icon"]} ` {item} `   :   **{store_inv[item]["price"]} {currency} :coin:**'
+#                 f'\n>   *{store_inv[item]["desc"]}*'
+#                 ) 
+#         store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
+#     return (
+#         f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
+#         f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
+#         f'\n> '
+#         f'{store_inv_showcase}'
+#         ) 
 
 # message display when !store buy is successful
-def store_buy_success():
-    return(
-        f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
-        f'\n\n> **Reply to this message with the name of the item you want to purchase**'
-        f'\n> **To get the list of all the items in the store ` !store showcase `**'
-        )
+# def store_buy_success():
+#     return(
+#         f':shopping_bags:   **WELCOME TO THE {storeName.upper()}!**   :shopping_bags:'
+#         f'\n\n> **Reply to this message with the name of the item you want to purchase**'
+#         f'\n> **To get the list of all the items in the store ` !store showcase `**'
+#         )
 
-def store_purchase_complete(item_name : str):
-    return (
-        f':package:   **You successfully purchased {item_name}**   :package:'
-        f'\n> *Your item has been placed in your inventory.*'
-        f'\n> *Learn more about the inventory in with the* ` !help ` *command.*'
-        )
+# def store_purchase_complete(item_name : str):
+#     return (
+#         f':package:   **You successfully purchased {item_name}**   :package:'
+#         f'\n> *Your item has been placed in your inventory.*'
+#         f'\n> *Learn more about the inventory in with the* ` !help ` *command.*'
+#         )
 
 #---------------------------------------------------------------------------------------#        GLOBAL INVENTORY COG INTERACTIONS       #---------------------------------------------------------------------------------------#
 
 # display the inventory help section
-def help_inv_success():
-    with open('main/assets/help.json') as help_index:
-        help_inv = json.load(help_index)
-        help_inv = help_inv["Inventory"]
-        help_inv_list = list(help_inv)
-        preformat_display_theme = []
-        for theme in help_inv:
-            preformat_display_theme.append(
-                f'\n> ` {help_inv_list.index(theme)} `   :white_small_square:   **{theme}**'
-                )
-        display_help_inv = f'\n> '.join([i for i in preformat_display_theme])
+# def help_inv_success():
+#     with open('main/assets/help.json') as help_index:
+#         help_inv = json.load(help_index)
+#         help_inv = help_inv["Inventory"]
+#         help_inv_list = list(help_inv)
+#         preformat_display_theme = []
+#         for theme in help_inv:
+#             preformat_display_theme.append(
+#                 f'\n> ` {help_inv_list.index(theme)} `   :white_small_square:   **{theme}**'
+#                 )
+#         display_help_inv = f'\n> '.join([i for i in preformat_display_theme])
 
-    return (
-        f':package:    **WELCOME TO THE INVENTORY HELP SECTION!**    :package:'
-        f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
-        f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
-        f'\n> '
-        f'{display_help_inv}'
-        )
+#     return (
+#         f':package:    **WELCOME TO THE INVENTORY HELP SECTION!**    :package:'
+#         f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
+#         f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
+#         f'\n> '
+#         f'{display_help_inv}'
+#         )
 
 # display the general theme help section
-def help_inv_querry(query : int):
-    with open('main/assets/help.json') as help_index:
-        help_inv = json.load(help_index)
-        help_inv = help_inv["Inventory"]
-        help_inv_list = list(help_inv)
-        help_inv_exp_list = list(help_inv.values())
-        theme_index = query
-    return (
-        f'> :question:    {help_inv_list[theme_index]}'
-        f'\n> '
-        f'\n> :speech_left:    {help_inv_exp_list[theme_index]}'
-        )
+# def help_inv_querry(query : int):
+#     with open('main/assets/help.json') as help_index:
+#         help_inv = json.load(help_index)
+#         help_inv = help_inv["Inventory"]
+#         help_inv_list = list(help_inv)
+#         help_inv_exp_list = list(help_inv.values())
+#         theme_index = query
+#     return (
+#         f'> :question:    {help_inv_list[theme_index]}'
+#         f'\n> '
+#         f'\n> :speech_left:    {help_inv_exp_list[theme_index]}'
+#         )
 
 # display the userID inventory
-def display_inv_success(inventory):
-    with open('main/assets/store_inv.json') as store_inv:
-        store_inv = json.load(store_inv)
-        preformat_display_inventory = []
-        if inventory == {}:
-            return (
-            f':package:   **THIS IS YOUR INVENTORY**   :package:'
-            f'\n> '
-            f'\n> :wind_blowing_face::leaves::wind_blowing_face:'
-            f'\n> **Ohoh! Looks like your inventory is empty**'
-                )
-        for item in inventory:
-            icon = store_inv[item]['icon']
-            desc = store_inv[item]['desc']
-            amount = inventory[item]
-            preformat_display_inventory.append(
-                f'\n> **{icon} ` {item} ` x ` {amount} `**'
-                f'\n> *{desc}*'
-                )
-            display_inventory = f'\n> '.join([i for i in preformat_display_inventory])
+# def display_inv_success(inventory):
+#     with open('main/assets/store_inv.json') as store_inv:
+#         store_inv = json.load(store_inv)
+#         preformat_display_inventory = []
+#         if inventory == {}:
+#             return (
+#             f':package:   **THIS IS YOUR INVENTORY**   :package:'
+#             f'\n> '
+#             f'\n> :wind_blowing_face::leaves::wind_blowing_face:'
+#             f'\n> **Ohoh! Looks like your inventory is empty**'
+#                 )
+#         for item in inventory:
+#             icon = store_inv[item]['icon']
+#             desc = store_inv[item]['desc']
+#             amount = inventory[item]
+#             preformat_display_inventory.append(
+#                 f'\n> **{icon} ` {item} ` x ` {amount} `**'
+#                 f'\n> *{desc}*'
+#                 )
+#             display_inventory = f'\n> '.join([i for i in preformat_display_inventory])
 
-    return (
-        f':package:   **THIS IS YOUR INVENTORY**   :package:'
-        f'\n> '
-        f'{display_inventory}'
-        )
+#     return (
+#         f':package:   **THIS IS YOUR INVENTORY**   :package:'
+#         f'\n> '
+#         f'{display_inventory}'
+#         )
 
 # message display when !use is successful
-def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
-    # return if author don't have the item
-    if dialogue_ref == "item_missing":
-        return (
-            f':x:   Nope, you can\'t use what you don\'t own.'
-            f'\n:arrow_right:   You can buy items with the command: ` !store buy `'
-        )
-    if dialogue_ref == "command_in_dm":
-        return (
-            f':x:   You can\'t use the command ` !use ` in my DMs!'
-            f'\n:arrow_right:   ` !use <target> <item> `'
-        )
-    if dialogue_ref == "":
-        return (
-            f':x:   The target you specified is already in t'
-        )
-    # return if use is successful
-    if dialogue_ref == "item_used":
-        author = str(author)
-        # get icons of items
-        with open('main/assets/store_inv.json') as store_inv:
-            store_inv = json.load(store_inv)
-            icon = store_inv[item]['icon']
-        # get author inv
-        with open('main/assets/vault.json') as vault:
-            vault = json.load(vault)
-            item_amount = int(vault[author]['inventory'][item])
+# def use_success(dialogue_ref: str, target: discord.Member, item, author = None):
+#     # return if author don't have the item
+#     if dialogue_ref == "item_missing":
+#         return (
+#             f':x:   Nope, you can\'t use what you don\'t own.'
+#             f'\n:arrow_right:   You can buy items with the command: ` !store buy `'
+#         )
+#     if dialogue_ref == "command_in_dm":
+#         return (
+#             f':x:   You can\'t use the command ` !use ` in my DMs!'
+#             f'\n:arrow_right:   ` !use <target> <item> `'
+#         )
+#     if dialogue_ref == "":
+#         return (
+#             f':x:   The target you specified is already in t'
+#         )
+#     # return if use is successful
+#     if dialogue_ref == "item_used":
+#         author = str(author)
+#         # get icons of items
+#         with open('main/assets/store_inv.json') as store_inv:
+#             store_inv = json.load(store_inv)
+#             icon = store_inv[item]['icon']
+#         # get author inv
+#         with open('main/assets/vault.json') as vault:
+#             vault = json.load(vault)
+#             item_amount = int(vault[author]['inventory'][item])
         
-        return (
-            f'{icon}   **You successfully used {item} on {target}!**'
-            f'\n:package: You now have ` {item_amount} ` **x** ` {item} ` in your inventory.'
-            )
+#         return (
+#             f'{icon}   **You successfully used {item} on {target}!**'
+#             f'\n:package: You now have ` {item_amount} ` **x** ` {item} ` in your inventory.'
+#             )
 
-def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
-    if dialogue_ref == "target_already_in_chan":
-        return (
-            f':x:   Nope, **{target}** is already in ` \'La Niche\' `. Don\'t waste your item.'
-            )
-    if dialogue_ref == "target_not_connected":
-        return (
-            f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
-        )
-    if dialogue_ref == "target_is_bot":
-        return (
-            f':x:   No no no, you can\'t use this command on bots!'
-        )
+# def item_a_la_niche_success(dialogue_ref: str, target: discord.Member):
+#     if dialogue_ref == "target_already_in_chan":
+#         return (
+#             f':x:   Nope, **{target}** is already in ` \'La Niche\' `. Don\'t waste your item.'
+#             )
+#     if dialogue_ref == "target_not_connected":
+#         return (
+#             f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
+#         )
+#     if dialogue_ref == "target_is_bot":
+#         return (
+#             f':x:   No no no, you can\'t use this command on bots!'
+#         )
 
-def item_shush_success(dialogue_ref: str, target: discord.Member):
-    if dialogue_ref == "target_is_already_muted":
-        return (
-            f':x:   Nope, **{target}** is already muted!'
-            )
-    if dialogue_ref == "target_not_connected":
-        return (
-            f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
-            )
-    if dialogue_ref == "target_is_bot":
-        return (
-            f':x:   No no no, you can\'t use this command on bots!'
-        )
+# def item_shush_success(dialogue_ref: str, target: discord.Member):
+#     if dialogue_ref == "target_is_already_muted":
+#         return (
+#             f':x:   Nope, **{target}** is already muted!'
+#             )
+#     if dialogue_ref == "target_not_connected":
+#         return (
+#             f':x:   Ohoh! You can\'t use this command if the target is not connected to a vocal channel.'
+#             )
+#     if dialogue_ref == "target_is_bot":
+#         return (
+#             f':x:   No no no, you can\'t use this command on bots!'
+#         )
 
-def item_mauvais_toutou(dialogue_ref: str, target: discord.Member):
-    if dialogue_ref == "target_already_has_role":
-        return (
-            f':x:   Nope, **{target}** is already \'Mauvais toutou\'!'
-            )
-    if dialogue_ref == "target_is_not_registered":
-        return (
-            f':x:   Ohoh! Looks like **{target}** is not registered to the vault. You can\'t target users that are not in the vault.'
-            )
-    if dialogue_ref == "target_is_bot":
-        return (
-            f':x:   No no no, you can\'t use this command on bots!'
-            )
+# def item_mauvais_toutou(dialogue_ref: str, target: discord.Member):
+#     if dialogue_ref == "target_already_has_role":
+#         return (
+#             f':x:   Nope, **{target}** is already \'Mauvais toutou\'!'
+#             )
+#     if dialogue_ref == "target_is_not_registered":
+#         return (
+#             f':x:   Ohoh! Looks like **{target}** is not registered to the vault. You can\'t target users that are not in the vault.'
+#             )
+#     if dialogue_ref == "target_is_bot":
+#         return (
+#             f':x:   No no no, you can\'t use this command on bots!'
+#             )

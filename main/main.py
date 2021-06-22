@@ -3,10 +3,9 @@ import discord
 import json
 from discord.ext import commands
 from decouple import config
-from discord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotFound, ExtensionNotLoaded
+from discord.ext.commands.errors import *
 from dialogue.main_dialogue import *
 from dialogue.global_dialogue import *
-from dialogue.errors import *
 
 # ---------------------------------------------- # GLOBAL VARIABLES # ---------------------------------------------- #
 

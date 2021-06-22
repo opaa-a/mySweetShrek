@@ -1,6 +1,4 @@
 import discord
-# import random
-import numpy
 from datetime import datetime
 
 # Log message template
@@ -82,7 +80,7 @@ class Global_Dialogue:
         return f'{dialogue_icon.fail}   Oops! You need to execute this command in a channel and not in my DMs!'
 
     # return if query is exited by an error
-    def querry_exit(error: str, querry_type: str, userID: discord.Member):
+    def query_exit(error: str, querry_type: str, userID: discord.Member):
         print(f'\t{log_format.FAIL} QUERRY {querry_type} HAS BEEN EXITED BY {userID} DUE TO FOLLOWING ERROR {error}.{log_format.END}')
         
         if error == 'unknown_ID':            

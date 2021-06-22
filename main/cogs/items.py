@@ -1,9 +1,9 @@
 import discord
 import asyncio
 from discord.ext import commands
-from discord.role import Role
-from dialogue.dialogue import *
-from dialogue.errors import *
+from dialogue.global_dialogue import *
+from dialogue.item_dialogue import *
+from dialogue.inventory_dialogue import *
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -18,7 +18,7 @@ from dialogue.errors import *
 class Item(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f'\n- Item from items.py is loaded')
+        print(f'\n{log_format.INFO}- Item from items.py is loaded.{log_format.END}')
 
 # ITEM A LA NICHE
     async def item_a_la_niche(ctx, target: discord.Member, item: str):
@@ -33,20 +33,21 @@ class Item(commands.Cog):
         
         # check if user is already in La niche 
         if check_user_in_chan(target, channel):
-            return await ctx.reply(item_a_la_niche_success("target_already_in_chan", target))
+            return await ctx.reply(Item_Dialogue.item_a_la_niche_success("target_already_in_chan", target))
         
         # check if user is a bot
         if check_user_is_bot(target):
-            return await ctx.reply(item_a_la_niche_success("target_is_bot", target))
+            return await ctx.reply(Item_Dialogue.item_a_la_niche_success("target_is_bot", target))
         
         # check if user is connected to a voice channel
         if check_user_voice_chan(target) is False:
-            return await ctx.reply(item_a_la_niche_success("target_not_connected", target))
+            return await ctx.reply(Item_Dialogue.item_a_la_niche_success("target_not_connected", target))
 
         # remove the used item from the inventory of the author
         remove_item_from_inv(ctx.author, item, 1)
-        # move the target to the channel "la niche" & send success dialogue
-        return await target.move_to(channel), await ctx.reply(use_success("item_used", target, item, ctx.author))
+        # move the target to the channel "la niche" & send success dialogue & logs
+        print(f'\t{log_format.INFO} {ctx.author} SUCCESSFULLY USED THE ITEM A la niche! ON {target}.{log_format.END}')
+        return await target.move_to(channel), await ctx.reply(Inventory_Dialogue.use_success("item_used", target, item, ctx.author))
 
 # ITEM MAUVAIS TOUTOU
     async def item_mauvais_toutou(ctx, target: discord.Member, item: str):
@@ -63,15 +64,15 @@ class Item(commands.Cog):
 
         # check if user already has role 'mauvais toutou'
         if check_user_has_role(target, 805897076437155861):
-            return await ctx.reply(item_mauvais_toutou("target_already_has_role", target))
+            return await ctx.reply(Item_Dialogue.item_mauvais_toutou("target_already_has_role", target))
         
         # check if user is a bot
         if check_user_is_bot(target):
-            return await ctx.reply(item_mauvais_toutou("target_is_bot", target))
+            return await ctx.reply(Item_Dialogue.item_mauvais_toutou("target_is_bot", target))
         
         # check if user has a vault
         if check_vault(target) is False:
-            return await ctx.reply(item_mauvais_toutou("target_is_not_registered", target))
+            return await ctx.reply(Item_Dialogue.item_mauvais_toutou("target_is_not_registered", target))
         
         # remove the used item from the inventory of the author
         remove_item_from_inv(ctx.author, item, 1)
@@ -79,8 +80,9 @@ class Item(commands.Cog):
         await target.add_roles(role_mauvais_toutou)
         if check_user_has_role(target, 804849555094765598):
             await target.remove_roles(role_bon_toutou)
-        # send success dialogue
-        await ctx.reply(use_success("item_used", target, item, ctx.author))
+        # send success dialogue & logs
+        print(f'\t{log_format.INFO} {ctx.author} SUCCESSFULLY USED THE ITEM Mauvais toutou! ON {target}.{log_format.END}')
+        await ctx.reply(Inventory_Dialogue.use_success("item_used", target, item, ctx.author))
 
         # wait for the role hold time to expire
         await asyncio.sleep(role_hold_time)
@@ -101,22 +103,23 @@ class Item(commands.Cog):
 
         # check if user is already muted
         if check_user_is_muted(target):
-            return await ctx.reply(item_shush_success("target_is_already_muted", target))
+            return await ctx.reply(Item_Dialogue.item_shush_success("target_is_already_muted", target))
 
         # check if user is a bot
         if check_user_is_bot(target):
-            return await ctx.reply(item_shush_success("target_is_bot", target))
+            return await ctx.reply(Item_Dialogue.item_shush_success("target_is_bot", target))
         
         # check if user is connected to a voice channel
         if check_user_voice_chan(target) is False:
-            return await ctx.reply(item_shush_success("target_not_connected", target))
+            return await ctx.reply(Item_Dialogue.item_shush_success("target_not_connected", target))
         
         # remove the used item from the inventory of the author
         remove_item_from_inv(ctx.author, item, 1)
         # mute the target
         await target.edit(mute=True)
-        # send success dialogue
-        await ctx.reply(use_success("item_used", target, item, ctx.author))
+        # send success dialogue & logs
+        print(f'\t{log_format.INFO} {ctx.author} SUCCESSFULLY USED THE ITEM Shush! ON {target}.{log_format.END}')
+        await ctx.reply(Inventory_Dialogue.use_success("item_used", target, item, ctx.author))
         
         # wait for the set mute time
         await asyncio.sleep(mute_time)

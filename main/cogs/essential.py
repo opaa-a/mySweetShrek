@@ -1,6 +1,5 @@
 import discord
 import json
-from decimal import Decimal
 from discord.ext import commands
 from dialogue.global_dialogue import *
 from dialogue.essential_dialogue import *
@@ -75,10 +74,10 @@ class Essential(commands.Cog):
             #return if query int unvalid
             try:
                 if int(query.content) not in help_general_exp_index_list:
-                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID','general help', ctx.author))
+                    return await ctx.author.send(Global_Dialogue.query_exit('unknown_ID','general help', ctx.author))
             # return if query is not int
             except ValueError:
-                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'general help', ctx.author))
+                return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'general help', ctx.author))
             #return if query successful
             return await ctx.author.send(Essential_Dialogue.help_general_querry(int(query.content), ctx.author))
 
@@ -104,10 +103,10 @@ class Essential(commands.Cog):
         # return if query int is unvalid
         try:
             if int(query.content) not in help_theme_index_list:
-                return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'index help', ctx.author))
+                return await ctx.author.send(Global_Dialogue.query_exit('unknown_ID', 'index help', ctx.author))
         # return if query is not int
         except ValueError:
-            return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'index help', ctx.author))
+            return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'index help', ctx.author))
         
         # return if query is successful
         if int(query.content) == 0:

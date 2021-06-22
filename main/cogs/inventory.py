@@ -4,8 +4,8 @@ from discord.ext import commands
 from cogs.economy import edit_vault
 from cogs.economy import check_vault
 from cogs.items import Item
-from dialogue.dialogue import *
-from dialogue.errors import *
+from dialogue.global_dialogue import *
+from dialogue.inventory_dialogue import *
 
 #---------------------------------------------------------------------------------------#       GLOBAL VARIABLES       #---------------------------------------------------------------------------------------#
 
@@ -14,6 +14,7 @@ from dialogue.errors import *
 #---------------------------------------------------------------------------------------#        GLOBAL FUNCTIONS       #---------------------------------------------------------------------------------------#
 
 def add_item_to_inv(userID: discord.Member, item: str, amount: int):
+    print()
     with open('main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
@@ -23,15 +24,16 @@ def add_item_to_inv(userID: discord.Member, item: str, amount: int):
             vault[userID]['inventory'][item] = amount
         vault[userID]['inventory'][item] += amount
     edit_vault(vault)
+    return print(Inventory_Log.md_inv_log(userID, 'add', item, amount))
 
 def remove_item_from_inv(userID: discord.Member, item: str, amount: int):
     with open('main/assets/vault.json') as vault:
         vault = json.load(vault)
         userID = str(userID)
         item = str(item)
-        inventory = list(vault[userID]['inventory'])
         vault[userID]['inventory'][item] -= amount
     edit_vault(vault)
+    return print(Inventory_Log.md_inv_log(userID, 'rm', item, amount))
 
 def display_inv(userID: discord.Member):
     with open('main/assets/vault.json') as vault:
@@ -39,7 +41,7 @@ def display_inv(userID: discord.Member):
         userID = str(userID)
         inventory = vault[userID]['inventory']
         
-        return display_inv_success(inventory)
+        return Inventory_Dialogue.display_inv_success(inventory)
 
 def check_item(userID: discord.Member, item: str):
     with open('main/assets/vault.json') as vault:
@@ -56,11 +58,11 @@ def check_item(userID: discord.Member, item: str):
 class Inventory_Essentials(commands.Cog):
     def __init__(self, client):
         self.client = client
-        print(f'\n- Inventory Essentials from inventory.py is loaded')
+        print(f'\n{log_format.INFO}- Inventory Essentials from inventory.py is loaded.{log_format.END}')
 
 # display the help inventory section
     async def help_inv(self,ctx):
-        await ctx.author.send(help_inv_success())
+        await ctx.author.send(Inventory_Dialogue.help_inv_success(ctx.author))
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
@@ -76,49 +78,50 @@ class Inventory_Essentials(commands.Cog):
             #return if query int unvalid
             try:
                 if int(query.content) not in help_inv_exp_index_list:
-                    return await ctx.author.send(querry_exit('unknown_ID','general help'))
+                    return await ctx.author.send(Global_Dialogue.query_exit('unknown_ID','general help', ctx.author))
             # return if query is not int
             except ValueError:
-                return await ctx.author.send(querry_exit('valueError_int', 'general help'))
+                return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'general help', ctx.author))
             #return if query successful
-            return await ctx.author.send(help_inv_querry(int(query.content)))
+            return await ctx.author.send(Inventory_Dialogue.help_inv_querry(int(query.content), ctx.author))
 
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
+        print(Global_Log.command_has_been_used('inventory', ctx.author))
         if check_vault(ctx.author) is False:
-            return await ctx.reply(error_user_has_no_vault())
-        return await ctx.message.add_reaction('📨'), await ctx.author.send(display_inv(ctx.author))
+            return await ctx.reply(Global_Dialogue.user_not_registered('inventory'))
+        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(display_inv(ctx.author))
 
 # !use -- Takes a mandatory arg. use an item in the inventory
     @commands.command()
     async def use(self, ctx, target: discord.Member, *, item: str):
+        print(Global_Log.command_has_been_used('use', ctx.author))
         # check if user has vault
         if check_vault(ctx.author) is False:
-            return await ctx.reply(error_user_has_no_vault())
+            return await ctx.reply(Global_Dialogue.user_not_registered('use'))
 
         if isinstance(ctx.channel, discord.channel.DMChannel):
-            return await ctx.author.send(use_success('command_in_dm'))
+            return await ctx.author.send(Global_Dialogue.command_executed_in_dm('use', ctx.author))
 
         if item == "A la niche!":
-            
             if check_item(ctx.author, item):
                 return await Item.item_a_la_niche(ctx, target, item)
                             
-            return await ctx.reply(use_success("item_missing", target, item))
+            return await ctx.reply(Inventory_Dialogue.use_success("item_missing", target, item))
         
         if item == "Mauvais toutou!":
             if check_item(ctx.author, item):
                 return await Item.item_mauvais_toutou(ctx, target, item)
 
-            return await ctx.reply(use_success("item_missing", target, item))
+            return await ctx.reply(Inventory_Dialogue.use_success("item_missing", target, item))
         
         if item == "Shush!":
 
             if check_item(ctx.author, item):
                 return await Item.item_shush(ctx, target, item)
             
-            return await ctx.reply(use_success("item_missing", target, item))
+            return await ctx.reply(Inventory_Dialogue.use_success("item_missing", target, item))
 
 #---------------------------------------------------------------------------------------#   ECONOMY ESSENTIALS ERRORS   #---------------------------------------------------------------------------------------#
 
@@ -126,9 +129,11 @@ class Inventory_Essentials(commands.Cog):
     @use.error
     async def error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            return print(log_error_bad_arg("use")), await ctx.reply(error_use("bad_arg"))
+            print(Global_Log.command_has_been_used('use', ctx.auhtor))
+            return await ctx.reply(Global_Dialogue.bad_arg('use', ctx.author, '!use <target> <item>   --   <target> being a connected user and <item> being a purchased item.'))
         elif isinstance(error, commands.MissingRequiredArgument):
-            return print(log_error_missing_arg("use")), await ctx.reply(error_use("missing_arg"))
+            print(Global_Log.command_has_been_used('use', ctx.author))
+            return await ctx.reply(Global_Dialogue.arg_missing('use', ctx.author, '!use <target> <item>'))
         # return await ctx.author.send(unknown_error())
 
 

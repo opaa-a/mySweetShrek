@@ -140,40 +140,40 @@ import discord
 
 #---------------------------------------------------------------------------------------#       GLOBAL ESSENTIAL COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
-def error_help(error_type: str):
-    if error_type == "bad_arg":
-        return (
-            f':x:   Oops! The theme you\'re looking for doesn\'t exist.'
-            f'\n*To access a theme, you must reply to the bot with the number associated to the theme.*'
-            )
-    return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
+# def error_help(error_type: str):
+#     if error_type == "bad_arg":
+#         return (
+#             f':x:   Oops! The theme you\'re looking for doesn\'t exist.'
+#             f'\n*To access a theme, you must reply to the bot with the number associated to the theme.*'
+#             )
+#     return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
 
 #---------------------------------------------------------------------------------------#       GLOBAL STORE COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when !store fails to execute
-def error_store(error_type: str):
-    if error_type == "bad_arg":
-        return (
-            f':x:   Oops! The parameter of store you specified doesn\'t exist.'
-            f'\n:arrow_right: ` !store help `'
-            )
-    return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
+# def error_store(error_type: str):
+#     if error_type == "bad_arg":
+#         return (
+#             f':x:   Oops! The parameter of store you specified doesn\'t exist.'
+#             f'\n:arrow_right: ` !store help `'
+#             )
+#     return print("# UNKNOWN ERROR -- !store FAILED TO SPECIFY ERROR TYPE")
 
 
 #---------------------------------------------------------------------------------------#       GLOBAL INVENTORY COG COMMANDS ERRORS       #---------------------------------------------------------------------------------------#
 
 # error message when !use fails to execute
-def error_use(error_type: str):
-    if error_type == "bad_arg":
-        return (
-            f':x:   Oops! Looks like one or multiple arguments specified are not valid.'
-            f'\n:arrow_right:   ` !use <target> <item> `'
-            f'\n> *<target> must be specified and must be an existing AND CONNECTED user on the server*'
-            f'\n> *<item> must be specified and must be available in your inventory*'
-        )
-    if error_type == "missing_arg":
-        return (
-            f':x:   Oops! You need to specify a target and an item to use.'
-            f'\n:arrow_right:   ` !use <target> <item> `'
-        )
-    return print("# UNKNOWN ERROR -- !use FAILED TO SPECIFY ERROR TYPE")
+# def error_use(error_type: str):
+#     if error_type == "bad_arg":
+#         return (
+#             f':x:   Oops! Looks like one or multiple arguments specified are not valid.'
+#             f'\n:arrow_right:   ` !use <target> <item> `'
+#             f'\n> *<target> must be specified and must be an existing AND CONNECTED user on the server*'
+#             f'\n> *<item> must be specified and must be available in your inventory*'
+#         )
+#     if error_type == "missing_arg":
+#         return (
+#             f':x:   Oops! You need to specify a target and an item to use.'
+#             f'\n:arrow_right:   ` !use <target> <item> `'
+#         )
+#     return print("# UNKNOWN ERROR -- !use FAILED TO SPECIFY ERROR TYPE")

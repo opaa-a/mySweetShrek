@@ -5,8 +5,6 @@ import asyncio
 import datetime
 from discord.ext import commands
 from decouple import config
-from dialogue.dialogue import *
-from dialogue.errors import *
 from dialogue.economy_dialogue import *
 from cogs.essential import check_user_is_bot, passive_income_rate
 
@@ -141,10 +139,10 @@ class Economy_Essentials(commands.Cog):
             #return if query unvalid
             try:
                 if int(query.content) not in help_economy_exp_index_list:
-                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'economy help', ctx.author))
+                    return await ctx.author.send(Global_Dialogue.query_exit('unknown_ID', 'economy help', ctx.author))
             # return if query is not int
             except ValueError:
-                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'economy help', ctx.author))
+                return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'economy help', ctx.author))
             #return if query successful
             return await ctx.author.send(Economy_Essential_Dialogue.help_economy_querry(int(query.content), ctx.author))
 
@@ -192,6 +190,8 @@ class Economy_Essentials(commands.Cog):
         # check if author is getting his own informations or a user informations
         if userID == None:
             userID = ctx.author
+        if isinstance(ctx.channel, discord.channel.DMChannel):
+            return await ctx.author.send(Global_Dialogue.command_executed_in_dm('addcoins', ctx.author))
         # call check_admin to check if user is allowed to perform this command
         if check_admin(ctx.author) is False:
             return await ctx.reply(Global_Dialogue.user_not_allowed('addcoins', userID))
@@ -325,10 +325,10 @@ class Economy_Grind(commands.Cog):
             #return if query int unvalid
             try:
                 if int(query.content) not in help_grind_exp_index_list:
-                    return await ctx.author.send(Global_Dialogue.querry_exit('unknown_ID', 'grind help', ctx.author))
+                    return await ctx.author.send(Global_Dialogue.query_exit('unknown_ID', 'grind help', ctx.author))
             # return if query is not int
             except ValueError:
-                return await ctx.author.send(Global_Dialogue.querry_exit('valueError_int', 'grind help', ctx.author))
+                return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'grind help', ctx.author))
             #return if query successful
             return await ctx.author.send(Economy_Grind_Dialogue.help_grind_querry(int(query.content), ctx.author))
 
