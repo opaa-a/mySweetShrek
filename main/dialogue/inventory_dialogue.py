@@ -10,21 +10,21 @@ class Inventory_Dialogue:
             help_inv = json.load(help_index)
             help_inv = help_inv["Inventory"]
             help_inv_list = list(help_inv)
-            preformat_display_theme = []
+
+            embed = discord.Embed(
+                title= f":package:    WELCOME TO THE INVENTORY HELP SECTION    :package:",
+                description=(
+                    f"Reply to this message with the index of the theme to get more informations about it!"
+                    f"\nIf there is a theme that is not referenced and you have a unanswered question, please contact an administrator."
+                ),
+                color= discord.Colour.random()
+            )
             for theme in help_inv:
-                preformat_display_theme.append(
-                    f'\n> ` {help_inv_list.index(theme)} `   :white_small_square:   **{theme}**'
-                    )
-            display_help_inv = f'\n> '.join([i for i in preformat_display_theme])
+                embed.add_field(name=f"{theme}", value=f":id:   **{help_inv_list.index(theme)}**", inline=False)
 
         print(Global_Log.querry_success('inventory help', userID))
-        return (
-            f':package:    **WELCOME TO THE INVENTORY HELP SECTION!**    :package:'
-            f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
-            f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
-            f'\n> '
-            f'{display_help_inv}'
-            )
+        return embed
+
     # help_inv_querry function
     def help_inv_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
@@ -33,39 +33,44 @@ class Inventory_Dialogue:
             help_inv_list = list(help_inv)
             help_inv_exp_list = list(help_inv.values())
             theme_index = query
-        print(Global_Log.querry_success('inventory help', userID))
-        return (
-            f'> :question:    {help_inv_list[theme_index]}'
-            f'\n> '
-            f'\n> :speech_left:    {help_inv_exp_list[theme_index]}'
+        
+        embed = discord.Embed(
+           title= ":dividers:   HELP INDEX   :dividers:",
+           color = discord.Colour.random()
             )
+        embed.add_field(name=f":question: {help_inv_list[theme_index]}", value=f":speech_left: {help_inv_exp_list[theme_index]}", inline=False)
+
+        print(Global_Log.querry_success('general help', userID))
+        return embed
+
     # discplay_inv function
     def display_inv_success(inventory):
         print(Global_Log.command_run_without_exception('inventory'))
         with open('main/assets/store_inv.json') as store_inv:
             store_inv = json.load(store_inv)
-            preformat_display_inventory = []
+            
             if inventory == {}:
-                return (
-                f':package:   **THIS IS YOUR INVENTORY**   :package:'
-                f'\n> '
-                f'\n> :wind_blowing_face::leaves::wind_blowing_face:'
-                f'\n> **Ohoh! Looks like your inventory is empty**'
+                embed = discord.Embed(
+                    title=":package:   THIS IS YOUR INVENTORY   :package:",
+                    description=(
+                        f""
+                        f":wind_blowing_face::leaves::wind_blowing_face:"
+                        f"Ohoh! Looks like your inventory is empty!"
                     )
+                )
+                return embed
+            
+            embed = discord.Embed(
+                title= ":package:   THIS IS YOUR INVENTORY   :package:",
+                color= discord.Colour.random()
+            )
             for item in inventory:
                 icon = store_inv[item]['icon']
                 desc = store_inv[item]['desc']
                 amount = inventory[item]
-                preformat_display_inventory.append(
-                    f'\n> **{icon} ` {item} ` x ` {amount} `**'
-                    f'\n> *{desc}*'
-                    )
-                display_inventory = f'\n> '.join([i for i in preformat_display_inventory])
-        return (
-            f':package:   **THIS IS YOUR INVENTORY**   :package:'
-            f'\n> '
-            f'{display_inventory}'
-            )
+                embed.add_field(name=f"**{icon} ` {item} ` x ` {amount} `**", value=f"*{desc}*", inline=False)
+        return embed
+
     # COMMANDS
     # use command
     def use_success(dialogue_ref: str, target: discord.Member, item, author = None):

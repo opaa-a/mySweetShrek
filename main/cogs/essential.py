@@ -59,7 +59,7 @@ class Essential(commands.Cog):
 
 # display the help general section
     async def help_general(self,ctx):
-        await ctx.author.send(Essential_Dialogue.help_general_function_success(ctx.author))
+        await ctx.author.send(embed=Essential_Dialogue.help_general_function_success(ctx.author))
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
@@ -86,14 +86,14 @@ class Essential(commands.Cog):
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'general help', ctx.author))
             #return if query successful
-            return await ctx.author.send(Essential_Dialogue.help_general_querry(int(query.content), ctx.author))
+            return await ctx.author.send(embed=Essential_Dialogue.help_general_querry(int(query.content), ctx.author))
 
 # !help -- Takes no mandatory args. display help.
     @commands.command()
     async def help(self, ctx):
-        await ctx.author.send(Essential_Dialogue.help_command_success(ctx.author))
+        # await ctx.author.send(Essential_Dialogue.help_command_success(ctx.author))
+        await ctx.send(embed=Essential_Dialogue.help_command_success(ctx.author))
         await ctx.message.add_reaction(dialogue_icon.dm)
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
         # check if theme is selected
         def check(query):
             return ctx.author == query.author

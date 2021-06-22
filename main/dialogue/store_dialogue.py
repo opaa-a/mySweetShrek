@@ -10,21 +10,21 @@ class Store_Dialogue:
             help_store = json.load(help_index)
             help_store = help_store["Store"]
             help_store_list = list(help_store)
-            preformat_display_theme = []
+            
+            embed = discord.Embed(
+                title= f":department_store:    WELCOME TO THE {global_dialogue_var.storeName.upper()} HELP SECTION    :department_store:",
+                description=(
+                    f"Reply to this message with the index of the theme to get more informations about it!"
+                    f"\nIf there is a theme that is not referenced and you have a unanswered question, please contact an administrator."
+                ),
+                color= discord.Colour.random()
+            )
             for theme in help_store:
-                preformat_display_theme.append(
-                    f'\n> ` {help_store_list.index(theme)} `   :white_small_square:   **{theme}**'
-                    )
-            display_help_store = f'\n> '.join([i for i in preformat_display_theme])
+                embed.add_field(name=f"{theme}", value=f":id:   **{help_store_list.index(theme)}**", inline=False)
         
         print(Global_Log.querry_success('store help', userID))
-        return (
-            f':department_store:    **WELCOME TO THE {global_dialogue_var.storeName.upper()} HELP SECTION!**    :department_store:'
-            f'\n\n> **Reply to this message with the number associated to the them to get more informations about it!**'
-            f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
-            f'\n> '
-            f'{display_help_store}'
-            )
+        return embed
+
     # help_store_querry function
     def help_store_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
@@ -33,13 +33,16 @@ class Store_Dialogue:
             help_store_list = list(help_store)
             help_store_exp_list = list(help_store.values())
             theme_index = query
-        
-        print(Global_Log.querry_success('store help', userID))
-        return (
-            f'> :question:    {help_store_list[theme_index]}'
-            f'\n> '
-            f'\n> :speech_left:    {help_store_exp_list[theme_index]}'
-            )  
+
+        embed = discord.Embed(
+           title= ":dividers:   HELP INDEX   :dividers:",
+           color = discord.Colour.random()
+            )
+        embed.add_field(name=f":question: {help_store_list[theme_index]}", value=f":speech_left: {help_store_exp_list[theme_index]}", inline=False)
+
+        print(Global_Log.querry_success('general help', userID))
+        return embed
+
     # store_purchase function
     def store_purchase_complete(item_name : str):
         print(Global_Log.command_run_without_exception('store buy'))

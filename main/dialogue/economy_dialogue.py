@@ -11,21 +11,22 @@ class Economy_Essential_Dialogue:
             help_economy = json.load(help_index)
             help_economy = help_economy["Economy"]
             help_economy_list = list(help_economy)
-            preformat_display_theme = []
+            
+            embed = discord.Embed(
+                title= f":bank:   WELCOME TO THE ECONOMY HELP SECTION   :bank:",
+                description=(
+                    f"Reply to this message with the index of the theme to get more informations about it!"
+                    f"\nIf there is a theme that is not referenced and you have a unanswered question, please contact an administrator."
+                ),
+                color= discord.Color.random()
+            )
+
             for theme in help_economy:
-                preformat_display_theme.append(
-                    f'\n> ` {help_economy_list.index(theme)} `   :white_small_square:   **{theme}**'
-                    )
-            display_help_economy = f'\n> '.join([i for i in preformat_display_theme])
+                embed.add_field(name=f"{theme}", value=f":id:   **{help_economy_list.index(theme)}**", inline=False)
 
         print(Global_Log.querry_success('economy help', userID))
-        return (
-            f':bank:    **WELCOME TO THE ECONOMY HELP SECTION!**    :bank:'
-            f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
-            f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
-            f'\n> '
-            f'{display_help_economy}'
-        )
+        return embed
+
     # help_economy_querry function
     def help_economy_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
@@ -35,12 +36,15 @@ class Economy_Essential_Dialogue:
             help_economy_exp_list = list(help_economy.values())
             theme_index = query
         
-        print(Global_Log.querry_success('economy help', userID))
-        return (
-            f'> :question:    {help_economy_list[theme_index]}'
-            f'\n> '
-            f'\n> :speech_left:    {help_economy_exp_list[theme_index]}'
+        embed = discord.Embed(
+           title= ":bank:   ECONOMY   :bank:",
+           color = discord.Colour.random()
             )
+        embed.add_field(name=f":question: {help_economy_list[theme_index]}", value=f":speech_left: {help_economy_exp_list[theme_index]}", inline=False)
+
+        print(Global_Log.querry_success('general help', userID))
+        return embed
+
     # user_cant_pay_himself function
     def user_cant_pay_himself(userID: discord.Member):
         print(f'\t{log_format.FAIL} COMMAND pay FAILED - USER {userID} TRIED TO PAY HIMSELF.{log_format.END}')
@@ -212,21 +216,22 @@ class Economy_Grind_Dialogue:
             help_grind = json.load(help_index)
             help_grind = help_grind["Grind"]
             help_grind_list = list(help_grind)
-            preformat_display_theme = []
+            
+            embed = discord.Embed(
+                title= f":money_mouth:    WELCOME TO THE GRIND HELP SECTION    :money_mouth:",
+                description=(
+                    f"Reply to this message with the index of the theme to get more informations about it!"
+                    f"\nIf there is a theme that is not referenced and you have a unanswered question, please contact an administrator."
+                ),
+                color= discord.Colour.random()
+            )
+
             for theme in help_grind:
-                preformat_display_theme.append(
-                    f'\n> ` {help_grind_list.index(theme)} `   :white_small_square:   **{theme}**'
-                    )
-            display_help_grind = f'\n> '.join([i for i in preformat_display_theme])
+                embed.add_field(name=f"{theme}", value=f":id:   **{help_grind_list.index(theme)}**", inline=False)
         
         print(Global_Log.querry_success('grind help', userID))
-        return (
-            f':money_mouth:    **WELCOME TO THE GRIND HELP SECTION!**    :money_mouth:'
-            f'\n\n> **Reply to this message with the number associated to the theme to get more informations about it!**'
-            f'\n> **If there is a theme that is not referenced and you have a unanswered question, please contact an administrator.**'
-            f'\n> '
-            f'{display_help_grind}'
-        )
+        return embed
+
     # help_grind_querry function
     def help_grind_querry(query : int, userID: discord.Member):
         with open('main/assets/help.json') as help_index:
@@ -235,12 +240,15 @@ class Economy_Grind_Dialogue:
             help_grind_list = list(help_grind)
             help_grind_exp_list = list(help_grind.values())
             theme_index = query
-        print(Global_Log.querry_success('grind help', userID))
-        return (
-            f'> :question:    {help_grind_list[theme_index]}'
-            f'\n> '
-            f'\n> :speech_left:    {help_grind_exp_list[theme_index]}'
-            ) 
+        embed = discord.Embed(
+           title= ":dividers:   HELP INDEX   :dividers:",
+           color = discord.Colour.random()
+            )
+        embed.add_field(name=f":question: {help_grind_list[theme_index]}", value=f":speech_left: {help_grind_exp_list[theme_index]}", inline=False)
+
+        print(Global_Log.querry_success('general help', userID))
+        return embed
+        
     # bon_toutou function
     def bon_toutou_success(userID: discord.Member):
         print(f'\t{log_format.NOEXC} {userID} HAS BEEN SUCCESSFULLY ASSGINED THE ROLE OF bon toutou.{log_format.END}')

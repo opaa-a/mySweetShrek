@@ -63,7 +63,7 @@ class Inventory_Essentials(commands.Cog):
 
 # display the help inventory section
     async def help_inv(self,ctx):
-        await ctx.author.send(Inventory_Dialogue.help_inv_success(ctx.author))
+        await ctx.author.send(embed=Inventory_Dialogue.help_inv_success(ctx.author))
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
@@ -90,7 +90,7 @@ class Inventory_Essentials(commands.Cog):
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'general help', ctx.author))
             #return if query successful
-            return await ctx.author.send(Inventory_Dialogue.help_inv_querry(int(query.content), ctx.author))
+            return await ctx.author.send(embed=Inventory_Dialogue.help_inv_querry(int(query.content), ctx.author))
 
 # !inventory or !inv -- Takes no args. Display the inventory
     @commands.command(aliases=['inv'])
@@ -98,7 +98,7 @@ class Inventory_Essentials(commands.Cog):
         print(Global_Log.command_has_been_used('inventory', ctx.author))
         if check_vault(ctx.author) is False:
             return await ctx.reply(Global_Dialogue.user_not_registered('inventory'))
-        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(display_inv(ctx.author))
+        return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(embed=display_inv(ctx.author))
 
 # !use -- Takes a mandatory arg. use an item in the inventory
     @commands.command()

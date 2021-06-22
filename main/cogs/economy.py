@@ -123,7 +123,7 @@ class Economy_Essentials(commands.Cog):
 
 # display the help economy section
     async def help_economy(self,ctx):
-        await ctx.author.send(Economy_Essential_Dialogue.help_economy_function_success(ctx.author))
+        await ctx.author.send(embed=Economy_Essential_Dialogue.help_economy_function_success(ctx.author))
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
@@ -150,7 +150,7 @@ class Economy_Essentials(commands.Cog):
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'economy help', ctx.author))
             #return if query successful
-            return await ctx.author.send(Economy_Essential_Dialogue.help_economy_querry(int(query.content), ctx.author))
+            return await ctx.author.send(embed=Economy_Essential_Dialogue.help_economy_querry(int(query.content), ctx.author))
 
 
 # !register -- Take no args. Register the author of the command to the vault.
@@ -315,7 +315,7 @@ class Economy_Grind(commands.Cog):
 
 # display the help grind section
     async def help_grind(self,ctx):
-        await ctx.author.send(Economy_Grind_Dialogue.help_grind_success(ctx.author))
+        await ctx.author.send(embed=Economy_Grind_Dialogue.help_grind_success(ctx.author))
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
@@ -340,7 +340,7 @@ class Economy_Grind(commands.Cog):
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'grind help', ctx.author))
             #return if query successful
-            return await ctx.author.send(Economy_Grind_Dialogue.help_grind_querry(int(query.content), ctx.author))
+            return await ctx.author.send(embed=Economy_Grind_Dialogue.help_grind_querry(int(query.content), ctx.author))
 
 
 # A 'bon toutou' is picked every 24 hours, it'll give the user perks like a 5% more income and 5% discounts...

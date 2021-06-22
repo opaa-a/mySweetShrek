@@ -68,7 +68,7 @@ class Store(commands.Cog):
         print(Global_Log.command_has_been_used('store', ctx.author))
 # message delivered if parameter is None or 'help'
         if param == None or param.lower() == 'help':
-            await ctx.author.send(Store_Dialogue.help_store_success(ctx.author))
+            await ctx.author.send(embed=Store_Dialogue.help_store_success(ctx.author))
             await ctx.message.add_reaction(dialogue_icon.dm)
             #check if theme is selected
             def check(query):
@@ -96,7 +96,7 @@ class Store(commands.Cog):
             except ValueError:
                 return await ctx.author.send(Global_Dialogue.query_exit('valueError_int', 'store help', ctx.author))
             # return if query successful
-            return await ctx.author.send(Store_Dialogue.help_store_querry(int(query.content), ctx.author))
+            return await ctx.author.send(embed=Store_Dialogue.help_store_querry(int(query.content), ctx.author))
         
 # message delivered if parameter is 'showcase'
         if param.lower() == 'showcase':
