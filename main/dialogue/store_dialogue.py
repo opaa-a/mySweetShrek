@@ -39,7 +39,7 @@ class Store_Dialogue:
             )
         embed.add_field(name=f":question: {help_store_list[query]}", value=f"{help_store_exp_list[query]}", inline=False)
 
-        print(Global_Log.querry_success('general help', userID))
+        print(Global_Log.querry_success('store help', userID))
         return embed
 
     # store_purchase function

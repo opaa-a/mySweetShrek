@@ -29,19 +29,71 @@ class Economy_Essential_Dialogue:
 
     # help_economy_querry function
     def help_economy_querry(query : int, userID: discord.Member):
+        # create embed
+        embed = discord.Embed(
+           title= ":bank:   ECONOMY   :bank:",
+           color = discord.Colour.random()
+            )
+        # load data
         with open('main/assets/help.json') as help_index:
             help_economy = json.load(help_index)
             help_economy = help_economy["Economy"]
             help_economy_list = list(help_economy)
             help_economy_exp_list = list(help_economy.values())
-        
-        embed = discord.Embed(
-           title= ":bank:   ECONOMY   :bank:",
-           color = discord.Colour.random()
-            )
-        embed.add_field(name=f":question: {help_economy_list[query]}", value=f"{help_economy_exp_list[query]}", inline=False)
+            # embed default field value
+            default_embed_value = f"{help_economy_exp_list[query]}"
+            
+            # if theme is a list, unroll and add to embed field value.
+            if help_economy_list[query].startswith("List"):
+                # create two temp list
+                command_list = []
+                command_list_perm = []
+                # unroll the list
+                for command in help_economy_exp_list[query]:
+                    com = help_economy_exp_list[query][command]
+                    # if command doesn't need perm it goes through this statement
+                    if com['permission'] == "NONE":
+                        command_list.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                    else:
+                        command_list_perm.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                # embed values
+                embed_value_perm = ("\n----------------------".join([i for i in command_list_perm]))
+                embed_value = ("\n----------------------".join([i for i in command_list]))
 
-        print(Global_Log.querry_success('general help', userID))
+                # check that no empty value is passed & add embed values
+                if len(command_list_perm) > 0:
+                    embed.add_field(
+                        name=
+                        f"\nCommands below requires certain permissions to be used.", 
+                        value=embed_value_perm, 
+                        inline=False)
+
+                embed.add_field(
+                    name=
+                    f"\n----------------------"
+                    f"\n"
+                    f"\n{help_economy_list[query]}"
+                    f"\n"
+                    f"\n----------------------",
+                    value=embed_value, 
+                    inline=False)
+            else:
+                # if no list to unroll, return default embed.
+                embed.add_field(name=f"{help_economy_list[query]}", value=default_embed_value, inline=False)
+        # log
+        print(Global_Log.querry_success('economy help', userID))
         return embed
 
     # user_cant_pay_himself function
@@ -233,19 +285,71 @@ class Economy_Grind_Dialogue:
 
     # help_grind_querry function
     def help_grind_querry(query : int, userID: discord.Member):
+        # create embed
+        embed = discord.Embed(
+           title= ":dividers:   HELP INDEX   :dividers:",
+           color = discord.Colour.random()
+            )
+        # load data
         with open('main/assets/help.json') as help_index:
             help_grind = json.load(help_index)
             help_grind = help_grind["Grind"]
             help_grind_list = list(help_grind)
             help_grind_exp_list = list(help_grind.values())
-        
-        embed = discord.Embed(
-           title= ":dividers:   HELP INDEX   :dividers:",
-           color = discord.Colour.random()
-            )
-        embed.add_field(name=f":question: {help_grind_list[query]}", value=f"{help_grind_exp_list[query]}", inline=False)
+            # embed field value
+            default_embed_value = f"{help_grind_exp_list[query]}"
+            
+            # if theme is a list, unroll and add to embed field value.
+            if help_grind_list[query].startswith("List"):
+                # create two temp list
+                command_list = []
+                command_list_perm = []
+                # unroll the list
+                for command in help_grind_exp_list[query]:
+                    com = help_grind_exp_list[query][command]
+                    # if command doesn't need perm it goes through this statement
+                    if com['permission'] == "NONE":
+                        command_list.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                    else:
+                        command_list_perm.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                # embed values
+                embed_value_perm = ("\n----------------------".join([i for i in command_list_perm]))        
+                embed_value = ("\n----------------------".join([i for i in command_list]))
 
-        print(Global_Log.querry_success('general help', userID))
+                # check that no empty value is passed & add embed values
+                if len(command_list_perm) > 0:
+                    embed.add_field(
+                        name=
+                        f"\nCommands below requires certain permissions to be used.", 
+                        value=embed_value_perm, 
+                        inline=False)
+                
+                embed.add_field(
+                    name=
+                    f"\n----------------------"
+                    f"\n"
+                    f"\n{help_grind_list[query]}"
+                    f"\n"
+                    f"\n----------------------",
+                    value=embed_value, 
+                    inline=False)
+            else:
+                # if no list to unroll, return default embed.
+                embed.add_field(name=f"{help_grind_list[query]}", value=default_embed_value, inline=False)
+        # log
+        print(Global_Log.querry_success('grind help', userID))
         return embed
         
     # bon_toutou function

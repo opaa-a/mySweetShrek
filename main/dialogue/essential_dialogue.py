@@ -60,23 +60,58 @@ class Essential_Dialogue:
             help_general = help_general["General"]
             help_general_list = list(help_general)
             help_general_exp_list = list(help_general.values())
-            command_list = []
             # embed field value
-            embed_value = f"{help_general_exp_list[query]}"
+            default_embed_value = f"{help_general_exp_list[query]}"
+            
             # if theme is a list, unroll and add to embed field value.
             if help_general_list[query].startswith("List"):
+                # create two temp list
+                command_list = []
+                command_list_perm = []
+                # unroll the list
                 for command in help_general_exp_list[query]:
                     com = help_general_exp_list[query][command]
-                    command_list.append(
-                        f"\n> **{command}**"
-                        f"\n> Use with `{com['syntax']}`"
-                        f"\n> Parameter required: `{com['parameters']}`"
-                        f"\n> Permissions required: `{com['permission']}`"
-                        f"\n> ***{com['desc']}***"
-                    )
+                    # if command doesn't need perm it goes through this statement
+                    if com['permission'] == "NONE":
+                        command_list.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                    else:
+                        command_list_perm.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                # embed values
+                embed_value_perm = ("\n----------------------".join([i for i in command_list_perm]))        
                 embed_value = ("\n----------------------".join([i for i in command_list]))
 
-        embed.add_field(name=f"{help_general_list[query]}", value=embed_value, inline=False)
-
+                # check that no empty value is passed & add embed values
+                if len(command_list_perm) > 0:
+                    embed.add_field(
+                        name=
+                        f"\nCommands below requires certain permissions to be used.", 
+                        value=embed_value_perm, 
+                        inline=False)
+                
+                embed.add_field(
+                    name=
+                    f"\n----------------------"
+                    f"\n"
+                    f"\n{help_general_list[query]}"
+                    f"\n"
+                    f"\n----------------------",
+                    value=embed_value, 
+                    inline=False)
+            else:
+                # if no list to unroll, return default embed.
+                embed.add_field(name=f"{help_general_list[query]}", value=default_embed_value, inline=False)
+        # log
         print(Global_Log.querry_success('general help', userID))
         return embed

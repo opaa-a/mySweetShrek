@@ -39,7 +39,7 @@ class Inventory_Dialogue:
             )
         embed.add_field(name=f":question: {help_inv_list[query]}", value=f"{help_inv_exp_list[query]}", inline=False)
 
-        print(Global_Log.querry_success('general help', userID))
+        print(Global_Log.querry_success('inventory help', userID))
         return embed
 
     # discplay_inv function
