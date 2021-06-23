@@ -92,7 +92,7 @@ class Essential(commands.Cog):
     @commands.command()
     async def help(self, ctx):
         # await ctx.author.send(Essential_Dialogue.help_command_success(ctx.author))
-        await ctx.send(embed=Essential_Dialogue.help_command_success(ctx.author))
+        await ctx.author.send(embed=Essential_Dialogue.help_command_success(ctx.author))
         await ctx.message.add_reaction(dialogue_icon.dm)
         # check if theme is selected
         def check(query):

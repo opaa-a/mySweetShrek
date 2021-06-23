@@ -32,13 +32,12 @@ class Inventory_Dialogue:
             help_inv = help_inv["Inventory"]
             help_inv_list = list(help_inv)
             help_inv_exp_list = list(help_inv.values())
-            theme_index = query
         
         embed = discord.Embed(
            title= ":dividers:   HELP INDEX   :dividers:",
            color = discord.Colour.random()
             )
-        embed.add_field(name=f":question: {help_inv_list[theme_index]}", value=f":speech_left: {help_inv_exp_list[theme_index]}", inline=False)
+        embed.add_field(name=f":question: {help_inv_list[query]}", value=f"{help_inv_exp_list[query]}", inline=False)
 
         print(Global_Log.querry_success('general help', userID))
         return embed

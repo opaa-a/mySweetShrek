@@ -49,23 +49,34 @@ class Essential_Dialogue:
 
     # help_general_querry function
     def help_general_querry(query : int, userID: discord.Member):
+        # create embed
+        embed = discord.Embed(
+            title= ":dividers:   HELP INDEX   :dividers:",
+            color = discord.Colour.random()
+                )
+        # load data
         with open('main/assets/help.json') as help_index:
             help_general = json.load(help_index)
             help_general = help_general["General"]
             help_general_list = list(help_general)
             help_general_exp_list = list(help_general.values())
-            theme_index = query
-       
-        embed = discord.Embed(
-           title= ":dividers:   HELP INDEX   :dividers:",
-           color = discord.Colour.random()
-            )
-        embed.add_field(name=f":question: {help_general_list[theme_index]}", value=f":speech_left: {help_general_exp_list[theme_index]}", inline=False)
+            command_list = []
+            # embed field value
+            embed_value = f"{help_general_exp_list[query]}"
+            # if theme is a list, unroll and add to embed field value.
+            if help_general_list[query].startswith("List"):
+                for command in help_general_exp_list[query]:
+                    com = help_general_exp_list[query][command]
+                    command_list.append(
+                        f"\n> **{command}**"
+                        f"\n> Use with `{com['syntax']}`"
+                        f"\n> Parameter required: `{com['parameters']}`"
+                        f"\n> Permissions required: `{com['permission']}`"
+                        f"\n> ***{com['desc']}***"
+                    )
+                embed_value = ("\n----------------------".join([i for i in command_list]))
+
+        embed.add_field(name=f"{help_general_list[query]}", value=embed_value, inline=False)
 
         print(Global_Log.querry_success('general help', userID))
         return embed
-        # return (
-        #     f'> :question:    {help_general_list[theme_index]}'
-        #     f'\n> '
-        #     f'\n> :speech_left:    {help_general_exp_list[theme_index]}'
-        #     )

@@ -34,13 +34,12 @@ class Economy_Essential_Dialogue:
             help_economy = help_economy["Economy"]
             help_economy_list = list(help_economy)
             help_economy_exp_list = list(help_economy.values())
-            theme_index = query
         
         embed = discord.Embed(
            title= ":bank:   ECONOMY   :bank:",
            color = discord.Colour.random()
             )
-        embed.add_field(name=f":question: {help_economy_list[theme_index]}", value=f":speech_left: {help_economy_exp_list[theme_index]}", inline=False)
+        embed.add_field(name=f":question: {help_economy_list[query]}", value=f"{help_economy_exp_list[query]}", inline=False)
 
         print(Global_Log.querry_success('general help', userID))
         return embed
@@ -239,12 +238,12 @@ class Economy_Grind_Dialogue:
             help_grind = help_grind["Grind"]
             help_grind_list = list(help_grind)
             help_grind_exp_list = list(help_grind.values())
-            theme_index = query
+        
         embed = discord.Embed(
            title= ":dividers:   HELP INDEX   :dividers:",
            color = discord.Colour.random()
             )
-        embed.add_field(name=f":question: {help_grind_list[theme_index]}", value=f":speech_left: {help_grind_exp_list[theme_index]}", inline=False)
+        embed.add_field(name=f":question: {help_grind_list[query]}", value=f"{help_grind_exp_list[query]}", inline=False)
 
         print(Global_Log.querry_success('general help', userID))
         return embed

@@ -32,13 +32,12 @@ class Store_Dialogue:
             help_store = help_store["Store"]
             help_store_list = list(help_store)
             help_store_exp_list = list(help_store.values())
-            theme_index = query
 
         embed = discord.Embed(
            title= ":dividers:   HELP INDEX   :dividers:",
            color = discord.Colour.random()
             )
-        embed.add_field(name=f":question: {help_store_list[theme_index]}", value=f":speech_left: {help_store_exp_list[theme_index]}", inline=False)
+        embed.add_field(name=f":question: {help_store_list[query]}", value=f"{help_store_exp_list[query]}", inline=False)
 
         print(Global_Log.querry_success('general help', userID))
         return embed

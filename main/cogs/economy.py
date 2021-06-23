@@ -369,7 +369,7 @@ class Economy_Grind(commands.Cog):
             return await Bon_Toutou_Task.bon_toutou_assign(self)
 
         md_bon_toutou_status(userID)
-        await userID.send(Economy_Grind_Dialogue.bon_toutou_success(userID))
+        #await userID.send(Economy_Grind_Dialogue.bon_toutou_success(userID))
         await userID.add_roles(role_bon_toutou)
 
         await asyncio.sleep(role_hold_time)
