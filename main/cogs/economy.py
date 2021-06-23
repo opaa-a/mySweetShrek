@@ -498,6 +498,33 @@ class Economy_Reward(commands.Cog):
         print(f"\n{log_format.INFO}- Economy Rewards from bank.py is loaded.{log_format.END}")
 
 #---------------------------------------------------------------------------------------#       REWARDS FUNCTIONS       #---------------------------------------------------------------------------------------#
+
+    def check_claim(self, userID: discord.Member):
+        # load data
+        with open('./main/assets/vault.json') as vault:
+            vault = json.load(vault)
+            now = datetime.now()
+            date_now = now.strftime("%Y-%m-%d")
+            rid = vault[str(userID)]['reward']
+            rewards = []
+            # add new rewards here for them to be displayed
+            # daily gift
+            if rid['daily_reward_claim_date'] == date_now:
+                rewards.append(f"\n:red_circle:   |   **Daily Gift** *daily gift is not available until tomorrow.*")
+            else:
+                rewards.append(f"\n:green_circle:   |   **Daily Gift** *daily gift is available!*")
+            # passive income stacks
+            if rid['passive_income_stack'] == 0:
+                rewards.append(f"\n:red_circle:   |   **Stacks** *you don't own any stacks right now.*")
+            else:
+                rewards.append(f"\n:green_circle:   |   **Stacks** *you have stacks waiting to be claimed!*")
+            
+            embed_value = "\n".join([i for i in rewards])
+            embed = discord.Embed(title=f":stars:   REWARDS   :stars:", description=f"", color = discord.Colour.random())
+            embed.add_field(name="---------------------------", value=embed_value, inline=False)
+            print(Global_Log.command_run_without_exception('claim check'))
+            return embed
+
 # who_is_vocal filter users that are in the vocal
 # users that got a vault and are not bots are given passive income every 30 seconds;
 # passive income is defined by passive_income_rate.
@@ -517,7 +544,8 @@ class Economy_Reward(commands.Cog):
 
         with open('./main/assets/vault.json') as vault:
             vault = json.load(vault)
-            date_now = str(datetime.date.today())
+            now = datetime.now()
+            date_now = now.strftime("%Y-%m-%d")
             reward = 1000
             
             userID = str(userID)
@@ -544,6 +572,7 @@ class Economy_Reward(commands.Cog):
 
             return Economy_Grind_Dialogue.daily_reward_success(userID, reward)
 
+# passive_income_stack 
     def passive_income_stack(self, ctx, userID: discord.Member):
         from cogs.essential import check_user_has_role
         from cogs.essential import malus_rate
@@ -578,6 +607,9 @@ class Economy_Reward(commands.Cog):
         
         if check_vault(ctx.author) is False:
             return await ctx.reply(Global_Dialogue.user_not_registered('claim'))
+
+        if reward_type == None or reward_type == "check":
+            return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(embed=self.check_claim(ctx.author))
 
         if reward_type == "daily":
             return await ctx.reply(self.daily_reward(ctx, ctx.author))
