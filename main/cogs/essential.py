@@ -64,7 +64,7 @@ class Essential(commands.Cog):
         def check(query):
             return ctx.author == query.author
         
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
         try:
             query = await self.client.wait_for('message', check=check, timeout = 20)
             # iterate through the help file to fetch the store theme.
@@ -98,7 +98,7 @@ class Essential(commands.Cog):
         def check(query):
             return ctx.author == query.author
         # bot is waiting for a query
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
         try:
             query = await self.client.wait_for('message', check=check, timeout = 20)
         except asyncio.TimeoutError:

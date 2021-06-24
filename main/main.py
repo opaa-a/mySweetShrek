@@ -176,6 +176,10 @@ async def source(ctx):
         f'\nhttps://github.com/opaa-a/mySweetShrek'
         )
 # ---------------------------------------------- # EVENTS # ---------------------------------------------- #
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        await ctx.send(Global_Dialogue.command_unknown(ctx.message.content, ctx.author))
 
 @client.event
 async def on_ready():

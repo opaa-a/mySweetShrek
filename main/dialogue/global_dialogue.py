@@ -16,6 +16,7 @@ class log_format:
     FAIL = '\033[31;1m[-] '
     NOEXC = '\033[32;1m[+] '
     COM = '\033[35;1m[COM] '
+    ERRORCOM = '\033[93;4;1m[! COM] '
     WAIT = '\033[35m[...] '
 
 # Dialogue default icons
@@ -34,6 +35,13 @@ class global_dialogue_var:
 
 # Global scope dialogues
 class Global_Dialogue:
+    # return if command is unknown
+    def command_unknown(command: str, userID: discord.Member):
+        print(f"\n{log_format.ERRORCOM} UNKNOWN COMMAND {command} has been used by {userID} at {log_format.DATE}{log_format.END}")
+        return (
+            f'{dialogue_icon.fail}   Oops! Looks like the command you\'re trying to perform does not exist.'
+            f'\n*Use `!help` for more informations.*'
+            )
     # return if user is not allowed to perform a command
     def user_not_allowed(command: str, userID: discord.Member):
         print(f'\t{log_format.FAIL} COMMAND {command} FAILED - USER {userID} TRIED TO PERFORM THIS COMMAND WITHOUT NEEDED PERMISSIONS.{log_format.END}')
@@ -113,8 +121,8 @@ class Global_Log:
     def command_run_without_exception(command: str):
         return f'\t{log_format.NOEXC} {command} RAN WITHOUT EXCEPTION.{log_format.END}'
     # log when bot is waiting for a query
-    def bot_is_waiting_for_querry(userID: discord.Member):
-        return f'\t{log_format.WAIT} BOT IS WAITING FOR QUERRY FROM {userID}.{log_format.END}'
+    def bot_is_waiting_for_query(userID: discord.Member):
+        return f'\t{log_format.WAIT} BOT IS WAITING FOR QUERY FROM {userID}.{log_format.END}'
     # return when query is successful
     def querry_success(querry_type: str, userID: discord.Member):
         return f'\t{log_format.NOEXC} {querry_type} QUERRY REQUEST HAS BEEN SUCCESSFULLY USED BY {userID}.{log_format.END}'

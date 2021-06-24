@@ -128,7 +128,7 @@ class Economy_Essentials(commands.Cog):
         def check(query):
             return ctx.author == query.author
         
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
         try:
             query = await self.client.wait_for('message', check=check, timeout = 20)
         except asyncio.TimeoutError:
@@ -319,7 +319,7 @@ class Economy_Grind(commands.Cog):
         #check if theme is selected
         def check(query):
             return ctx.author == query.author
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
         try:
             query = await self.client.wait_for('message', check=check, timeout = 20)
         except asyncio.TimeoutError:
@@ -408,12 +408,12 @@ class Economy_Grind(commands.Cog):
             print(cf_prize)
 
         await ctx.send(Economy_Grind_Dialogue.coinflip_success(amount, ctx.author, "cf_init"))
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
 
         def check(ans):
             return ans.channel == ctx.channel and ans.author == ctx.author
         
-        print(Global_Log.bot_is_waiting_for_querry(ctx.author))
+        print(Global_Log.bot_is_waiting_for_query(ctx.author))
         ans = await self.client.wait_for('message', check=check)
 
         if ans.content.lower() != 'tail' and ans.content.lower() != 'head':
