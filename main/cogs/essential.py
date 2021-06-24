@@ -45,10 +45,9 @@ def check_user_is_muted(userID: discord.Member):
         return True
     return False
 
-def check_user_has_role(ctx, userID: discord.Member, role_id):
+def check_user_has_role(userID: discord.Member, role_id):
     roles_id = []
     for x in userID.roles:
-        print(x)
         roles_id.append(x.id)
     if role_id in roles_id:
         return True
