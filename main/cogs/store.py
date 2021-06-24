@@ -2,6 +2,7 @@ import discord
 import json
 import asyncio
 from discord.ext import commands
+from cogs.essential import discount
 from cogs.inventory import add_item_to_inv
 from dialogue.store_dialogue import *
 from dialogue.global_dialogue import *
@@ -16,6 +17,10 @@ from dialogue.global_dialogue import *
 def store_buy_item(userID, query : str, price: int):
 # import functions from economy
     from cogs.economy import check_vault, get_balance, md_balance
+    from cogs.essential import check_user_has_role, discount
+# check if user has role
+    if check_user_has_role(userID, 804849555094765598):
+        price = price - (price * discount)
 # buy item 'A la niche'
     if query == 'A la niche!':
         if check_vault(userID) == False:
@@ -100,7 +105,7 @@ class Store(commands.Cog):
         
 # message delivered if parameter is 'showcase'
         if param.lower() == 'showcase':
-            return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(Store_Dialogue.store_showcase_success())
+            return await ctx.message.add_reaction(dialogue_icon.dm), await ctx.author.send(embed=Store_Dialogue.store_showcase_success(ctx.author))
 
 # message delivered if parameter is 'buy'
         if param.lower() == 'buy':

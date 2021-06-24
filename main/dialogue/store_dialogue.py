@@ -1,6 +1,7 @@
 import discord
 import json
 from dialogue.global_dialogue import *
+from cogs.essential import discount
 
 class Store_Dialogue:
     # FUNCTION
@@ -104,23 +105,30 @@ class Store_Dialogue:
             )
     # COMMAND
     # store showcase command
-    def store_showcase_success():
+    def store_showcase_success(userID: discord.Member):
+        from cogs.essential import check_user_has_role
+        # log command execution
         print(Global_Log.command_run_without_exception('store showcase'))
+        # create embed
+        embed = discord.Embed(title=f":shopping_bags:   WELCOME TO THE {global_dialogue_var.storeName.upper()}!   :shopping_bags:", description=f"Here are displayed all the currently available-to-purchase items!", color= discord.Colour.random())
+        # load data
         with open('main/assets/store_inv.json') as store_inv:
             store_inv = json.load(store_inv)
-            preformat_store_inv = []
+
             for item in store_inv:
-                preformat_store_inv.append(
-                    f'\n> {store_inv[item]["icon"]} ` {item} `   :   **{store_inv[item]["price"]} {global_dialogue_var.currency} :coin:**'
-                    f'\n>   *{store_inv[item]["desc"]}*'
-                    ) 
-            store_inv_showcase = f'\n> '.join([i for i in preformat_store_inv])
-        return (
-            f':shopping_bags:   **WELCOME TO THE {global_dialogue_var.storeName.upper()}!**   :shopping_bags:'
-            f'\n\n> **Here are displayed all the currently available-to-purchase commands!**'
-            f'\n> '
-            f'{store_inv_showcase}'
-            )
+                disc_msg = ""
+                price = int(store_inv[item]['price'])
+                if check_user_has_role(userID, 804849555094765598):
+                    disc_msg = f"(original price is {price} but a discount of 10% has been applied due to the role 'bon toutou')"
+                    price = price - (price * discount)
+
+                embed.add_field(name=f"{store_inv[item]['icon']}   -   {item}", value=(
+                f"*Buy it for* ***{price} {global_dialogue_var.currency}*** :coin:"
+                f"\n*{disc_msg}*"), 
+                inline=False)
+
+            return embed
+
     # store buy command
     def store_buy_success():
         return(

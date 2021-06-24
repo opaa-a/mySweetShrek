@@ -13,6 +13,9 @@ malus_rate = 0.20
 global bonus_rate
 bonus_rate = 1.10
 
+global discount
+discount = 0.10
+
 global passive_income
 passive_income_rate = 2.5
 
@@ -42,9 +45,10 @@ def check_user_is_muted(userID: discord.Member):
         return True
     return False
 
-def check_user_has_role(userID: discord.Member, role_id):
+def check_user_has_role(ctx, userID: discord.Member, role_id):
     roles_id = []
     for x in userID.roles:
+        print(x)
         roles_id.append(x.id)
     if role_id in roles_id:
         return True
@@ -138,18 +142,8 @@ class Essential(commands.Cog):
     
     @commands.command()
     async def debug(self, ctx):
-        x = [300,900,5000,10000,50000]
-        for stack in x:
-            rate = stack / 100000
-            inc = stack * rate
-            reward = stack + inc
-            await ctx.send(
-                f'\n**STACK   ==   {stack}**'
-                f'\n**RATE   ==   {rate}**'
-                f'\n**INC   ==   {inc}**'
-                f'\n**REWARD   ==   {reward}**'
-                f'\n------------------------------'
-                )
+        check_user_has_role(ctx, ctx.author, 804849555094765598)
+        return await ctx.reply('done')
 
 #---------------------------------------------------------------------------------------#       COGS SETUP       #---------------------------------------------------------------------------------------#
 
