@@ -27,18 +27,70 @@ class Inventory_Dialogue:
 
     # help_inv_querry function
     def help_inv_querry(query : int, userID: discord.Member):
+        # create embed
+        embed = discord.Embed(
+           title= ":package:   INVENTORY   :package:",
+           color = discord.Colour.random()
+            )
+        # load data
         with open('main/assets/help.json') as help_index:
             help_inv = json.load(help_index)
             help_inv = help_inv["Inventory"]
             help_inv_list = list(help_inv)
             help_inv_exp_list = list(help_inv.values())
-        
-        embed = discord.Embed(
-           title= ":dividers:   HELP INDEX   :dividers:",
-           color = discord.Colour.random()
-            )
-        embed.add_field(name=f":question: {help_inv_list[query]}", value=f"{help_inv_exp_list[query]}", inline=False)
+            # embed field value
+            default_embed_value = f"{help_inv_exp_list[query]}"
+            
+            # if theme is a list, unroll and add to embed field value.
+            if help_inv_list[query].startswith("List"):
+                # create two temp list
+                command_list = []
+                command_list_perm = []
+                # unroll the list
+                for command in help_inv_exp_list[query]:
+                    com = help_inv_exp_list[query][command]
+                    # if command doesn't need perm it goes through this statement
+                    if com['permission'] == "NONE":
+                        command_list.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                    else:
+                        command_list_perm.append(
+                            f"\n> **{command}**"
+                            f"\n> Use with `{com['syntax']}`"
+                            f"\n> Parameter required: `{com['parameters']}`"
+                            f"\n> Permissions required: `{com['permission']}`"
+                            f"\n> ***{com['desc']}***"
+                        )
+                # embed values
+                embed_value_perm = ("\n----------------------".join([i for i in command_list_perm]))        
+                embed_value = ("\n----------------------".join([i for i in command_list]))
 
+                # check that no empty value is passed & add embed values
+                if len(command_list_perm) > 0:
+                    embed.add_field(
+                        name=
+                        f"\nCommands below requires certain permissions to be used.", 
+                        value=embed_value_perm, 
+                        inline=False)
+                
+                embed.add_field(
+                    name=
+                    f"\n----------------------"
+                    f"\n"
+                    f"\n{help_inv_list[query]}"
+                    f"\n"
+                    f"\n----------------------",
+                    value=embed_value, 
+                    inline=False)
+            else:
+                # if no list to unroll, return default embed.
+                embed.add_field(name=f"{help_inv_list[query]}", value=default_embed_value, inline=False)
+        # log
         print(Global_Log.querry_success('inventory help', userID))
         return embed
 

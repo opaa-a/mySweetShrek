@@ -287,7 +287,7 @@ class Economy_Grind_Dialogue:
     def help_grind_querry(query : int, userID: discord.Member):
         # create embed
         embed = discord.Embed(
-           title= ":dividers:   HELP INDEX   :dividers:",
+           title= ":money_mouth:   GRIND   :money_mouth:",
            color = discord.Colour.random()
             )
         # load data

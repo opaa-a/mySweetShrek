@@ -51,7 +51,7 @@ class Essential_Dialogue:
     def help_general_querry(query : int, userID: discord.Member):
         # create embed
         embed = discord.Embed(
-            title= ":dividers:   HELP INDEX   :dividers:",
+            title= ":globe_with_meridians:   GENERAL   :globe_with_meridians:",
             color = discord.Colour.random()
                 )
         # load data
